@@ -35,7 +35,7 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import { onMounted, onUnmounted, defineEmits } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 
 const emit = defineEmits(['select']);
 

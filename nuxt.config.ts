@@ -10,28 +10,25 @@ export default defineNuxtConfig({
   },
   srcDir: 'src/',
 
-  baseURL: '/lunar-calc',
-  buildDir: '/docs/',
+  target: 'static',
+
+//   router: { base: '/book-manager' },
 
   css: [
       '@vuepic/vue-datepicker/dist/main.css',
     '@/assets/css/main.css',
   ],
   buildModules: [
-    [
-      '@nuxtjs/eslint-module',
-      {
-        fix: true,
-      },
-    ],
+    // TODO
+    // [
+    //   '@nuxtjs/eslint-module',
+    //   {
+    //     fix: true,
+    //   },
+    // ],
       '@nuxtjs/tailwindcss',
   ],
-  Modules: [
-    '@vuepic/vue-datepicker',
-      'dayjs',
-      'lodash'
-  ],
-
+  modules: [],
   app: {
     head: {
       title: '도서관리',

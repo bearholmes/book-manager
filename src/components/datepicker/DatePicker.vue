@@ -26,7 +26,7 @@
 </template>
 <script setup>
 import Datepicker from '@vuepic/vue-datepicker';
-import { computed, defineAsyncComponent, defineEmits, defineProps } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import dayjs from 'dayjs';
 
 const props = defineProps({

@@ -80,7 +80,7 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import {ref, watch} from 'vue';
+import { ref, watch } from 'vue';
 import BookItem from '../../components/admin/BookItem';
 import SidePop from '../../components/admin/SidePop';
 import FileSelect from '../../components/admin/FileSelect';
@@ -95,10 +95,14 @@ const bookList = useState('form', () => {
   return [];
 });
 
-watch(()=>bookList.value, ()=>{
-  console.log('bookList')
+watch(
+  () => bookList.value,
+  () => {
+    console.log('bookList');
     loadAfter();
-}, {deep:true})
+  },
+  { deep: true },
+);
 
 const readFile = (file) => {
   console.log(file.type);
@@ -140,10 +144,10 @@ const add = () => {
 };
 
 const deleteItem = (index) => {
-  bookList.value.splice(index, 1)
+  bookList.value.splice(index, 1);
   loadAfter();
   isShowSide.value = false;
-}
+};
 
 const save = () => {
   // TODO 저장을 바로 하지 않게하고,이름 바꿀수 있는 레이어 띄우기
@@ -170,12 +174,15 @@ const openBook = (item, index) => {
   selectedIdx.value = index;
 };
 
-watch(()=>isShowSide, (val)=>{
-  if(!val) {
-    selectedBook.value = {};
-    selectedIdx.value = null;
-  }
-})
+watch(
+  () => isShowSide,
+  (val) => {
+    if (!val) {
+      selectedBook.value = {};
+      selectedIdx.value = null;
+    }
+  },
+);
 
 const currency = (value, nullTxt = '-') => {
   if (!value && value !== 0) {

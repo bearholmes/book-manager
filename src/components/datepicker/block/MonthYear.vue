@@ -31,7 +31,6 @@
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid';
-import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
   months: { type: Array, default: () => [] },

@@ -85,7 +85,13 @@
                               autocomplete="family-name"
                               class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
                             />
-                            <button type="button" class="mt-3 bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" @click="book.imageUrl = `./images/${book.ISBN13}.jpg`">{ISBN13}.jpg 입력</button>
+                            <button
+                              type="button"
+                              class="mt-3 bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              @click="book.imageUrl = `./images/${book.ISBN13}.jpg`"
+                            >
+                              {ISBN13}.jpg 입력
+                            </button>
                           </div>
                         </div>
 
@@ -286,24 +292,24 @@
 
                     <div class="pt-5">
                       <div class="flex">
-                      <div class="flex flex-1 justify-start">
-                        <button
+                        <div class="flex flex-1 justify-start">
+                          <button
                             type="button"
                             class="bg-red-500 py-2 px-4 border border-red-300 rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             @click="deleteBook"
-                        >
-                          삭제
-                        </button>
-                      </div>
-                      <div class="flex justify-end">
-                        <button
-                          type="button"
-                          class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                          @click="close"
-                        >
-                          닫기
-                        </button>
-                      </div>
+                          >
+                            삭제
+                          </button>
+                        </div>
+                        <div class="flex justify-end">
+                          <button
+                            type="button"
+                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            @click="close"
+                          >
+                            닫기
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -318,7 +324,7 @@
 </template>
 
 <script setup>
-import { watch, ref, defineEmits, defineProps, computed } from 'vue';
+import { watch, ref, computed } from 'vue';
 import {
   TransitionChild,
   TransitionRoot,
@@ -339,7 +345,7 @@ const props = defineProps({
   },
   index: {
     type: Number,
-    default: null
+    default: null,
   },
   item: {
     type: Object,
@@ -428,10 +434,9 @@ conditionList.value = [
   { value: '중고', label: '중고' },
 ];
 
-
 const deleteBook = () => {
-emit('delete', props.index)
-}
+  emit('delete', props.index);
+};
 </script>
 <style scoped>
 .detail {

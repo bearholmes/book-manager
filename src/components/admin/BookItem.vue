@@ -20,12 +20,12 @@
   </li>
 </template>
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   index: {
     type: Number,
-    default: null
+    default: null,
   },
   item: {
     type: Object,
@@ -84,7 +84,7 @@ const topicClass = computed(() => {
 }
 
 .item.blank {
-  background-image: url("@/assets/images/blank-image.png");
+  background-image: url('@/assets/images/blank-image.png');
   background-size: auto;
   opacity: 0.3;
   background-position: center center;
