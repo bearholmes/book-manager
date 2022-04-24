@@ -40,10 +40,10 @@
                   leave-from="opacity-100"
                   leave-to="opacity-0"
                 >
-                  <div class="absolute top-0 left-0 -ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4">
+                  <div class="absolute top-0 left-0 -ml-8 flex sm:-ml-12">
                     <button
                       type="button"
-                      class="rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                      class="p-3 rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200"
                       @click="close"
                     >
                       <span class="sr-only">닫기</span>
@@ -86,13 +86,13 @@
                               class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
                             />
                             <div>
-                            <button
-                              type="button"
-                              class="mt-3 inline-block bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                              @click="book.imageUrl = `./images/${book.ISBN13 || ''}.jpg`"
-                            >
-                              {ISBN13}.jpg 입력
-                            </button>
+                              <button
+                                type="button"
+                                class="mt-3 inline-block bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                @click="book.imageUrl = `./images/${book.ISBN13 || ''}.jpg`"
+                              >
+                                {ISBN13}.jpg 입력
+                              </button>
                               <span class="inline-block ml-3 text-xs text-gray-500">/public/images/에 이미지를 저장하세요.</span>
                             </div>
                           </div>
@@ -141,7 +141,7 @@
                             <div class="max-w-lg block w-full sm:max-w-xs">
                               <div class="relative mt-1">
                                 <ComboboxInput
-                                  class="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                                  class="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                                   @change="query = $event.target.value"
                                 />
                                 <!--                                  :display-value="(item) => {return item}"-->
@@ -163,7 +163,7 @@
                                     <li
                                       :class="[
                                         'relative cursor-default select-none py-2 pl-3 pr-9',
-                                        active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                        active ? 'bg-blue-600 text-white' : 'text-gray-900',
                                       ]"
                                     >
                                       <span :class="['block truncate', selected && 'font-semibold']">
@@ -172,7 +172,7 @@
 
                                       <span
                                         v-if="selected"
-                                        :class="['absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-indigo-600']"
+                                        :class="['absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-blue-600']"
                                       >
                                         <CheckIcon class="h-5 w-5" aria-hidden="true" />
                                       </span>
@@ -251,13 +251,13 @@
                                   id="purchasePrice"
                                   v-model.number="book.purchasePrice"
                                   type="text"
-                                  class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                                 />
                                 <div class="absolute inset-y-0 right-0 flex items-center">
                                   <label for="currency" class="sr-only">통화단위</label>
                                   <select
                                     v-model="book.currency"
-                                    class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                    class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                   >
                                     <option value="KRW">KRW</option>
                                     <option value="USD">USD</option>
@@ -281,7 +281,7 @@
                                   :true-value="true"
                                   :false-value="false"
                                   type="checkbox"
-                                  class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                  class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
                                 />
                               </div>
                               <div class="ml-3 text-sm">
@@ -339,7 +339,7 @@ import {
   ComboboxOptions,
 } from '@headlessui/vue';
 import { XIcon } from '@heroicons/vue/outline';
-import DatePicker from '../datepicker/DatePicker';
+import DatePicker from '~/components/datepicker/DatePicker';
 import { CheckIcon, SelectorIcon } from '@heroicons/vue/solid';
 
 const props = defineProps({

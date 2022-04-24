@@ -45,11 +45,9 @@
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
             <div class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
-              <dd class="mt-1 text-2xl text-gray-900">
-                {{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span>
-              </dd>
+              <dd class="mt-1 text-2xl text-gray-900">{{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span></dd>
             </div>
-            <div class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6" v-if="imgNullCnt && imgNullCnt > 0">
+            <div v-if="imgNullCnt && imgNullCnt > 0" class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
               <dd class="mt-1 text-2xl text-gray-900">
                 {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
@@ -61,23 +59,52 @@
       <main class="mt-7">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <book-item v-for="(item, index) in bookList" :key="index" :item="item" :index="index" @open="openBook" />
+            <BookItem v-for="(item, index) in bookList" :key="index" :item="item" :index="index" @open="openBook" />
           </ul>
         </div>
       </main>
       <!--SIDE-->
-      <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="deleteItem" />
+      <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="openDeleteConfirm" />
     </template>
+
+    <!-- 삭제 -->
+    <Alert v-model:isShow="isShowDeleteConfirm">
+      <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+        <ExclamationIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+      </div>
+      <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
+        <strong class="block text-lg leading-6 font-medium text-gray-900"> 삭제하시겠습니까? </strong>
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+          @click="deleteItem"
+        >
+          삭제
+        </button>
+        <button
+          type="button"
+          class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+          @click="closeDeleteConfirm"
+        >
+          취소
+        </button>
+      </template>
+    </Alert>
   </div>
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
 import { ref, watch } from 'vue';
-import BookItem from '@/components/admin/BookItem';
-import SidePop from '@/components/admin/SidePop';
-import FileSelect from '@/components/admin/FileSelect';
+import BookItem from '~/components/admin/BookItem';
+import SidePop from '~/components/admin/SidePop';
+import FileSelect from '~/components/admin/FileSelect';
+import Alert from '~/components/popup/Alert';
+import demoFile from '~/assets/demoData.json';
 import { uniq } from 'lodash';
-import { DownloadIcon } from  '@heroicons/vue/solid'
+import { DownloadIcon } from '@heroicons/vue/solid';
+import { ExclamationIcon } from '@heroicons/vue/outline';
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);
@@ -124,7 +151,6 @@ const loadAfter = () => {
   imgNullCnt.value = imageUrlNullList.length;
 };
 
-import demoFile from '~/assets/demoData.json';
 const newFile = async () => {
   bookList.value = demoFile;
   isSelectedFile.value = true;
@@ -136,11 +162,26 @@ const add = () => {
   alert('준비중');
 };
 
-const deleteItem = (index) => {
+const isShowDeleteConfirm = ref(false);
+
+const openDeleteConfirm = (index) => {
+  console.log('openDeleteConfirm');
+  isShowDeleteConfirm.value = true;
+  selectedIdx.value = index;
+};
+
+const closeDeleteConfirm = () => {
+  console.log('closeDeleteConfirm');
+  isShowDeleteConfirm.value = false;
+};
+
+const deleteItem = () => {
+  console.log('deleteItem');
+  isShowDeleteConfirm.value = false;
+  const index = selectedIdx.value;
   bookList.value.splice(index, 1);
   loadAfter();
   isShowSide.value = false;
-  // TODO 알림/토스트
 };
 
 const save = () => {
