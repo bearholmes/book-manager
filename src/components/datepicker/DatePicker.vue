@@ -85,7 +85,7 @@ const format = (date) => {
   @apply border-0 font-semibold text-blue-600;
 }
 .dp__input {
-  @apply font-roboto shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md py-2;
+  @apply shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md py-2;
 }
 
 .dp__pointer {

@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: ['Apple SD Gothic Neo', 'NotoSans', 'sans-serif'],
-      roboto: ['Roboto', 'sans-serif'],
+      // roboto: ['Roboto', 'sans-serif'],
     },
     extend: {},
   },

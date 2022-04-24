@@ -1,13 +1,12 @@
-@import "font.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    html {
-        font-family: 'NotoSans', sans-serif;
-    }
-}
+/*@layer base {*/
+/*    html {*/
+/*        font-family: 'NotoSans', sans-serif;*/
+/*    }*/
+/*}*/
 
 div#__nuxt, #__layout, #__layout>div, #app { min-height: 100vh; }
 

@@ -32,7 +32,7 @@
           </button>
           <button
             type="button"
-            class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
+            class="hidden md:inline-flex ml-3 items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
             :disabled="bookList.length < 1"
             @click.prevent="save"
           >
@@ -45,13 +45,13 @@
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
             <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
-              <dd class="mt-1 text-2xl font-roboto text-gray-900">
+              <dd class="mt-1 text-2xl text-gray-900">
                 {{ currency(bookList.length) }}
               </dd>
             </div>
             <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
-              <dd class="mt-1 text-2xl font-roboto text-gray-900">
+              <dd class="mt-1 text-2xl text-gray-900">
                 {{ imgNullCnt }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
               </dd>
             </div>
@@ -59,7 +59,7 @@
             <!--            <dt class="text-sm font-medium text-gray-500 truncate">-->
             <!--              test-->
             <!--            </dt>-->
-            <!--            <dd class="mt-1 text-2xl font-roboto text-gray-900">-->
+            <!--            <dd class="mt-1 text-2xl  text-gray-900">-->
             <!--              1000-->
             <!--            </dd>-->
             <!--          </div>-->
@@ -67,7 +67,7 @@
         </div>
       </header>
       <main class="mt-7">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             <book-item v-for="(item, index) in bookList" :key="index" :item="item" :index="index" @open="openBook" />
           </ul>
@@ -147,6 +147,7 @@ const deleteItem = (index) => {
   bookList.value.splice(index, 1);
   loadAfter();
   isShowSide.value = false;
+  // TODO 알림/토스트
 };
 
 const save = () => {
