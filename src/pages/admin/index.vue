@@ -23,7 +23,7 @@
           <button
             type="button"
             aria-label="추가"
-            class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             @click.prevent="add"
           >
             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -32,37 +32,29 @@
           </button>
           <button
             type="button"
-            class="hidden md:inline-flex ml-3 items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
+            class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
             :disabled="bookList.length < 1"
             @click.prevent="save"
           >
-            Export
+            <DownloadIcon class="h-4 w-4 mr-1.5 text-white">Export</DownloadIcon> <span class="mt-0.5">JSON</span>
           </button>
         </div>
       </teleport>
       <header>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
-            <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+            <div class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
               <dd class="mt-1 text-2xl text-gray-900">
-                {{ currency(bookList.length) }}
+                {{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span>
               </dd>
             </div>
-            <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+            <div class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6" v-if="imgNullCnt && imgNullCnt > 0">
               <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
               <dd class="mt-1 text-2xl text-gray-900">
-                {{ imgNullCnt }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
+                {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
               </dd>
             </div>
-            <!--          <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">-->
-            <!--            <dt class="text-sm font-medium text-gray-500 truncate">-->
-            <!--              test-->
-            <!--            </dt>-->
-            <!--            <dd class="mt-1 text-2xl  text-gray-900">-->
-            <!--              1000-->
-            <!--            </dd>-->
-            <!--          </div>-->
           </dl>
         </div>
       </header>
@@ -81,10 +73,11 @@
 <script setup>
 import { useState } from 'nuxt/app';
 import { ref, watch } from 'vue';
-import BookItem from '../../components/admin/BookItem';
-import SidePop from '../../components/admin/SidePop';
-import FileSelect from '../../components/admin/FileSelect';
+import BookItem from '@/components/admin/BookItem';
+import SidePop from '@/components/admin/SidePop';
+import FileSelect from '@/components/admin/FileSelect';
 import { uniq } from 'lodash';
+import { DownloadIcon } from  '@heroicons/vue/solid'
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);

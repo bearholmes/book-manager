@@ -74,7 +74,7 @@ const topicClass = computed(() => {
 </script>
 <style scoped>
 .item {
-  min-height: 300px;
+  min-height: 286px;
   background-repeat: no-repeat;
   background-position: center center;
   background-clip: border-box;
