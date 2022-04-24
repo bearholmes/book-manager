@@ -85,13 +85,16 @@
                               autocomplete="family-name"
                               class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
                             />
+                            <div>
                             <button
                               type="button"
-                              class="mt-3 bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                              @click="book.imageUrl = `./images/${book.ISBN13}.jpg`"
+                              class="mt-3 inline-block bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              @click="book.imageUrl = `./images/${book.ISBN13 || ''}.jpg`"
                             >
                               {ISBN13}.jpg 입력
                             </button>
+                              <span class="inline-block ml-3 text-xs text-gray-500">/public/images/에 이미지를 저장하세요.</span>
+                            </div>
                           </div>
                         </div>
 

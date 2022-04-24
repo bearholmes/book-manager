@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   modules: [],
   app: {
     head: {
-      title: '도서관리',
+      title: '방구석 도서관리',
       htmlAttrs: {
         lang: 'ko',
         class: 'h-full'
