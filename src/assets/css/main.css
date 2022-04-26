@@ -8,7 +8,7 @@
 /*    }*/
 /*}*/
 
-div#__nuxt, #__layout, #__layout>div, #app { min-height: 100vh; }
+div#__nuxt, #__layout, #__layout>div, #app { height: 100vh; }
 
 /*데이트피커*/
 .dp__now_wrap {text-align: left}

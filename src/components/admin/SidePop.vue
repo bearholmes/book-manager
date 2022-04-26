@@ -327,7 +327,7 @@
 </template>
 
 <script setup>
-import { watch, ref, computed } from 'vue';
+import {watch, ref, computed, onMounted, onUnmounted} from 'vue';
 import {
   TransitionChild,
   TransitionRoot,
@@ -440,6 +440,18 @@ conditionList.value = [
 const deleteBook = () => {
   emit('delete', props.index);
 };
+
+const keyEvtListener = (e) => {
+  if (e.key === 'Escape') {
+    close();
+  }
+}
+onMounted(()=>{
+   document.addEventListener("keydown", keyEvtListener);
+})
+onUnmounted(()=>{
+  document.removeEventListener(keyEvtListener)
+})
 </script>
 <style scoped>
 .detail {

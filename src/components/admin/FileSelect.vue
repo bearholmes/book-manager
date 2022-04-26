@@ -62,14 +62,14 @@ const preventDefaults = (e) => {
 
 const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
 onMounted(() => {
-  console.log('onMounted');
+  // console.log('onMounted');
   events.forEach((eventName) => {
     document.body.addEventListener(eventName, preventDefaults);
   });
 });
 
 onUnmounted(() => {
-  console.log('onUnmounted');
+  // console.log('onUnmounted');
   events.forEach((eventName) => {
     document.body.removeEventListener(eventName, preventDefaults);
   });

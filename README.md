@@ -45,3 +45,11 @@ Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) f
 
 <a href="https://www.flaticon.com/premium-icon/books_2704442" title="book icons">Book icons created by vectorsmarket15 - Flaticon</a>
 <a href="https://www.flaticon.com/kr/free-icons/image_7310874" title="파일 및 폴더 아이콘">파일 및 폴더 아이콘  제작자: Viktor Turchyn - Flaticon</a>
+
+git push heroku master
+
+
+TODO
+
+알럿, 토스트, 검색필터, 페이지네이션, 에러 페이지, 로딩
+이미지 에러 처리,

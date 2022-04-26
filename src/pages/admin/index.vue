@@ -1,109 +1,125 @@
 <template>
-  <div class="py-20">
-    <main v-if="!isSelectedFile">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <FileSelect @select="readFile" />
-        <p class="text-center p-5 text-gray-500">or</p>
-        <div class="px-4 py-8 sm:px-0 bg-white border border-transparent rounded-md shadow-sm">
-          <div class="px-4">
-            <button
-              type="button"
-              class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              @click="newFile"
-            >
-              DEMO
-            </button>
+  <nuxt-layout name="admin">
+    <div class="py-20">
+      <main v-if="!isSelectedFile">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <FileSelect @select="readFile" />
+          <p class="text-center p-5 text-gray-500">or</p>
+          <div class="px-4 py-8 sm:px-0 bg-white border border-transparent rounded-md shadow-sm">
+            <div class="px-4">
+              <button
+                type="button"
+                class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                @click="newFile"
+              >
+                DEMO
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-    <template v-else>
-      <teleport to="#teleHeader">
-        <div class="flex items-center">
-          <button
-            type="button"
-            aria-label="추가"
-            class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            @click.prevent="add"
-          >
-            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
-            :disabled="bookList.length < 1"
-            @click.prevent="save"
-          >
-            <DownloadIcon class="h-4 w-4 mr-1.5 text-white">Export</DownloadIcon> <span class="mt-0.5">JSON</span>
-          </button>
-        </div>
-      </teleport>
-      <header>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
-            <div class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-              <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
-              <dd class="mt-1 text-2xl text-gray-900">{{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span></dd>
-            </div>
-            <div v-if="imgNullCnt && imgNullCnt > 0" class="px-3 py-4 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-              <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
-              <dd class="mt-1 text-2xl text-gray-900">
-                {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </header>
-      <main class="mt-7">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <BookItem v-for="(item, index) in bookList" :key="index" :item="item" :index="index" @open="openBook" />
-          </ul>
-        </div>
       </main>
-      <!--SIDE-->
-      <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="openDeleteConfirm" />
-    </template>
-
-    <!-- 삭제 -->
-    <Alert v-model:isShow="isShowDeleteConfirm">
-      <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-        <ExclamationIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
-      </div>
-      <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
-        <strong class="block text-lg leading-6 font-medium text-gray-900"> 삭제하시겠습니까? </strong>
-      </div>
-      <template #footer>
-        <button
-          type="button"
-          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-          @click="deleteItem"
-        >
-          삭제
-        </button>
-        <button
-          type="button"
-          class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
-          @click="closeDeleteConfirm"
-        >
-          취소
-        </button>
+      <template v-else>
+        <teleport to="#teleHeader">
+          <div class="flex items-center">
+            <button
+              type="button"
+              aria-label="추가"
+              class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              @click.prevent="add"
+            >
+              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
+              :disabled="bookList.length < 1"
+              @click.prevent="save"
+            >
+              <DownloadIcon class="h-4 w-4 mr-1.5 text-white">Export</DownloadIcon> <span class="mt-0.5">JSON</span>
+            </button>
+          </div>
+        </teleport>
+        <header>
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <dl class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              <div class="px-2 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
+                <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
+                <dd class="mt-1 text-2xl text-gray-900">{{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span></dd>
+              </div>
+              <div v-if="imgNullCnt && imgNullCnt > 0" class="px-2 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
+                <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
+                <dd class="mt-1 text-2xl text-gray-900">
+                  {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </header>
+        <main>
+          <div class="mt-4 sm:mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-end items-center">
+              <div class="w-full md:w-2/6">
+                <label for="search" class="sr-only">검색</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </div>
+                  <input type="text" :value="searchTxt" @input="onInputSearchTxt" id="search" autocomplete="off" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="검색" />
+                </div>
+                <p class="mt-1 ml-10 text-xs text-gray-500" v-if="filterList.length !== bookList.length"><span class="sr-only">검색됨</span> {{filterList.length}} 건</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 sm:mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" />
+            </ul>
+          </div>
+        </main>
+        <!--SIDE-->
+        <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="openDeleteConfirm" />
       </template>
-    </Alert>
-  </div>
+
+      <!-- 삭제 -->
+      <Alert v-model:isShow="isShowDeleteConfirm">
+        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+          <ExclamationIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+        </div>
+        <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
+          <strong class="block text-lg leading-6 font-medium text-gray-900"> 삭제하시겠습니까? </strong>
+        </div>
+        <template #footer>
+          <button
+            type="button"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            @click="deleteItem"
+          >
+            삭제
+          </button>
+          <button
+            type="button"
+            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+            @click="closeDeleteConfirm"
+          >
+            취소
+          </button>
+        </template>
+      </Alert>
+    </div>
+  </nuxt-layout>
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import { ref, watch } from 'vue';
+import {computed, ref, watch} from 'vue';
 import BookItem from '~/components/admin/BookItem';
 import SidePop from '~/components/admin/SidePop';
 import FileSelect from '~/components/admin/FileSelect';
 import Alert from '~/components/popup/Alert';
 import demoFile from '~/assets/demoData.json';
 import { uniq } from 'lodash';
-import { DownloadIcon } from '@heroicons/vue/solid';
+import { DownloadIcon, SearchIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon } from '@heroicons/vue/outline';
 
 const selectedFile = ref(null);
@@ -118,14 +134,12 @@ const bookList = useState('form', () => {
 watch(
   () => bookList.value,
   () => {
-    console.log('bookList');
     loadAfter();
   },
   { deep: true },
 );
 
 const readFile = (file) => {
-  console.log(file.type);
   if (file.type !== 'application/json') {
     alert('json 파일이 아닙니다.');
     return;
@@ -165,18 +179,18 @@ const add = () => {
 const isShowDeleteConfirm = ref(false);
 
 const openDeleteConfirm = (index) => {
-  console.log('openDeleteConfirm');
+  // console.log('openDeleteConfirm');
   isShowDeleteConfirm.value = true;
   selectedIdx.value = index;
 };
 
 const closeDeleteConfirm = () => {
-  console.log('closeDeleteConfirm');
+  // console.log('closeDeleteConfirm');
   isShowDeleteConfirm.value = false;
 };
 
 const deleteItem = () => {
-  console.log('deleteItem');
+  // console.log('deleteItem');
   isShowDeleteConfirm.value = false;
   const index = selectedIdx.value;
   bookList.value.splice(index, 1);
@@ -225,6 +239,27 @@ const currency = (value, nullTxt = '-') => {
   }
   return value.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, '$1,');
 };
+
+const searchTxt = ref('')
+const onInputSearchTxt = (e) => {
+  searchTxt.value = e.target.value
+}
+
+const filterList = computed(()=>{
+  if (!searchTxt.value) return bookList.value;
+
+  return bookList.value.filter(item=> {
+    const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
+    return item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase())
+    || strIsbn.includes(searchTxt.value)
+    || item.condition.toLowerCase().includes(searchTxt.value.toLowerCase())
+    || item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase())
+    || item.author.toLowerCase().includes(searchTxt.value.toLowerCase())
+    || item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase())
+    || item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
+  })
+
+})
 </script>
 <style scoped>
 .on {
