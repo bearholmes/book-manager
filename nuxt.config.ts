@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  ssr:true,
+  ssr:false,
   debug: process.env.NODE_ENV !== 'production',
   eslint: {
     fix: true,
@@ -28,7 +28,8 @@ export default defineNuxtConfig({
     // ],
       '@nuxtjs/tailwindcss',
   ],
-  modules: [],
+  modules: [
+  ],
   app: {
     head: {
       title: '방구석 도서관리',

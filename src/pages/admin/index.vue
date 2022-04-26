@@ -44,11 +44,11 @@
         <header>
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <dl class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              <div class="px-2 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
+              <div class="px-4 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
                 <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
                 <dd class="mt-1 text-2xl text-gray-900">{{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span></dd>
               </div>
-              <div v-if="imgNullCnt && imgNullCnt > 0" class="px-2 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
+              <div v-if="imgNullCnt && imgNullCnt > 0" class="px-4 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
                 <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
                 <dd class="mt-1 text-2xl text-gray-900">
                   {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
@@ -66,9 +66,19 @@
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </div>
-                  <input type="text" :value="searchTxt" @input="onInputSearchTxt" id="search" autocomplete="off" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="검색" />
+                  <input
+                    id="search"
+                    type="text"
+                    :value="searchTxt"
+                    autocomplete="off"
+                    class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                    placeholder="검색"
+                    @input="onInputSearchTxt"
+                  />
                 </div>
-                <p class="mt-1 ml-10 text-xs text-gray-500" v-if="filterList.length !== bookList.length"><span class="sr-only">검색됨</span> {{filterList.length}} 건</p>
+                <p v-if="filterList.length !== bookList.length" class="mt-1 ml-10 text-xs text-gray-500">
+                  <span class="sr-only">검색됨</span> {{ filterList.length }} 건
+                </p>
               </div>
             </div>
           </div>
@@ -112,7 +122,7 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import {computed, ref, watch} from 'vue';
+import { computed, ref, watch } from 'vue';
 import BookItem from '~/components/admin/BookItem';
 import SidePop from '~/components/admin/SidePop';
 import FileSelect from '~/components/admin/FileSelect';
@@ -240,26 +250,27 @@ const currency = (value, nullTxt = '-') => {
   return value.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, '$1,');
 };
 
-const searchTxt = ref('')
+const searchTxt = ref('');
 const onInputSearchTxt = (e) => {
-  searchTxt.value = e.target.value
-}
+  searchTxt.value = e.target.value;
+};
 
-const filterList = computed(()=>{
+const filterList = computed(() => {
   if (!searchTxt.value) return bookList.value;
 
-  return bookList.value.filter(item=> {
+  return bookList.value.filter((item) => {
     const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
-    return item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase())
-    || strIsbn.includes(searchTxt.value)
-    || item.condition.toLowerCase().includes(searchTxt.value.toLowerCase())
-    || item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase())
-    || item.author.toLowerCase().includes(searchTxt.value.toLowerCase())
-    || item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase())
-    || item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
-  })
-
-})
+    return (
+      item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+      strIsbn.includes(searchTxt.value) ||
+      item.condition.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+      item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+      item.author.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+      item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+      item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
+    );
+  });
+});
 </script>
 <style scoped>
 .on {
