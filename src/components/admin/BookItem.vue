@@ -2,11 +2,11 @@
   <li class="book-item__block tracking-tight">
     <a href="javascript:void(0);" @click="open">
       <div class="book-item-image__block" :style="bgImage" :class="{ blank: !props.item.imageUrl }"></div>
-      <span class="book-item-tag__block" :class="topicClass">
-        {{ item.topic }}
-      </span>
-      <div class="-mt-px flex-row text-left hover:text-blue-500 hover:underline p-4 pb-14">
-        <strong class="font-normal text-sm sm:text-base">{{ item.bookName }}</strong>
+      <div class="-mt-px relative flex-row text-left p-4 pt-6 pb-12">
+        <span class="book-item-tag__block" :class="topicClass">
+          {{ item.topic }}
+        </span>
+        <strong class="font-normal text-sm sm:text-base hover:text-blue-500 hover:underline ">{{ item.bookName }}</strong>
       </div>
       <div class="w-full absolute bottom-0 left-0 h-11 text-xs sm:text-sm text-gray-500">
         <div class="inline-block w-1/2 p-3 align-top truncate">{{ item.publisher }}</div>
@@ -89,7 +89,7 @@ const bgImage = computed(() => {
   @apply relative col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200 overflow-hidden;
 }
 .book-item-tag__block {
-  @apply absolute top-3.5 left-2 px-2 py-1 text-xs font-medium rounded-full;
+  @apply absolute -top-3 left-2 px-2 py-1 text-xs font-medium rounded-full;
 }
 
 .book-item-image__block {
