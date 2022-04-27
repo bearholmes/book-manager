@@ -89,7 +89,7 @@
             </div>
           </Container>
           <Container class="mt-4 sm:mt-6">
-            <ul role="list" class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <ul role="list" class="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
               <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" />
             </ul>
           </Container>

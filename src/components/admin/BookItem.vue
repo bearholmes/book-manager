@@ -6,9 +6,9 @@
         {{ item.topic }}
       </span>
       <div class="-mt-px flex-row text-left hover:text-blue-500 hover:underline p-4 pb-14">
-        <strong class="font-normal">{{ item.bookName }}</strong>
+        <strong class="font-normal text-sm sm:text-base">{{ item.bookName }}</strong>
       </div>
-      <div class="w-full absolute bottom-0 left-0 h-11 text-sm text-gray-500">
+      <div class="w-full absolute bottom-0 left-0 h-11 text-xs sm:text-sm text-gray-500">
         <div class="inline-block w-1/2 p-3 align-top truncate">{{ item.publisher }}</div>
         <div class="inline-block w-1/2 p-3 align-top truncate">{{ item.author }}</div>
       </div>
