@@ -123,6 +123,7 @@
           </button>
         </template>
       </Alert>
+      <Spinner v-if="isLoading"/>
     </div>
   </nuxt-layout>
 </template>
@@ -140,15 +141,21 @@ import { ExclamationIcon } from '@heroicons/vue/outline';
 import Container from '../../components/common/Container';
 import StatusList from '../../components/admin/StatusList';
 import StatusListItem from '../../components/admin/StatusListItem';
+import Spinner from "../../components/common/Spinner";
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);
+const isLoading = ref(false);
 const topicList = ref([]);
 const imgNullCnt = ref(0);
 
 const bookList = useState('form', () => {
   return [];
 });
+
+import { useStore as useToastStore } from '~/store/toast'
+const toastStore = useToastStore()
+
 
 watch(
   () => bookList.value,
@@ -163,7 +170,7 @@ const readFile = (file) => {
     alert('json 파일이 아닙니다.');
     return;
   }
-
+  isLoading.value = true
   selectedFile.value = file;
   let reader = new FileReader();
   reader.onload = (e) => {
@@ -177,14 +184,17 @@ const readFile = (file) => {
 };
 
 const loadAfter = () => {
+  isLoading.value = true
   const topicAllList = bookList.value.map((item) => item.topic);
   topicList.value = uniq(topicAllList).sort();
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
+  isLoading.value = false
 };
 
 const newFile = async () => {
+  isLoading.value = true
   bookList.value = demoFile;
   isSelectedFile.value = true;
 
@@ -215,6 +225,12 @@ const deleteItem = () => {
   bookList.value.splice(index, 1);
   loadAfter();
   isShowSide.value = false;
+  setTimeout(() => {
+    toastStore.OPEN_TOAST({
+      msg: '삭제되었습니다.',
+      timer: 3000
+    })
+  },500)
 };
 
 const save = () => {

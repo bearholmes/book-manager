@@ -51,7 +51,7 @@ git push heroku master
 
 TODO
 
-알럿, 토스트, 에러 페이지, 로딩
+알럿
 
 next.
-페이지네이션
+페이지네이션, 도서정보자동입력(daum  api)
