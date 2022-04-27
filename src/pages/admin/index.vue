@@ -66,6 +66,11 @@
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </div>
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                       @click="searchTxt=''"
+                  v-if="searchTxt.length > 0">
+                    <XCircleIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </div>
                   <input
                     id="search"
                     type="text"
@@ -83,7 +88,7 @@
             </div>
           </div>
           <div class="mt-4 sm:mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <ul role="list" class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
               <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" />
             </ul>
           </div>
@@ -129,7 +134,7 @@ import FileSelect from '~/components/admin/FileSelect';
 import Alert from '~/components/popup/Alert';
 import demoFile from '~/assets/demoData.json';
 import { uniq } from 'lodash';
-import { DownloadIcon, SearchIcon } from '@heroicons/vue/solid';
+import { DownloadIcon, SearchIcon, XCircleIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon } from '@heroicons/vue/outline';
 
 const selectedFile = ref(null);

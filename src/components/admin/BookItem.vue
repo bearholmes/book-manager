@@ -11,7 +11,7 @@
       </span>
       <div class="hover:text-blue-500 hover:underline">
         <div class="-mt-px flex divide-x divide-gray-200">
-          <div class="w-0 flex-1 flex p-4 text-sm">
+          <div class="w-0 flex-1 flex p-4">
             <strong class="font-normal text-left">{{ item.bookName }}</strong>
           </div>
         </div>

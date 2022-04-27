@@ -40,7 +40,7 @@
                   leave-from="opacity-100"
                   leave-to="opacity-0"
                 >
-                  <div class="absolute top-0 left-0 -ml-8 flex sm:-ml-12">
+                  <div class="absolute top-0 left-0 -ml-12 flex">
                     <button
                       type="button"
                       class="p-3 rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200"
@@ -51,17 +51,17 @@
                     </button>
                   </div>
                 </TransitionChild>
-                <div class="h-full overflow-y-scroll bg-white bg-opacity-90 p-6">
+                <div class="h-full overflow-y-scroll bg-white p-6">
                   <form class="space-y-8 divide-y divide-gray-200">
                     <div class="divide-y divide-gray-200">
                       <div v-if="book.imageUrl" class="flex justify-center">
                         <img :src="book.imageUrl" alt="" class="object-cover block overflow-hidden rounded-lg" style="max-width: 240px" />
                       </div>
-                      <div class="!border-t-0 mt-8">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">도서정보</h3>
-                      </div>
-                      <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                      <div class="!border-t-0 space-y-3 sm:space-y-5">
+                        <div class="mt-8">
+                          <h3 class="text-lg leading-6 font-medium text-gray-900">도서정보</h3>
+                        </div>
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="bookName" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 도서명 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="max-w-lg block w-full sm:max-w-xs">
@@ -75,7 +75,7 @@
                           </div>
                         </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="imageUrl" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 표지 이미지 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <input
@@ -98,7 +98,7 @@
                           </div>
                         </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="isbn" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> ISBN 13 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <input
@@ -109,7 +109,7 @@
                             />
                           </div>
                         </div>
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="author" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 저자 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <input
@@ -120,7 +120,7 @@
                             />
                           </div>
                         </div>
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="publisher" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 출판사 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <input
@@ -134,7 +134,7 @@
                         <Combobox
                           v-model="book.topic"
                           as="div"
-                          class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5"
+                          class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5"
                         >
                           <ComboboxLabel for="topic" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 카테고리 </ComboboxLabel>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
@@ -184,18 +184,16 @@
                           </div>
                         </Combobox>
 
-                        <div class="sm:border-t sm:border-gray-200 sm:pt-5">
-                          <h3 class="text-lg leading-6 font-medium text-gray-900 mt-5">구매정보</h3>
+                        <div class="mt-8 sm:border-t sm:border-gray-200 pt-5">
+                          <h3 class="text-lg leading-6 font-medium text-gray-900">구매정보</h3>
                           <!--                            <p class="mt-1 max-w-2xl text-sm text-gray-500">상세 내용을 확인하거나 수정할 수 있습니다.</p>-->
                         </div>
-
-                        <div class="space-y-6 sm:space-y-5 divide-y divide-gray-200 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="mt-2 sm:mt-5 space-y-3 sm:space-y-5">
+                        <div class="space-y-6 sm:space-y-5 divide-y divide-gray-200 sm:border-t sm:border-gray-200 pt-5">
                           <div role="group" aria-labelledby="label-notifications">
                             <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-                              <div>
-                                <div id="label-notifications" class="text-base font-medium text-gray-900 sm:text-sm sm:text-gray-700">상태</div>
-                              </div>
-                              <div class="sm:col-span-2">
+                              <label id="label-notifications" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2 self-center">상태</label>
+                              <div class="sm:col-span-2 self-center mt-3 sm:mt-0">
                                 <div class="max-w-lg">
                                   <div class="flex items-start sm:pt-2">
                                     <div v-for="(condition, cIdx) in conditionList" :key="cIdx" class="flex items-center">
@@ -219,7 +217,7 @@
                           </div>
                         </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매일 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="max-w-lg block w-full sm:max-w-xs">
@@ -228,7 +226,7 @@
                           </div>
                         </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="purchasePlace" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <input
@@ -239,7 +237,7 @@
                             />
                           </div>
                         </div>
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <label for="purchasePrice" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매가 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="max-w-lg block w-full sm:max-w-xs">
@@ -270,7 +268,7 @@
                           </div>
                         </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                           <span class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 중복여부 </span>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="relative flex items-start sm:pt-2">
@@ -292,7 +290,7 @@
                         </div>
                       </div>
                     </div>
-
+                    </div>
                     <div class="pt-5">
                       <div class="flex">
                         <div class="flex flex-1 justify-start">
