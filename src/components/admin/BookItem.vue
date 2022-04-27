@@ -1,20 +1,16 @@
 <template>
-  <li class="relative col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200 overflow-hidden">
+  <li class="book-item__block tracking-tight">
     <a href="javascript:void(0);" @click="open">
-      <div
-        class="item"
-        :style="props.item.imageUrl ? `background-image:url(${props.item.imageUrl})` : ''"
-        :class="{ blank: !props.item.imageUrl }"
-      ></div>
-      <span class="absolute tag_type top-3.5 left-2 px-2 py-1 text-xs font-medium rounded-full" :class="topicClass">
+      <div class="book-item-image__block" :style="bgImage" :class="{ blank: !props.item.imageUrl }"></div>
+      <span class="book-item-tag__block" :class="topicClass">
         {{ item.topic }}
       </span>
-      <div class="hover:text-blue-500 hover:underline">
-        <div class="-mt-px flex divide-x divide-gray-200">
-          <div class="w-0 flex-1 flex p-4">
-            <strong class="font-normal text-left">{{ item.bookName }}</strong>
-          </div>
-        </div>
+      <div class="-mt-px flex-row text-left hover:text-blue-500 hover:underline p-4 pb-14">
+        <strong class="font-normal">{{ item.bookName }}</strong>
+      </div>
+      <div class="w-full absolute bottom-0 left-0 h-11 text-sm text-gray-500">
+        <div class="inline-block w-1/2 p-3 align-top truncate">{{ item.publisher }}</div>
+        <div class="inline-block w-1/2 p-3 align-top truncate">{{ item.author }}</div>
       </div>
     </a>
   </li>
@@ -41,8 +37,9 @@ const props = defineProps({
         author: null,
         topic: null,
         publisher: null,
-        imageUrl: '',
-        duplicated: '',
+        imageUrl: null,
+        duplicated: null,
+        comment: null,
       };
     },
   },
@@ -50,10 +47,17 @@ const props = defineProps({
 
 const emit = defineEmits(['open']);
 
+/**
+ * 수정 열기
+ */
 const open = () => {
   emit('open', props.item, props.index);
 };
 
+/**
+ * 주제별 컬러셋 설정
+ * @type {ComputedRef<*|string>}
+ */
 const topicClass = computed(() => {
   const colorSet = {
     가죽공예: 'bg-orange-200',
@@ -71,22 +75,30 @@ const topicClass = computed(() => {
   };
   return props.item.topic ? colorSet[props.item.topic] : 'bg-slate-200';
 });
+
+/**
+ * 배경이미지 주소 처리
+ * @type {ComputedRef<string|string>}
+ */
+const bgImage = computed(() => {
+  return props.item.imageUrl ? `background-image:url(${props.item.imageUrl})` : '';
+});
 </script>
 <style scoped>
-.item {
-  min-height: 286px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-clip: border-box;
-  object-fit: cover;
-  background-size: 286px;
-  opacity: 0.9;
+.book-item__block {
+  @apply relative col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200 overflow-hidden;
+}
+.book-item-tag__block {
+  @apply absolute top-3.5 left-2 px-2 py-1 text-xs font-medium rounded-full;
 }
 
-.item.blank {
+.book-item-image__block {
+  @apply h-56 sm:h-64 md:h-72 lg:h-80 bg-clip-border bg-center bg-no-repeat bg-cover opacity-90;
+}
+
+.book-item-image__block.blank {
+  @apply border-b border-dashed border-gray-400 bg-center opacity-10;
+  background-size: 50px;
   background-image: url('@/assets/images/blank-image.png');
-  background-size: auto;
-  opacity: 0.3;
-  background-position: center center;
 }
 </style>

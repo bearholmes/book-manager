@@ -88,7 +88,7 @@
                             <div>
                               <button
                                 type="button"
-                                class="mt-3 inline-block bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                class="mt-3 inline-block bg-white py-1 px-2 border border-gray-300 rounded-md shadow-sm text-xs text-gray-700 hover:bg-gray-50"
                                 @click="book.imageUrl = `./images/${book.ISBN13 || ''}.jpg`"
                               >
                                 {ISBN13}.jpg 입력
@@ -189,114 +189,127 @@
                           <!--                            <p class="mt-1 max-w-2xl text-sm text-gray-500">상세 내용을 확인하거나 수정할 수 있습니다.</p>-->
                         </div>
                         <div class="mt-2 sm:mt-5 space-y-3 sm:space-y-5">
-                        <div class="space-y-6 sm:space-y-5 divide-y divide-gray-200 sm:border-t sm:border-gray-200 pt-5">
-                          <div role="group" aria-labelledby="label-notifications">
-                            <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
-                              <label id="label-notifications" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2 self-center">상태</label>
-                              <div class="sm:col-span-2 self-center mt-3 sm:mt-0">
-                                <div class="max-w-lg">
-                                  <div class="flex items-start sm:pt-2">
-                                    <div v-for="(condition, cIdx) in conditionList" :key="cIdx" class="flex items-center">
-                                      <input
-                                        :id="`condition_${cIdx}`"
-                                        v-model="book.condition"
-                                        name="condition"
-                                        type="radio"
-                                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                                        :class="{ 'ml-6': cIdx > 0 }"
-                                        :value="condition.value"
-                                      />
-                                      <label :for="`condition_${cIdx}`" class="ml-3 block text-sm font-medium text-gray-700">
-                                        {{ condition.label }}
-                                      </label>
+                          <div class="space-y-6 sm:space-y-5 divide-y divide-gray-200 sm:border-t sm:border-gray-200 pt-5">
+                            <div role="group" aria-labelledby="label-status">
+                              <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-baseline">
+                                <label id="label-status" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2 self-center">상태</label>
+                                <div class="sm:col-span-2 self-center mt-3 sm:mt-0">
+                                  <div class="max-w-lg">
+                                    <div class="flex items-start sm:pt-2">
+                                      <div v-for="(condition, cIdx) in conditionList" :key="cIdx" class="flex items-center">
+                                        <input
+                                          :id="`condition_${cIdx}`"
+                                          v-model="book.condition"
+                                          name="condition"
+                                          type="radio"
+                                          class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                                          :class="{ 'ml-6': cIdx > 0 }"
+                                          :value="condition.value"
+                                        />
+                                        <label :for="`condition_${cIdx}`" class="ml-3 block text-sm font-medium text-gray-700">
+                                          {{ condition.label }}
+                                        </label>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
-                          <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매일 </label>
-                          <div class="mt-1 sm:mt-0 sm:col-span-2">
-                            <div class="max-w-lg block w-full sm:max-w-xs">
-                              <DatePicker v-model="book.purchaseDate" />
+                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                            <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매일 </label>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                              <div class="max-w-lg block w-full sm:max-w-xs">
+                                <DatePicker v-model="book.purchaseDate" />
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
-                          <label for="purchasePlace" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </label>
-                          <div class="mt-1 sm:mt-0 sm:col-span-2">
-                            <input
-                              id="purchasePlace"
-                              v-model="book.purchasePlace"
-                              type="text"
-                              class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-                            />
+                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                            <label for="purchasePlace" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </label>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                              <input
+                                id="purchasePlace"
+                                v-model="book.purchasePlace"
+                                type="text"
+                                class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
-                          <label for="purchasePrice" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매가 </label>
-                          <div class="mt-1 sm:mt-0 sm:col-span-2">
-                            <div class="max-w-lg block w-full sm:max-w-xs">
-                              <div class="relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                  <span class="text-gray-500 sm:text-sm"> {{ currency }} </span>
-                                </div>
-                                <input
-                                  id="purchasePrice"
-                                  v-model.number="book.purchasePrice"
-                                  type="text"
-                                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                                />
-                                <div class="absolute inset-y-0 right-0 flex items-center">
-                                  <label for="currency" class="sr-only">통화단위</label>
-                                  <select
-                                    v-model="book.currency"
-                                    class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                                  >
-                                    <option value="KRW">KRW</option>
-                                    <option value="USD">USD</option>
-                                    <option value="JPY">JPY</option>
-                                    <option value="EUR">EUR</option>
-                                  </select>
+                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                            <label for="purchasePrice" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매가 </label>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                              <div class="max-w-lg block w-full sm:max-w-xs">
+                                <div class="relative rounded-md shadow-sm">
+                                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm"> {{ currency }} </span>
+                                  </div>
+                                  <input
+                                    id="purchasePrice"
+                                    v-model.number="book.purchasePrice"
+                                    type="text"
+                                    class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                  />
+                                  <div class="absolute inset-y-0 right-0 flex items-center">
+                                    <label for="currency" class="sr-only">통화단위</label>
+                                    <select
+                                      v-model="book.currency"
+                                      class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                    >
+                                      <option value="KRW">KRW</option>
+                                      <option value="USD">USD</option>
+                                      <option value="JPY">JPY</option>
+                                      <option value="EUR">EUR</option>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
-                          <span class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 중복여부 </span>
-                          <div class="mt-1 sm:mt-0 sm:col-span-2">
-                            <div class="relative flex items-start sm:pt-2">
-                              <div class="flex items-center h-5">
-                                <input
-                                  id="duplicated"
-                                  v-model="book.duplicated"
-                                  :true-value="true"
-                                  :false-value="false"
-                                  type="checkbox"
-                                  class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div class="ml-3 text-sm">
-                                <label for="duplicated" class="font-medium text-gray-700">2권이상 보유</label>
+                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                            <span class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2 self-center"> 중복여부 </span>
+                            <div class="sm:col-span-2 self-center mt-3 sm:mt-0">
+                              <div class="relative flex items-start sm:pt-2">
+                                <div class="flex items-center h-5">
+                                  <input
+                                    id="duplicated"
+                                    v-model="book.duplicated"
+                                    :true-value="true"
+                                    :false-value="false"
+                                    type="checkbox"
+                                    class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                  />
+                                </div>
+                                <div class="ml-3 text-sm">
+                                  <label for="duplicated" class="font-medium text-gray-700">2권이상 보유</label>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div class="mt-2 sm:mt-5">
+                      <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start pt-5">
+                        <label for="comment" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 메모 </label>
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                          <textarea
+                            id="comment"
+                            v-model="book.comment"
+                            rows="4"
+                            class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div class="pt-5">
                       <div class="flex">
                         <div class="flex flex-1 justify-start">
                           <button
                             type="button"
-                            class="bg-red-500 py-2 px-4 border border-red-300 rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            class="bg-red-500 py-2 px-4 border border-red-300 rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-400"
                             @click="deleteBook"
                           >
                             삭제
@@ -305,7 +318,7 @@
                         <div class="flex justify-end">
                           <button
                             type="button"
-                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
                             @click="close"
                           >
                             닫기
@@ -362,8 +375,9 @@ const props = defineProps({
         author: null,
         topic: null,
         publisher: null,
-        imageUrl: '',
-        duplicated: '',
+        imageUrl: null,
+        duplicated: null,
+        comment: null,
       };
     },
   },

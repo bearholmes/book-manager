@@ -2,21 +2,21 @@
   <nuxt-layout name="admin">
     <div class="py-20">
       <main v-if="!isSelectedFile">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <Container>
           <FileSelect @select="readFile" />
-          <p class="text-center p-5 text-gray-500">or</p>
+          <p class="text-center p-2.5 text-gray-500">or</p>
           <div class="px-4 py-8 sm:px-0 bg-white border border-transparent rounded-md shadow-sm">
             <div class="px-4">
               <button
                 type="button"
-                class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
                 @click="newFile"
               >
                 DEMO
               </button>
             </div>
           </div>
-        </div>
+        </Container>
       </main>
       <template v-else>
         <teleport to="#teleHeader">
@@ -24,7 +24,7 @@
             <button
               type="button"
               aria-label="추가"
-              class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200"
               @click.prevent="add"
             >
               <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -33,7 +33,7 @@
             </button>
             <button
               type="button"
-              class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75"
+              class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               :disabled="bookList.length < 1"
               @click.prevent="save"
             >
@@ -42,33 +42,31 @@
           </div>
         </teleport>
         <header>
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <dl class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              <div class="px-4 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
-                <dt class="text-sm font-medium text-gray-500 truncate">보유 권수</dt>
-                <dd class="mt-1 text-2xl text-gray-900">{{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span></dd>
-              </div>
-              <div v-if="imgNullCnt && imgNullCnt > 0" class="px-4 py-3 bg-white shadow rounded-lg overflow-hidden sm:p-4">
-                <dt class="text-sm font-medium text-gray-500 truncate">표지 이미지 누락 수</dt>
-                <dd class="mt-1 text-2xl text-gray-900">
+          <Container>
+            <StatusList>
+              <StatusListItem>
+                <template #dt> 보유 권수 </template>
+                <template #dd> {{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span> </template>
+              </StatusListItem>
+              <StatusListItem v-if="imgNullCnt && imgNullCnt > 0">
+                <template #dt> 표지 이미지 누락 수 </template>
+                <template #dd>
                   {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
-                </dd>
-              </div>
-            </dl>
-          </div>
+                </template>
+              </StatusListItem>
+            </StatusList>
+          </Container>
         </header>
         <main>
-          <div class="mt-4 sm:mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Container class="mt-4 sm:mt-6">
             <div class="flex justify-end items-center">
-              <div class="w-full md:w-2/6">
+              <div class="w-full md:w-2/6 relative">
                 <label for="search" class="sr-only">검색</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </div>
-                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                       @click="searchTxt=''"
-                  v-if="searchTxt.length > 0">
+                  <div v-if="searchTxt.length > 0" class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" @click="searchTxt = ''">
                     <XCircleIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </div>
                   <input
@@ -80,18 +78,21 @@
                     placeholder="검색"
                     @input="onInputSearchTxt"
                   />
+                  <p
+                    v-if="filterList.length !== bookList.length"
+                    class="absolute -top-7 bg-blue-800 rounded-md shadow-sm left-9 text-xs py-1 px-2 text-white"
+                  >
+                    <span class="sr-only">검색됨</span> {{ filterList.length }} 건
+                  </p>
                 </div>
-                <p v-if="filterList.length !== bookList.length" class="mt-1 ml-10 text-xs text-gray-500">
-                  <span class="sr-only">검색됨</span> {{ filterList.length }} 건
-                </p>
               </div>
             </div>
-          </div>
-          <div class="mt-4 sm:mt-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          </Container>
+          <Container class="mt-4 sm:mt-6">
             <ul role="list" class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
               <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" />
             </ul>
-          </div>
+          </Container>
         </main>
         <!--SIDE-->
         <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="openDeleteConfirm" />
@@ -108,14 +109,14 @@
         <template #footer>
           <button
             type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
             @click="deleteItem"
           >
             삭제
           </button>
           <button
             type="button"
-            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
             @click="closeDeleteConfirm"
           >
             취소
@@ -136,6 +137,9 @@ import demoFile from '~/assets/demoData.json';
 import { uniq } from 'lodash';
 import { DownloadIcon, SearchIcon, XCircleIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon } from '@heroicons/vue/outline';
+import Container from '../../components/common/Container';
+import StatusList from '../../components/admin/StatusList';
+import StatusListItem from '../../components/admin/StatusListItem';
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);

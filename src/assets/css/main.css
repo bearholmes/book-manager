@@ -2,13 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/*@layer base {*/
-/*    html {*/
-/*        font-family: 'NotoSans', sans-serif;*/
-/*    }*/
-/*}*/
-
 div#__nuxt, #__layout, #__layout>div, #app { height: 100vh; }
+input, button {
+   @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75
+}
 
 /*데이트피커*/
 .dp__now_wrap {text-align: left}
