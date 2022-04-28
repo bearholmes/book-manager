@@ -51,7 +51,7 @@
               <StatusListItem v-if="imgNullCnt && imgNullCnt > 0">
                 <template #dt> 표지 이미지 누락 수 </template>
                 <template #dd>
-                  {{ currency(imgNullCnt) }} <span class="text-gray-500 text-sm">({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
+                  <button type="button" @click="searchTxt = '!image'">{{ currency(imgNullCnt) }}</button> <span class="text-gray-500 text-sm">권 ({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
                 </template>
               </StatusListItem>
             </StatusList>
@@ -282,6 +282,7 @@ const onInputSearchTxt = (e) => {
 
 const filterList = computed(() => {
   if (!searchTxt.value) return bookList.value;
+  if (searchTxt.value === '!image') return bookList.value.filter((item) => !item.imageUrl);
 
   return bookList.value.filter((item) => {
     const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
