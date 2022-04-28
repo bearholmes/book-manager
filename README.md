@@ -51,7 +51,10 @@ git push heroku master
 
 TODO
 
-알럿
+json 추출시 컨펌
+코드정리, 주석
+추가시 유효성/필수표시, 표지이미지 에러처리
+구매처 서제스트
 
 next.
 페이지네이션, 도서정보자동입력(daum  api)

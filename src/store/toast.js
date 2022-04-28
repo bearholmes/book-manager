@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia';
 
 const getRandomId = () => {
   return (Number(String(Math.random()).slice(2)) + Date.now() + Math.round(performance.now())).toString(36);
@@ -21,7 +21,7 @@ export const useStore = defineStore('TOAST', {
      * 토스트 가져오기
      * @param toast
      */
-    GET_TOAST: ({toast}) => toast.list,
+    GET_TOAST: ({ toast }) => toast.list,
   },
   actions: {
     /**
@@ -29,7 +29,7 @@ export const useStore = defineStore('TOAST', {
      */
     STOP_TOAST() {
       this.toast.keys.forEach((item) => {
-        clearTimeout(state.toast.listener[item]);
+        clearTimeout(this.toast.listener[item]);
       });
       this.toast.list = [];
       this.toast.keys = [];
@@ -52,8 +52,8 @@ export const useStore = defineStore('TOAST', {
      * 토스트 메시지 제거
      */
     REMOVE_TOAST_ITEM(key) {
-      const listIdx = this.toast.list.findIndex((item)=> item.key === key)
-      const keyIdx = this.toast.keys.findIndex((item)=> item === key)
+      const listIdx = this.toast.list.findIndex((item) => item.key === key);
+      const keyIdx = this.toast.keys.findIndex((item) => item === key);
       this.toast.list.splice(listIdx, 1);
       this.toast.keys.splice(keyIdx, 1);
     },

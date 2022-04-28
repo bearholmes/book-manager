@@ -309,7 +309,7 @@
                         <div class="flex flex-1 justify-start">
                           <button
                             type="button"
-                            class="bg-red-500 py-2 px-4 border border-red-300 rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-400"
+                            class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200"
                             @click="deleteBook"
                           >
                             삭제

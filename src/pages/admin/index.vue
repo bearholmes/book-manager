@@ -24,11 +24,11 @@
             <button
               type="button"
               aria-label="추가"
-              class="inline-flex items-center p-0.5 border border-gray-500 rounded-md shadow-sm text-gray-600 bg-white hover:bg-gray-200"
-              @click.prevent="add"
+              class="inline-flex items-center p-0.5 border rounded-md shadow-sm text-gray-700 border-gray-400 border-dashed hover:border-gray-600"
+              @click.prevent="createBook"
             >
               <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </button>
             <button
@@ -51,14 +51,15 @@
               <StatusListItem v-if="imgNullCnt && imgNullCnt > 0">
                 <template #dt> 표지 이미지 누락 수 </template>
                 <template #dd>
-                  <button type="button" @click="searchTxt = '!image'">{{ currency(imgNullCnt) }}</button> <span class="text-gray-500 text-sm">권 ({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
+                  <button type="button" @click="searchTxt = '!image'">{{ currency(imgNullCnt) }}</button>
+                  <span class="text-gray-500 text-sm">권 ({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
                 </template>
               </StatusListItem>
             </StatusList>
           </Container>
         </header>
-        <main>
-          <Container class="mt-4 sm:mt-6">
+        <main ref="refContent">
+          <Container class="sticky top-16 z-10 p-2 md:p-5 bg-gradient-to-b from-gray-100 to-transparent">
             <div class="flex justify-end items-center">
               <div class="w-full md:w-2/6 relative">
                 <label for="search" class="sr-only">검색</label>
@@ -80,7 +81,7 @@
                   />
                   <p
                     v-if="filterList.length !== bookList.length"
-                    class="absolute -top-7 bg-blue-800 rounded-md shadow-sm left-9 text-xs py-1 px-2 text-white"
+                    class="absolute -bottom-7 bg-blue-200 rounded-md shadow-sm left-9 text-xs py-1 px-2 text-blue-700 bg-opacity-90"
                   >
                     <span class="sr-only">검색됨</span> {{ filterList.length }} 건
                   </p>
@@ -88,42 +89,50 @@
               </div>
             </div>
           </Container>
-          <Container class="mt-4 sm:mt-6">
-            <ul role="list" class="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-              <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" />
+          <Container class="mt-4">
+            <ul ref="refList" role="list" class="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" @search="searchBook" />
+              <NewItem @create="createBook" />
             </ul>
           </Container>
         </main>
         <!--SIDE-->
-        <SidePop v-model:isShow="isShowSide" v-model:item="selectedBook" :index="selectedIdx" :topic-list="topicList" @delete="openDeleteConfirm" />
-      </template>
+        <SidePopEdit
+          v-model:isShow="isShowSideEdit"
+          v-model:item="selectedBook"
+          :index="selectedIdx"
+          :topic-list="topicList"
+          @delete="openDeleteConfirm"
+        />
+        <SidePopNew v-model:isShow="isShowSideNew" :topic-list="topicList" @create="addBook" />
 
-      <!-- 삭제 -->
-      <Alert v-model:isShow="isShowDeleteConfirm">
-        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-          <ExclamationIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
-        </div>
-        <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
-          <strong class="block text-lg leading-6 font-medium text-gray-900"> 삭제하시겠습니까? </strong>
-        </div>
-        <template #footer>
-          <button
-            type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-            @click="deleteItem"
-          >
-            삭제
-          </button>
-          <button
-            type="button"
-            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
-            @click="closeDeleteConfirm"
-          >
-            취소
-          </button>
-        </template>
-      </Alert>
-      <Spinner v-if="isLoading"/>
+        <!-- 삭제 알럿 -->
+        <Alert v-model:isShow="isShowDeleteConfirm">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+            <ExclamationIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+          </div>
+          <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
+            <strong class="block text-lg leading-6 font-medium text-gray-900"> 삭제하시겠습니까? </strong>
+          </div>
+          <template #footer>
+            <button
+              type="button"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
+              @click="deleteItem"
+            >
+              삭제
+            </button>
+            <button
+              type="button"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+              @click="closeDeleteConfirm"
+            >
+              취소
+            </button>
+          </template>
+        </Alert>
+      </template>
+      <Spinner v-if="isLoading" />
     </div>
   </nuxt-layout>
 </template>
@@ -131,7 +140,7 @@
 import { useState } from 'nuxt/app';
 import { computed, ref, watch } from 'vue';
 import BookItem from '~/components/admin/BookItem';
-import SidePop from '~/components/admin/SidePop';
+import SidePopEdit from '~/components/admin/SidePopEdit';
 import FileSelect from '~/components/admin/FileSelect';
 import Alert from '~/components/popup/Alert';
 import demoFile from '~/assets/demoData.json';
@@ -141,21 +150,24 @@ import { ExclamationIcon } from '@heroicons/vue/outline';
 import Container from '../../components/common/Container';
 import StatusList from '../../components/admin/StatusList';
 import StatusListItem from '../../components/admin/StatusListItem';
-import Spinner from "../../components/common/Spinner";
+import Spinner from '../../components/common/Spinner';
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);
 const isLoading = ref(false);
 const topicList = ref([]);
 const imgNullCnt = ref(0);
+const refContent = ref(null);
+const refList = ref(null);
 
 const bookList = useState('form', () => {
   return [];
 });
 
-import { useStore as useToastStore } from '~/store/toast'
-const toastStore = useToastStore()
-
+import { useStore as useToastStore } from '~/store/toast';
+import NewItem from '../../components/admin/NewItem';
+import SidePopNew from '../../components/admin/SidePopNew';
+const toastStore = useToastStore();
 
 watch(
   () => bookList.value,
@@ -170,7 +182,7 @@ const readFile = (file) => {
     alert('json 파일이 아닙니다.');
     return;
   }
-  isLoading.value = true
+  isLoading.value = true;
   selectedFile.value = file;
   let reader = new FileReader();
   reader.onload = (e) => {
@@ -184,25 +196,39 @@ const readFile = (file) => {
 };
 
 const loadAfter = () => {
-  isLoading.value = true
+  isLoading.value = true;
   const topicAllList = bookList.value.map((item) => item.topic);
   topicList.value = uniq(topicAllList).sort();
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
-  isLoading.value = false
+  isLoading.value = false;
 };
 
 const newFile = async () => {
-  isLoading.value = true
+  isLoading.value = true;
   bookList.value = demoFile;
   isSelectedFile.value = true;
 
   loadAfter();
 };
 
-const add = () => {
-  alert('준비중');
+const createBook = () => {
+  isShowSideNew.value = true;
+};
+
+const addBook = (item) => {
+  bookList.value.push(item);
+  isShowSideNew.value = false;
+  const nodes = refList.value.childNodes;
+  console.log(nodes[nodes.length - 1].offsetTop);
+  window.scrollTo(0, nodes[nodes.length - 1].offsetTop);
+  setTimeout(() => {
+    toastStore.OPEN_TOAST({
+      msg: '등록되었습니다.',
+      timer: 3000,
+    });
+  }, 500);
 };
 
 const isShowDeleteConfirm = ref(false);
@@ -224,13 +250,13 @@ const deleteItem = () => {
   const index = selectedIdx.value;
   bookList.value.splice(index, 1);
   loadAfter();
-  isShowSide.value = false;
+  isShowSideEdit.value = false;
   setTimeout(() => {
     toastStore.OPEN_TOAST({
       msg: '삭제되었습니다.',
-      timer: 3000
-    })
-  },500)
+      timer: 3000,
+    });
+  }, 500);
 };
 
 const save = () => {
@@ -248,18 +274,24 @@ const downloadObjectAsJson = (exportObj, exportName) => {
   downloadAnchorNode.remove();
 };
 
-const isShowSide = ref(false);
+const isShowSideEdit = ref(false);
+const isShowSideNew = ref(false);
 const selectedBook = ref({});
 const selectedIdx = ref(null);
 
 const openBook = (item, index) => {
-  isShowSide.value = true;
+  isShowSideEdit.value = true;
   selectedBook.value = item;
   selectedIdx.value = index;
 };
 
+const searchBook = (text) => {
+  searchTxt.value = text;
+  window.scrollTo(0, refContent.value.offsetTop);
+};
+
 watch(
-  () => isShowSide,
+  () => isShowSideEdit,
   (val) => {
     if (!val) {
       selectedBook.value = {};
