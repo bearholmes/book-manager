@@ -41,7 +41,7 @@
             </button>
           </div>
         </teleport>
-        <header>
+        <header class="mb-1.5">
           <Container>
             <StatusList>
               <StatusListItem>
