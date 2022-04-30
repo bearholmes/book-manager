@@ -49,7 +49,7 @@
                 <template #dd> {{ currency(bookList.length) }} <span class="text-sm text-gray-500">권</span> </template>
               </StatusListItem>
               <StatusListItem v-if="imgNullCnt && imgNullCnt > 0">
-                <template #dt> 표지 이미지 누락 수 </template>
+                <template #dt><span class="text-red-600">표지 이미지 누락 수</span></template>
                 <template #dd>
                   <button type="button" @click="searchTxt = '!image'">{{ currency(imgNullCnt) }}</button>
                   <span class="text-gray-500 text-sm">권 ({{ ((imgNullCnt / bookList.length) * 100).toFixed(1) }}%)</span>
@@ -60,8 +60,22 @@
         </header>
         <main ref="refContent">
           <Container class="sticky top-16 z-10 p-2 md:p-5 bg-gradient-to-b from-gray-100 to-transparent">
-            <div class="flex justify-end items-center">
-              <div class="w-full md:w-2/6 relative">
+            <div class="flex justify-between items-center">
+              <div class="w-2/6 md:w-1/6 relative mr-2 md:mr-0">
+                <Select v-model="sort.selected" :options="sort.options" label-text="정렬" :is-show-label="false">
+                  <template #value="vProps">
+                    <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-5 w-5 text-gray-400" />
+                    <SortDescendingIcon v-else class="inline-block h-5 w-5 text-gray-400" />
+                    <span class="text-gray-700 text-sm ml-1.5">{{ vProps.item.name }}</span>
+                  </template>
+                  <template #name="vProps">
+                    <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-5 w-5 text-gray-400" />
+                    <SortDescendingIcon v-else class="inline-block h-5 w-5 text-gray-400" />
+                    <span class="text-gray-700 text-sm ml-1.5">{{ vProps.item.name }}</span>
+                  </template>
+                </Select>
+              </div>
+              <div class="w-4/6 md:w-2/6 relative">
                 <label for="search" class="sr-only">검색</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -101,16 +115,11 @@
           v-model:isShow="isShowSideEdit"
           v-model:item="selectedBook"
           :index="selectedIdx"
-          :topicList="topicList"
-          :purchasePlaceList="purchasePlaceList"
+          :topic-list="topicList"
+          :purchase-place-list="purchasePlaceList"
           @delete="openDeleteConfirm"
         />
-        <SidePopNew
-            v-model:isShow="isShowSideNew"
-            :topicList="topicList"
-            :purchasePlaceList="purchasePlaceList"
-            @create="addBook"
-        />
+        <SidePopNew v-model:isShow="isShowSideNew" :topic-list="topicList" :purchase-place-list="purchasePlaceList" @create="addBook" />
 
         <!-- 삭제 알럿 -->
         <Alert v-model:isShow="isShowDeleteConfirm">
@@ -144,20 +153,20 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import {computed, onMounted, ref, watch} from 'vue';
+import { computed, ref, watch } from 'vue';
 import BookItem from '~/components/admin/BookItem';
 import SidePopEdit from '~/components/admin/SidePopEdit';
 import FileSelect from '~/components/admin/FileSelect';
 import Alert from '~/components/popup/Alert';
 import demoFile from '~/assets/demoData.json';
-import {uniq} from 'lodash';
-import { DownloadIcon, SearchIcon, XCircleIcon } from '@heroicons/vue/solid';
+import { uniq, orderBy } from 'lodash';
+import { DownloadIcon, SearchIcon, XCircleIcon, SortAscendingIcon, SortDescendingIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon } from '@heroicons/vue/outline';
 import Container from '../../components/common/Container';
 import StatusList from '../../components/admin/StatusList';
 import StatusListItem from '../../components/admin/StatusListItem';
 import Spinner from '../../components/common/Spinner';
-import {debounce, currency} from "../../utils/common";
+import { debounce, currency } from '../../utils/common';
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);
@@ -175,12 +184,13 @@ const bookList = useState('form', () => {
 import { useStore as useToastStore } from '~/store/toast';
 import NewItem from '../../components/admin/NewItem';
 import SidePopNew from '../../components/admin/SidePopNew';
+import Select from '../../components/common/Select';
 const toastStore = useToastStore();
 
 watch(
   () => bookList.value,
   () => {
-    console.log('changed')
+    console.log('changed');
     loadAfter();
   },
   { deep: true },
@@ -206,8 +216,12 @@ const loadAfter = () => {
   // isLoading.value = true;
   const topicAllList = bookList.value.map((item) => item.topic);
   const purchasePlaceAllList = bookList.value.map((item) => item.purchasePlace);
-  topicList.value = uniq(topicAllList).filter((item)=>!!item).sort();
-  purchasePlaceList.value = uniq(purchasePlaceAllList).filter((item)=>!!item).sort();
+  topicList.value = uniq(topicAllList)
+    .filter((item) => !!item)
+    .sort();
+  purchasePlaceList.value = uniq(purchasePlaceAllList)
+    .filter((item) => !!item)
+    .sort();
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
@@ -267,7 +281,8 @@ const deleteItem = () => {
 
 const save = () => {
   // TODO 저장을 바로 하지 않게하고,이름 바꿀수 있는 레이어 띄우기
-  downloadObjectAsJson(bookList.value, 'bookData');
+  const tmp = orderBy(bookList.value, ['purchaseDate'], ['asc']);
+  downloadObjectAsJson(tmp, 'bookData');
 };
 
 const downloadObjectAsJson = (exportObj, exportName) => {
@@ -309,27 +324,66 @@ watch(
 const searchTxt = ref('');
 let onInputSearchTxt = (e) => {
   setDebounceTxt(e);
-}
-const setDebounceTxt = debounce((e) => {
-  searchTxt.value = e.target.value;
-},150, false);
+};
+const setDebounceTxt = debounce(
+  (e) => {
+    searchTxt.value = e.target.value;
+  },
+  150,
+  false,
+);
 
 const filterList = computed(() => {
-  if (!searchTxt.value) return bookList.value;
-  if (searchTxt.value === '!image') return bookList.value.filter((item) => !item.imageUrl);
+  let tmp = [];
+  if (!searchTxt.value) {
+    tmp = bookList.value;
+  } else if (searchTxt.value === '!image') {
+    tmp = bookList.value.filter((item) => !item.imageUrl);
+  } else {
+    tmp = bookList.value.filter((item) => {
+      const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
+      return (
+        item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        strIsbn.includes(searchTxt.value) ||
+        item.condition.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.author.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
+      );
+    });
+  }
+  return orderBy(tmp, [sort.value.selected.value], [sort.value.selected.direction]);
+});
 
-  return bookList.value.filter((item) => {
-    const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
-    return (
-      item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-      strIsbn.includes(searchTxt.value) ||
-      item.condition.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-      item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-      item.author.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-      item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-      item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
-    );
-  });
+const sort = ref({
+  selected: {
+    name: '구매일',
+    value: 'purchaseDate',
+    direction: 'asc',
+  },
+  options: [
+    {
+      name: '도서명',
+      value: 'bookName',
+      direction: 'asc',
+    },
+    {
+      name: '도서명',
+      value: 'bookName',
+      direction: 'desc',
+    },
+    {
+      name: '구매일',
+      value: 'purchaseDate',
+      direction: 'asc',
+    },
+    {
+      name: '구매일',
+      value: 'purchaseDate',
+      direction: 'desc',
+    },
+  ],
 });
 </script>
 <style scoped>

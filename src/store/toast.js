@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { getRandomId } from '@/utils/common'
-
+import { getRandomId } from '@/utils/common';
 
 // 팝업, 토스트
 export const useStore = defineStore('TOAST', {

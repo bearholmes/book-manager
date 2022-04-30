@@ -112,6 +112,14 @@
                             />
                           </div>
                         </div>
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                          <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 출간일 </label>
+                          <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            <div class="max-w-lg block w-full sm:max-w-xs">
+                              <DatePicker v-model="book.publicationDate" />
+                            </div>
+                          </div>
+                        </div>
                         <Combobox
                           v-model="book.topic"
                           as="div"
@@ -123,7 +131,7 @@
                               <div class="relative mt-1">
                                 <ComboboxInput
                                   class="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                                  @change="queryTopicList = $event.target.value"
+                                  @change="queryTopic = $event.target.value"
                                 />
                                 <!--                                  :display-value="(item) => {return item}"-->
                                 <ComboboxButton class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
@@ -207,61 +215,61 @@
                             </div>
                           </div>
 
-<!--                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">-->
-<!--                            <label for="purchasePlace" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </label>-->
-<!--                            <div class="mt-1 sm:mt-0 sm:col-span-2">-->
-<!--                              <input-->
-<!--                                id="purchasePlace"-->
-<!--                                v-model="book.purchasePlace"-->
-<!--                                type="text"-->
-<!--                                class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"-->
-<!--                              />-->
-<!--                            </div>-->
-<!--                          </div>-->
+                          <!--                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">-->
+                          <!--                            <label for="purchasePlace" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </label>-->
+                          <!--                            <div class="mt-1 sm:mt-0 sm:col-span-2">-->
+                          <!--                              <input-->
+                          <!--                                id="purchasePlace"-->
+                          <!--                                v-model="book.purchasePlace"-->
+                          <!--                                type="text"-->
+                          <!--                                class="max-w-lg block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"-->
+                          <!--                              />-->
+                          <!--                            </div>-->
+                          <!--                          </div>-->
                           <Combobox
-                              v-model="book.purchasePlace"
-                              as="div"
-                              class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5"
+                            v-model="book.purchasePlace"
+                            as="div"
+                            class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5"
                           >
                             <ComboboxLabel for="topic" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매처 </ComboboxLabel>
                             <div class="mt-1 sm:mt-0 sm:col-span-2">
                               <div class="max-w-lg block w-full sm:max-w-xs">
                                 <div class="relative mt-1">
                                   <ComboboxInput
-                                      class="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                                      @change="queryPurchasePlace = $event.target.value"
+                                    class="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                                    @change="queryPurchasePlace = $event.target.value"
                                   />
                                   <ComboboxButton class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                                   </ComboboxButton>
 
                                   <ComboboxOptions
-                                      v-if="filteredPurchasePlaceList.length > 0"
-                                      class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                                    v-if="filteredPurchasePlaceList.length > 0"
+                                    class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                                   >
                                     <ComboboxOption
-                                        v-for="filterItem in filteredPurchasePlaceList"
-                                        :key="filterItem"
-                                        v-slot="{ active, selected }"
-                                        :value="filterItem"
-                                        as="template"
+                                      v-for="filterItem in filteredPurchasePlaceList"
+                                      :key="filterItem"
+                                      v-slot="{ active, selected }"
+                                      :value="filterItem"
+                                      as="template"
                                     >
                                       <li
-                                          :class="[
-                                        'relative cursor-default select-none py-2 pl-3 pr-9',
-                                        active ? 'bg-blue-600 text-white' : 'text-gray-900',
-                                      ]"
+                                        :class="[
+                                          'relative cursor-default select-none py-2 pl-3 pr-9',
+                                          active ? 'bg-blue-600 text-white' : 'text-gray-900',
+                                        ]"
                                       >
-                                      <span :class="['block truncate', selected && 'font-semibold']">
-                                        {{ filterItem }}
-                                      </span>
+                                        <span :class="['block truncate', selected && 'font-semibold']">
+                                          {{ filterItem }}
+                                        </span>
 
                                         <span
-                                            v-if="selected"
-                                            :class="['absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-blue-600']"
+                                          v-if="selected"
+                                          :class="['absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-blue-600']"
                                         >
-                                        <CheckIcon class="h-5 w-5" aria-hidden="true" />
-                                      </span>
+                                          <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                                        </span>
                                       </li>
                                     </ComboboxOption>
                                   </ComboboxOptions>
@@ -403,19 +411,20 @@ const props = defineProps({
 });
 
 const book = ref({
-  bookName: null,
-  ISBN13: null,
-  condition: null,
-  purchasePrice: null,
+  bookName: '',
+  ISBN13: '',
+  condition: '',
+  purchasePrice: '',
   currency: 'KRW',
-  purchaseDate: null,
+  purchaseDate: '',
   purchasePlace: '',
-  author: null,
-  topic: null,
+  publicationDate: '',
+  author: '',
+  topic: '',
   publisher: '',
-  imageUrl: null,
-  duplicated: null,
-  comment: null,
+  imageUrl: '',
+  duplicated: '',
+  comment: '',
 });
 
 const currency = ref('');
@@ -450,27 +459,34 @@ watch(
 
 const emit = defineEmits(['update:isShow', 'create']);
 
+const queryTopic = ref('');
 const queryPurchasePlace = ref('');
+
+const reset = () => {
+  queryTopic.value = '';
+  queryPurchasePlace.value = '';
+  if (!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value;
+  if (!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value;
+};
+
 const close = () => {
-  if(!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value
-  if(!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value
+  reset();
   emit('update:isShow', false);
 };
 
-const queryTopicList = ref('');
 const filteredTopicList = computed(() =>
-    queryTopicList.value === ''
-        ? props.topicList
-        : props.topicList.filter((item) => {
-          return item.toLowerCase().includes(queryTopicList.value.toLowerCase());
-        }),
+  queryTopic.value === ''
+    ? props.topicList
+    : props.topicList.filter((item) => {
+        return item.toLowerCase().includes(queryTopic.value.toLowerCase());
+      }),
 );
 const filteredPurchasePlaceList = computed(() =>
-    queryPurchasePlace.value === ''
-        ? props.purchasePlaceList
-        : props.purchasePlaceList.filter((item) => {
-          return item.toLowerCase().includes(queryPurchasePlace.value.toLowerCase());
-        }),
+  queryPurchasePlace.value === ''
+    ? props.purchasePlaceList
+    : props.purchasePlaceList.filter((item) => {
+        return item.toLowerCase().includes(queryPurchasePlace.value.toLowerCase());
+      }),
 );
 
 const conditionList = ref([]);
@@ -482,20 +498,21 @@ conditionList.value = [
 const saveBook = () => {
   emit('create', book.value);
   book.value = {
-    bookName: null,
-    ISBN13: null,
-    condition: null,
-    purchasePrice: null,
+    bookName: '',
+    ISBN13: '',
+    condition: '',
+    purchasePrice: '',
     currency: 'KRW',
-    purchaseDate: null,
-    purchasePlace: null,
-    author: null,
-    topic: null,
-    publisher: null,
-    imageUrl: null,
-    duplicated: null,
-    comment: null,
-  }
+    purchaseDate: '',
+    purchasePlace: '',
+    publicationDate: '',
+    author: '',
+    topic: '',
+    publisher: '',
+    imageUrl: '',
+    duplicated: '',
+    comment: '',
+  };
 };
 </script>
 <style scoped>
