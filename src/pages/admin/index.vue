@@ -206,8 +206,8 @@ const loadAfter = () => {
   // isLoading.value = true;
   const topicAllList = bookList.value.map((item) => item.topic);
   const purchasePlaceAllList = bookList.value.map((item) => item.purchasePlace);
-  topicList.value = uniq(topicAllList).sort();
-  purchasePlaceList.value = uniq(purchasePlaceAllList).sort();
+  topicList.value = uniq(topicAllList).filter((item)=>!!item).sort();
+  purchasePlaceList.value = uniq(purchasePlaceAllList).filter((item)=>!!item).sort();
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
@@ -305,8 +305,6 @@ watch(
     }
   },
 );
-
-
 
 const searchTxt = ref('');
 let onInputSearchTxt = (e) => {

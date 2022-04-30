@@ -479,6 +479,21 @@ conditionList.value = [
 
 const saveBook = () => {
   emit('create', book.value);
+  book.value = {
+    bookName: null,
+    ISBN13: null,
+    condition: null,
+    purchasePrice: null,
+    currency: 'KRW',
+    purchaseDate: null,
+    purchasePlace: null,
+    author: null,
+    topic: null,
+    publisher: null,
+    imageUrl: null,
+    duplicated: null,
+    comment: null,
+  }
 };
 </script>
 <style scoped>
