@@ -421,9 +421,9 @@ const props = defineProps({
         purchasePrice: null,
         currency: 'KRW',
         purchaseDate: null,
-        purchasePlace: null,
+        purchasePlace: '',
         author: null,
-        topic: null,
+        topic: '',
         publisher: null,
         imageUrl: null,
         duplicated: null,
@@ -487,8 +487,8 @@ watch(
 const emit = defineEmits(['update:isShow', 'delete']);
 
 const close = () => {
-  if(book.value.topic !== queryTopic.value) book.value.topic = queryTopic.value
-  if(book.value.purchasePlace !== queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value
+  if(!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value
+  if(!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value
   emit('update:isShow', false);
 };
 

@@ -73,7 +73,7 @@
                               </button>
                               <span class="inline-block ml-3 text-xs text-gray-500">/public/images/에 이미지를 저장하세요.</span>
                             </div>
-                            <div v-if="book.imageUrl" class="flex justify-center">
+                            <div v-if="book.imageUrl" class="flex p-3">
                               <img :src="book.imageUrl" alt="" class="object-cover block overflow-hidden rounded-lg" style="max-width: 240px" />
                             </div>
                           </div>
@@ -409,10 +409,10 @@ const book = ref({
   purchasePrice: null,
   currency: 'KRW',
   purchaseDate: null,
-  purchasePlace: null,
+  purchasePlace: '',
   author: null,
   topic: null,
-  publisher: null,
+  publisher: '',
   imageUrl: null,
   duplicated: null,
   comment: null,
@@ -450,7 +450,10 @@ watch(
 
 const emit = defineEmits(['update:isShow', 'create']);
 
+const queryPurchasePlace = ref('');
 const close = () => {
+  if(!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value
+  if(!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value
   emit('update:isShow', false);
 };
 
@@ -462,7 +465,6 @@ const filteredTopicList = computed(() =>
           return item.toLowerCase().includes(queryTopicList.value.toLowerCase());
         }),
 );
-const queryPurchasePlace = ref('');
 const filteredPurchasePlaceList = computed(() =>
     queryPurchasePlace.value === ''
         ? props.purchasePlaceList
