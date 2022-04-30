@@ -101,10 +101,16 @@
           v-model:isShow="isShowSideEdit"
           v-model:item="selectedBook"
           :index="selectedIdx"
-          :topic-list="topicList"
+          :topicList="topicList"
+          :purchasePlaceList="purchasePlaceList"
           @delete="openDeleteConfirm"
         />
-        <SidePopNew v-model:isShow="isShowSideNew" :topic-list="topicList" @create="addBook" />
+        <SidePopNew
+            v-model:isShow="isShowSideNew"
+            :topicList="topicList"
+            :purchasePlaceList="purchasePlaceList"
+            @create="addBook"
+        />
 
         <!-- 삭제 알럿 -->
         <Alert v-model:isShow="isShowDeleteConfirm">
@@ -138,24 +144,26 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import { computed, ref, watch } from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import BookItem from '~/components/admin/BookItem';
 import SidePopEdit from '~/components/admin/SidePopEdit';
 import FileSelect from '~/components/admin/FileSelect';
 import Alert from '~/components/popup/Alert';
 import demoFile from '~/assets/demoData.json';
-import { uniq } from 'lodash';
+import {uniq} from 'lodash';
 import { DownloadIcon, SearchIcon, XCircleIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon } from '@heroicons/vue/outline';
 import Container from '../../components/common/Container';
 import StatusList from '../../components/admin/StatusList';
 import StatusListItem from '../../components/admin/StatusListItem';
 import Spinner from '../../components/common/Spinner';
+import {debounce, currency} from "../../utils/common";
 
 const selectedFile = ref(null);
 const isSelectedFile = ref(false);
 const isLoading = ref(false);
 const topicList = ref([]);
+const purchasePlaceList = ref([]);
 const imgNullCnt = ref(0);
 const refContent = ref(null);
 const refList = ref(null);
@@ -172,6 +180,7 @@ const toastStore = useToastStore();
 watch(
   () => bookList.value,
   () => {
+    console.log('changed')
     loadAfter();
   },
   { deep: true },
@@ -189,28 +198,26 @@ const readFile = (file) => {
     // console.log(JSON.parse(e.target.result.toString()));
     bookList.value = JSON.parse(e.target.result.toString());
     isSelectedFile.value = true;
-
-    loadAfter();
   };
   reader.readAsText(file);
 };
 
 const loadAfter = () => {
-  isLoading.value = true;
+  // isLoading.value = true;
   const topicAllList = bookList.value.map((item) => item.topic);
+  const purchasePlaceAllList = bookList.value.map((item) => item.purchasePlace);
   topicList.value = uniq(topicAllList).sort();
+  purchasePlaceList.value = uniq(purchasePlaceAllList).sort();
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
-  isLoading.value = false;
+  // isLoading.value = false;
 };
 
 const newFile = async () => {
   isLoading.value = true;
   bookList.value = demoFile;
   isSelectedFile.value = true;
-
-  loadAfter();
 };
 
 const createBook = () => {
@@ -249,7 +256,6 @@ const deleteItem = () => {
   isShowDeleteConfirm.value = false;
   const index = selectedIdx.value;
   bookList.value.splice(index, 1);
-  loadAfter();
   isShowSideEdit.value = false;
   setTimeout(() => {
     toastStore.OPEN_TOAST({
@@ -300,17 +306,15 @@ watch(
   },
 );
 
-const currency = (value, nullTxt = '-') => {
-  if (!value && value !== 0) {
-    return nullTxt;
-  }
-  return value.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, '$1,');
-};
+
 
 const searchTxt = ref('');
-const onInputSearchTxt = (e) => {
+let onInputSearchTxt = (e) => {
+  setDebounceTxt(e);
+}
+const setDebounceTxt = debounce((e) => {
   searchTxt.value = e.target.value;
-};
+},150, false);
 
 const filterList = computed(() => {
   if (!searchTxt.value) return bookList.value;
