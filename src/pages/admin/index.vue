@@ -35,7 +35,7 @@
               type="button"
               class="hidden md:inline-flex ml-3 items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
               :disabled="bookList.length < 1"
-              @click.prevent="save"
+              @click.prevent="openSaveConfirm"
             >
               <DownloadIcon class="h-4 w-4 mr-1.5 text-white">Export</DownloadIcon> <span class="mt-0.5">JSON</span>
             </button>
@@ -120,6 +120,32 @@
           @delete="openDeleteConfirm"
         />
         <SidePopNew v-model:isShow="isShowSideNew" :topic-list="topicList" :purchase-place-list="purchasePlaceList" @create="addBook" />
+
+        <!-- 저장 알럿 -->
+        <Alert v-model:isShow="isShowSaveConfirm">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+            <DownloadIcon class="h-6 w-6 text-blue-600" aria-hidden="true" />
+          </div>
+          <div class="mt-3 text-center sm:mt-2 sm:ml-4 sm:text-left">
+            <strong class="block text-lg leading-6 font-medium text-gray-900"> JSON 파일을 저장하시겠습니까? </strong>
+          </div>
+          <template #footer>
+            <button
+                type="button"
+                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm"
+                @click="saveJson"
+            >
+              저장
+            </button>
+            <button
+                type="button"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                @click="closeSaveConfirm"
+            >
+              취소
+            </button>
+          </template>
+        </Alert>
 
         <!-- 삭제 알럿 -->
         <Alert v-model:isShow="isShowDeleteConfirm">
@@ -253,6 +279,7 @@ const addBook = (item) => {
 };
 
 const isShowDeleteConfirm = ref(false);
+const isShowSaveConfirm = ref(false);
 
 const openDeleteConfirm = (index) => {
   // console.log('openDeleteConfirm');
@@ -279,7 +306,15 @@ const deleteItem = () => {
   }, 500);
 };
 
-const save = () => {
+const openSaveConfirm = () => {
+  isShowSaveConfirm.value = true;
+};
+const closeSaveConfirm = () => {
+  isShowSaveConfirm.value = false;
+};
+
+
+const saveJson = () => {
   // TODO 저장을 바로 하지 않게하고,이름 바꿀수 있는 레이어 띄우기
   const tmp = orderBy(bookList.value, ['purchaseDate'], ['asc']);
   downloadObjectAsJson(tmp, 'bookData');
