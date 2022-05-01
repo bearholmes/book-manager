@@ -2,27 +2,31 @@
   <div class="month-year-wrapper">
     <div class="custom-month-year-component">
       <select class="select-input" :value="props.month" @change="$emit('update:month', +$event.target.value)">
-        <option v-for="m in props.months" :key="m.value" :value="m.value">
+        <option v-for="m in monthList" :key="m.value" :value="m.value">
           {{ m.text }}
         </option>
       </select>
       <select class="select-input" :value="props.year" @change="$emit('update:year', +$event.target.value)">
-        <option v-for="y in props.years" :key="y.value" :value="y.value">
+        <option v-for="y in yearList" :key="y.value" :value="y.value">
           {{ y.text }}
         </option>
       </select>
     </div>
     <div class="icons">
-      <button type="button" class="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500" @click="onPrev">
-        <span class="sr-only">Previous month</span>
+      <button type="button"
+              class="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+        :disabled="disabledPrev"
+              @click="onPrev">
+        <span class="sr-only">이전달</span>
         <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
       </button>
       <button
         type="button"
         class="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+        :disabled="disabledNext"
         @click="onNext"
       >
-        <span class="sr-only">Next month</span>
+        <span class="sr-only">다음달</span>
         <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
       </button>
     </div>
@@ -31,6 +35,7 @@
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid';
+import {computed, ref} from "vue";
 
 const props = defineProps({
   months: { type: Array, default: () => [] },
@@ -40,6 +45,8 @@ const props = defineProps({
   month: { type: Number, default: 0 },
   year: { type: Number, default: 0 },
   customProps: { type: Object, default: null },
+  maxDate: {type: [String,Date], default: null},
+  minDate: {type: [String,Date], default: null}
 });
 const emit = defineEmits(['update:month', 'update:year']);
 const updateMonthYear = (month, year) => {
@@ -69,6 +76,57 @@ const onPrev = () => {
   }
   updateMonthYear(month, year);
 };
+
+const yearList = computed(()=>{
+  const max = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
+  const min = props.minDate ? new Date(props.minDate).getFullYear() : null;
+
+  return props.years.filter((item)=>{
+    const tmp = [];
+    if (min) {
+      tmp.push(item.value >= min)
+    }
+    if (max) {
+      tmp.push(item.value <= max)
+    }
+    return !tmp.includes(false);
+  })
+})
+
+const monthList = computed(() => {
+  const maxYear = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
+  const maxMonth = props.maxDate ? new Date(props.maxDate).getMonth() : null;
+  const minYear = props.minDate ? new Date(props.minDate).getFullYear() : null;
+  const minMonth = props.minDate ? new Date(props.minDate).getMonth() : null;
+
+  return props.months.filter((item)=>{
+    const tmp = [];
+    if (props.year === minYear && minMonth) {
+      tmp.push(item.value >= minMonth)
+    }
+    if (props.year === maxYear && maxMonth) {
+      tmp.push(item.value <= maxMonth)
+    }
+    return !tmp.includes(false);
+  })
+})
+
+const disabledPrev = computed(()=>{
+  const minYear = props.minDate ? new Date(props.minDate).getFullYear() : null;
+  const minMonth = props.minDate ? new Date(props.minDate).getMonth() : null;
+  if (minYear < props.year) return false
+  if (minYear === props.year && minMonth < props.month) return false
+  return true
+});
+
+const disabledNext = computed(()=>{
+  const maxYear = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
+  const maxMonth = props.maxDate ? new Date(props.maxDate).getMonth() : null;
+  if (maxYear > props.year) return false
+  if (maxYear === props.year && maxMonth > props.month) return false
+  return true
+});
+
 </script>
 
 <style scoped>

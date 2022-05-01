@@ -9,6 +9,10 @@
     :month-year-component="monthYear"
     :month-change-on-scroll="false"
     :format="format"
+    :textInput="textInput"
+    :textInputOptions="textInputOptions"
+    :maxDate="props.maxDate"
+    :minDate="props.minDate"
     position="left"
   >
     <template #now-button="{ selectCurrentDate }">
@@ -26,11 +30,15 @@
 </template>
 <script setup>
 import Datepicker from '@vuepic/vue-datepicker';
-import { computed, defineAsyncComponent } from 'vue';
+import {computed, defineAsyncComponent, ref} from 'vue';
 import dayjs from 'dayjs';
 
 const props = defineProps({
   inline: {
+    type: Boolean,
+    default: false,
+  },
+  textInput: {
     type: Boolean,
     default: false,
   },
@@ -40,8 +48,16 @@ const props = defineProps({
   },
   format: {
     type: String,
-    default: 'YYYY-MM-DD',
+    default: 'yyyy-MM-dd',
   },
+  maxDate: {
+    type: [String,Date],
+    default: null
+  },
+  minDate: {
+    type: [String,Date],
+    default: null
+  }
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -63,6 +79,10 @@ const monthYear = computed(() => MonthYear);
 const format = (date) => {
   return dayjs(date).format('YYYY-MM-DD');
 };
+
+const textInputOptions = ref({
+  format: 'yyyy-MM-dd'
+})
 </script>
 <style>
 .dp__menu {
