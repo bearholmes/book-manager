@@ -283,18 +283,15 @@ const isShowDeleteConfirm = ref(false);
 const isShowSaveConfirm = ref(false);
 
 const openDeleteConfirm = (index) => {
-  // console.log('openDeleteConfirm');
   isShowDeleteConfirm.value = true;
   selectedIdx.value = index;
 };
 
 const closeDeleteConfirm = () => {
-  // console.log('closeDeleteConfirm');
   isShowDeleteConfirm.value = false;
 };
 
 const deleteItem = () => {
-  // console.log('deleteItem');
   isShowDeleteConfirm.value = false;
   const index = selectedIdx.value;
   bookList.value.splice(index, 1);
@@ -316,7 +313,7 @@ const closeSaveConfirm = () => {
 
 
 const saveJson = () => {
-  // TODO 저장을 바로 하지 않게하고,이름 바꿀수 있는 레이어 띄우기
+  // TODO 이름 바꿀수 있는 레이어 처리
   const tmp = orderBy(bookList.value, ['purchaseDate'], ['asc']);
   downloadObjectAsJson(tmp, 'bookData');
 };
@@ -391,7 +388,9 @@ const filterList = computed(() => {
     });
   }
   if(sort.value.selected.type === 'datetime') {
-    return orderBy(tmp, [() => new Date(sort.value.selected.value).getTime()], [sort.value.selected.direction]);
+    return orderBy(tmp, [(item) => new Date(item[sort.value.selected.value]).getTime()], [sort.value.selected.direction]);
+  } else if(sort.value.selected.type === 'number') {
+    return orderBy(tmp, [(item) => typeof item[sort.value.selected.value] === 'number' ? item[sort.value.selected.value] : parseInt(item[sort.value.selected.value])], [sort.value.selected.direction]);
   } else {
     return orderBy(tmp, [sort.value.selected.value], [sort.value.selected.direction]);
   }
@@ -428,6 +427,30 @@ const sort = ref({
       value: 'purchaseDate',
       direction: 'desc',
       type: 'datetime'
+    },
+    {
+      name: '출간일',
+      value: 'publicationDate',
+      direction: 'asc',
+      type: 'datetime'
+    },
+    {
+      name: '출간일',
+      value: 'publicationDate',
+      direction: 'desc',
+      type: 'datetime'
+    },
+    {
+      name: '구매가',
+      value: 'purchasePrice',
+      direction: 'asc',
+      type: 'number'
+    },
+    {
+      name: '구매가',
+      value: 'purchasePrice',
+      direction: 'desc',
+      type: 'number'
     },
   ],
 });
