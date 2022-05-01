@@ -48,7 +48,7 @@ const props = defineProps({
   },
   format: {
     type: String,
-    default: 'yyyy-MM-dd',
+    default: 'YYYY-MM-DD',
   },
   maxDate: {
     type: [String,Date],
