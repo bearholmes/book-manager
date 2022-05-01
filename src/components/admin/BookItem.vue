@@ -36,6 +36,8 @@ const props = defineProps({
         condition: '',
         purchasePrice: '',
         currency: 'KRW',
+        purchasePriceSec: '',
+        currencySec: '',
         purchaseDate: '',
         purchasePlace: '',
         author: '',

@@ -1,6 +1,6 @@
 {
   "name": "book-management-in-the-corner-of-the-room",
-  "varsion": "0.0.22",
+  "varsion": "0.0.23",
   "private": true,
   "scripts": {
     "build": "nuxt build",

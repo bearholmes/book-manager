@@ -116,7 +116,7 @@
                           <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 출간일 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="max-w-lg block w-full sm:max-w-xs">
-                              <DatePicker v-model="book.publicationDate" />
+                              <DatePicker v-model="book.publicationDate" :textInput="true" :minDate="dateConfig.min" :maxDate="dateConfig.max" />
                             </div>
                           </div>
                         </div>
@@ -218,7 +218,7 @@
                             <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매일 </label>
                             <div class="mt-1 sm:mt-0 sm:col-span-2">
                               <div class="max-w-lg block w-full sm:max-w-xs">
-                                <DatePicker v-model="book.purchaseDate" />
+                                <DatePicker v-model="book.purchaseDate" :textInput="true" :minDate="dateConfig.min" :maxDate="dateConfig.max" />
                               </div>
                             </div>
                           </div>
@@ -299,7 +299,7 @@
                               <div class="max-w-lg block w-full sm:max-w-xs">
                                 <div class="relative rounded-md shadow-sm">
                                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm"> {{ currency }} </span>
+                                    <span class="text-gray-500 sm:text-sm"> ₩ </span>
                                   </div>
                                   <input
                                     id="purchasePrice"
@@ -307,13 +307,30 @@
                                     type="text"
                                     class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                                   />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
+                            <label for="purchasePrice" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 직구가 </label>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                              <div class="max-w-lg block w-full sm:max-w-xs">
+                                <div class="relative rounded-md shadow-sm">
+                                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm"> {{ currencySec }} </span>
+                                  </div>
+                                  <input
+                                      id="purchasePrice"
+                                      v-model.number="book.purchasePriceSec"
+                                      type="text"
+                                      class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                  />
                                   <div class="absolute inset-y-0 right-0 flex items-center">
                                     <label for="currency" class="sr-only">통화단위</label>
                                     <select
-                                      v-model="book.currency"
-                                      class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                        v-model="book.currencySec"
+                                        class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                     >
-                                      <option value="KRW">KRW</option>
                                       <option value="USD">USD</option>
                                       <option value="JPY">JPY</option>
                                       <option value="EUR">EUR</option>
@@ -323,7 +340,6 @@
                               </div>
                             </div>
                           </div>
-
                           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 pt-5">
                             <span class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2 self-center"> 중복여부 </span>
                             <div class="sm:col-span-2 self-center mt-3 sm:mt-0">
@@ -407,6 +423,7 @@ import {
 } from '@headlessui/vue';
 import DatePicker from '~/components/datepicker/DatePicker';
 import { CheckIcon, SelectorIcon } from '@heroicons/vue/solid';
+import dayjs from "dayjs";
 
 const props = defineProps({
   isShow: {
@@ -432,6 +449,8 @@ const book = ref({
   condition: '',
   purchasePrice: '',
   currency: 'KRW',
+  purchasePriceSec: '',
+  currencySec: '',
   purchaseDate: '',
   purchasePlace: '',
   publicationDate: '',
@@ -443,23 +462,23 @@ const book = ref({
   comment: '',
 });
 
-const currency = ref('');
+const currencySec = ref('');
 watch(
-  () => book.value,
-  (val) => {
-    if (val.currency === 'KRW') {
-      currency.value = '₩';
-    } else if (val.currency === 'USD') {
-      currency.value = '$';
-    } else if (val.currency === 'JPY') {
-      currency.value = '¥';
-    } else if (val.currency === 'EUR') {
-      currency.value = '€';
-    } else {
-      currency.value = '';
-    }
-  },
-  { deep: true },
+    () => book.value,
+    (val) => {
+      if (val.currencySec === 'KRW') {
+        currencySec.value = '₩';
+      } else if (val.currencySec === 'USD') {
+        currencySec.value = '$';
+      } else if (val.currencySec === 'JPY') {
+        currencySec.value = '¥';
+      } else if (val.currencySec === 'EUR') {
+        currencySec.value = '€';
+      } else {
+        currencySec.value = '';
+      }
+    },
+    { deep: true },
 );
 
 watch(
@@ -529,6 +548,8 @@ const saveBook = () => {
     condition: '',
     purchasePrice: '',
     currency: 'KRW',
+    purchasePriceSec: '',
+    currencySec: '',
     purchaseDate: '',
     purchasePlace: '',
     publicationDate: '',
@@ -540,6 +561,11 @@ const saveBook = () => {
     comment: '',
   };
 };
+
+const dateConfig = ref({
+  min: new Date('01/01/1980'),
+  max: new Date(`12/31/${new Date().getFullYear() + 1}`)
+})
 </script>
 <style scoped>
 .detail {
