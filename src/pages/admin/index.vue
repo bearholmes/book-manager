@@ -179,7 +179,7 @@
 </template>
 <script setup>
 import { useState } from 'nuxt/app';
-import { computed, ref, watch } from 'vue';
+import {computed, nextTick, ref, watch} from 'vue';
 import BookItem from '~/components/admin/BookItem';
 import SidePopEdit from '~/components/admin/SidePopEdit';
 import FileSelect from '~/components/admin/FileSelect';
@@ -233,13 +233,15 @@ const readFile = (file) => {
   reader.onload = (e) => {
     // console.log(JSON.parse(e.target.result.toString()));
     bookList.value = JSON.parse(e.target.result.toString());
+    nextTick(()=>{
+    isLoading.value = false
     isSelectedFile.value = true;
+    })
   };
   reader.readAsText(file);
 };
 
 const loadAfter = () => {
-  // isLoading.value = true;
   const topicAllList = bookList.value.map((item) => item.topic);
   const purchasePlaceAllList = bookList.value.map((item) => item.purchasePlace);
   topicList.value = uniq(topicAllList)
@@ -251,7 +253,6 @@ const loadAfter = () => {
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
-  // isLoading.value = false;
 };
 
 const newFile = async () => {
@@ -328,6 +329,7 @@ const downloadObjectAsJson = (exportObj, exportName) => {
   document.body.appendChild(downloadAnchorNode); // required for firefox
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
+  isShowSaveConfirm.value = false;
 };
 
 const isShowSideEdit = ref(false);
@@ -388,7 +390,11 @@ const filterList = computed(() => {
       );
     });
   }
-  return orderBy(tmp, [sort.value.selected.value], [sort.value.selected.direction]);
+  if(sort.value.selected.type === 'datetime') {
+    return orderBy(tmp, [() => new Date(sort.value.selected.value).getTime()], [sort.value.selected.direction]);
+  } else {
+    return orderBy(tmp, [sort.value.selected.value], [sort.value.selected.direction]);
+  }
 });
 
 const sort = ref({
@@ -396,27 +402,32 @@ const sort = ref({
     name: '구매일',
     value: 'purchaseDate',
     direction: 'asc',
+    type: 'datetime'
   },
   options: [
     {
       name: '도서명',
       value: 'bookName',
       direction: 'asc',
+      type: 'string'
     },
     {
       name: '도서명',
       value: 'bookName',
       direction: 'desc',
+      type: 'string'
     },
     {
       name: '구매일',
       value: 'purchaseDate',
       direction: 'asc',
+      type: 'datetime'
     },
     {
       name: '구매일',
       value: 'purchaseDate',
       direction: 'desc',
+      type: 'datetime'
     },
   ],
 });

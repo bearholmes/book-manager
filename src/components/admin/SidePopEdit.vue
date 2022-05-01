@@ -155,6 +155,14 @@
                                 <ComboboxButton class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                   <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                                 </ComboboxButton>
+                                <button
+                                    type="button"
+                                    class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
+                                    v-show="queryTopic && !filteredTopicList.includes(queryTopic)"
+                                    @click="pushTopic"
+                                >
+                                  <span class="text-gray-400 text-sm">추가</span>
+                                </button>
 
                                 <ComboboxOptions
                                   v-if="filteredTopicList.length > 0"
@@ -260,6 +268,14 @@
                                   <ComboboxButton class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
                                     <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                                   </ComboboxButton>
+                                  <button
+                                      type="button"
+                                      class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
+                                      v-show="queryPurchasePlace && !filteredPurchasePlaceList.includes(queryPurchasePlace)"
+                                      @click="pushPurchasePlace"
+                                  >
+                                    <span class="text-gray-400 text-sm">추가</span>
+                                  </button>
 
                                   <ComboboxOptions
                                     v-if="filteredPurchasePlaceList.length > 0"
@@ -501,8 +517,6 @@ const queryPurchasePlace = ref('');
 const reset = () => {
   queryTopic.value = '';
   queryPurchasePlace.value = '';
-  if (!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value;
-  if (!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value;
 };
 
 const close = () => {
@@ -524,6 +538,16 @@ const filteredPurchasePlaceList = computed(() =>
         return item.toLowerCase().includes(queryPurchasePlace.value.toLowerCase());
       }),
 );
+
+const pushTopic = () => {
+  props.topicList.push(queryTopic.value);
+  book.value.topic = queryTopic.value;
+}
+
+const pushPurchasePlace = () => {
+  props.purchasePlaceList.push(queryPurchasePlace.value);
+  book.value.purchasePlace = queryPurchasePlace.value;
+}
 
 const conditionList = ref([]);
 conditionList.value = [
