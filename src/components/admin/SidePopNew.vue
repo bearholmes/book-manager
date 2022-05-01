@@ -116,7 +116,7 @@
                           <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 출간일 </label>
                           <div class="mt-1 sm:mt-0 sm:col-span-2">
                             <div class="max-w-lg block w-full sm:max-w-xs">
-                              <DatePicker v-model="book.publicationDate" :textInput="true" :minDate="dateConfig.min" :maxDate="dateConfig.max" />
+                              <DatePicker v-model="book.publicationDate" :text-input="true" :min-date="dateConfig.min" :max-date="dateConfig.max" />
                             </div>
                           </div>
                         </div>
@@ -138,10 +138,10 @@
                                   <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                                 </ComboboxButton>
                                 <button
-                                    type="button"
-                                    class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
-                                    v-show="queryTopic && !filteredTopicList.includes(queryTopic)"
-                                    @click="pushTopic"
+                                  v-show="queryTopic && !filteredTopicList.includes(queryTopic)"
+                                  type="button"
+                                  class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
+                                  @click="pushTopic"
                                 >
                                   <span class="text-gray-400 text-sm">추가</span>
                                 </button>
@@ -218,7 +218,7 @@
                             <label for="city" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"> 구매일 </label>
                             <div class="mt-1 sm:mt-0 sm:col-span-2">
                               <div class="max-w-lg block w-full sm:max-w-xs">
-                                <DatePicker v-model="book.purchaseDate" :textInput="true" :minDate="dateConfig.min" :maxDate="dateConfig.max" />
+                                <DatePicker v-model="book.purchaseDate" :text-input="true" :min-date="dateConfig.min" :max-date="dateConfig.max" />
                               </div>
                             </div>
                           </div>
@@ -251,10 +251,10 @@
                                     <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                                   </ComboboxButton>
                                   <button
-                                      type="button"
-                                      class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
-                                      v-show="queryPurchasePlace && !filteredPurchasePlaceList.includes(queryPurchasePlace)"
-                                      @click="pushPurchasePlace"
+                                    v-show="queryPurchasePlace && !filteredPurchasePlaceList.includes(queryPurchasePlace)"
+                                    type="button"
+                                    class="absolute inset-y-0 right-10 flex items-center rounded-r-md px-2 focus:outline-none"
+                                    @click="pushPurchasePlace"
                                   >
                                     <span class="text-gray-400 text-sm">추가</span>
                                   </button>
@@ -320,16 +320,16 @@
                                     <span class="text-gray-500 sm:text-sm"> {{ currencySec }} </span>
                                   </div>
                                   <input
-                                      id="purchasePrice"
-                                      v-model.number="book.purchasePriceSec"
-                                      type="text"
-                                      class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                    id="purchasePrice"
+                                    v-model.number="book.purchasePriceSec"
+                                    type="text"
+                                    class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                                   />
                                   <div class="absolute inset-y-0 right-0 flex items-center">
                                     <label for="currency" class="sr-only">통화단위</label>
                                     <select
-                                        v-model="book.currencySec"
-                                        class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                      v-model="book.currencySec"
+                                      class="focus:ring-blue-500 focus:border-blue-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                     >
                                       <option value="USD">USD</option>
                                       <option value="JPY">JPY</option>
@@ -423,7 +423,6 @@ import {
 } from '@headlessui/vue';
 import DatePicker from '~/components/datepicker/DatePicker';
 import { CheckIcon, SelectorIcon } from '@heroicons/vue/solid';
-import dayjs from "dayjs";
 
 const props = defineProps({
   isShow: {
@@ -464,21 +463,21 @@ const book = ref({
 
 const currencySec = ref('');
 watch(
-    () => book.value,
-    (val) => {
-      if (val.currencySec === 'KRW') {
-        currencySec.value = '₩';
-      } else if (val.currencySec === 'USD') {
-        currencySec.value = '$';
-      } else if (val.currencySec === 'JPY') {
-        currencySec.value = '¥';
-      } else if (val.currencySec === 'EUR') {
-        currencySec.value = '€';
-      } else {
-        currencySec.value = '';
-      }
-    },
-    { deep: true },
+  () => book.value,
+  (val) => {
+    if (val.currencySec === 'KRW') {
+      currencySec.value = '₩';
+    } else if (val.currencySec === 'USD') {
+      currencySec.value = '$';
+    } else if (val.currencySec === 'JPY') {
+      currencySec.value = '¥';
+    } else if (val.currencySec === 'EUR') {
+      currencySec.value = '€';
+    } else {
+      currencySec.value = '';
+    }
+  },
+  { deep: true },
 );
 
 watch(
@@ -525,12 +524,12 @@ const filteredPurchasePlaceList = computed(() =>
 const pushTopic = () => {
   props.topicList.push(queryTopic.value);
   book.value.topic = queryTopic.value;
-}
+};
 
 const pushPurchasePlace = () => {
   props.purchasePlaceList.push(queryPurchasePlace.value);
   book.value.purchasePlace = queryPurchasePlace.value;
-}
+};
 
 const conditionList = ref([]);
 conditionList.value = [
@@ -564,8 +563,8 @@ const saveBook = () => {
 
 const dateConfig = ref({
   min: new Date('01/01/1980'),
-  max: new Date(`12/31/${new Date().getFullYear() + 1}`)
-})
+  max: new Date(`12/31/${new Date().getFullYear() + 1}`),
+});
 </script>
 <style scoped>
 .detail {

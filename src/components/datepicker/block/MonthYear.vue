@@ -13,10 +13,12 @@
       </select>
     </div>
     <div class="icons">
-      <button type="button"
-              class="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+      <button
+        type="button"
+        class="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
         :disabled="disabledPrev"
-              @click="onPrev">
+        @click="onPrev"
+      >
         <span class="sr-only">이전달</span>
         <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
       </button>
@@ -35,7 +37,7 @@
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/solid';
-import {computed, ref} from "vue";
+import { computed } from 'vue';
 
 const props = defineProps({
   months: { type: Array, default: () => [] },
@@ -45,8 +47,8 @@ const props = defineProps({
   month: { type: Number, default: 0 },
   year: { type: Number, default: 0 },
   customProps: { type: Object, default: null },
-  maxDate: {type: [String,Date], default: null},
-  minDate: {type: [String,Date], default: null}
+  maxDate: { type: [String, Date], default: null },
+  minDate: { type: [String, Date], default: null },
 });
 const emit = defineEmits(['update:month', 'update:year']);
 const updateMonthYear = (month, year) => {
@@ -77,21 +79,21 @@ const onPrev = () => {
   updateMonthYear(month, year);
 };
 
-const yearList = computed(()=>{
+const yearList = computed(() => {
   const max = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
   const min = props.minDate ? new Date(props.minDate).getFullYear() : null;
 
-  return props.years.filter((item)=>{
+  return props.years.filter((item) => {
     const tmp = [];
     if (min) {
-      tmp.push(item.value >= min)
+      tmp.push(item.value >= min);
     }
     if (max) {
-      tmp.push(item.value <= max)
+      tmp.push(item.value <= max);
     }
     return !tmp.includes(false);
-  })
-})
+  });
+});
 
 const monthList = computed(() => {
   const maxYear = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
@@ -99,34 +101,33 @@ const monthList = computed(() => {
   const minYear = props.minDate ? new Date(props.minDate).getFullYear() : null;
   const minMonth = props.minDate ? new Date(props.minDate).getMonth() : null;
 
-  return props.months.filter((item)=>{
+  return props.months.filter((item) => {
     const tmp = [];
     if (props.year === minYear && minMonth) {
-      tmp.push(item.value >= minMonth)
+      tmp.push(item.value >= minMonth);
     }
     if (props.year === maxYear && maxMonth) {
-      tmp.push(item.value <= maxMonth)
+      tmp.push(item.value <= maxMonth);
     }
     return !tmp.includes(false);
-  })
-})
+  });
+});
 
-const disabledPrev = computed(()=>{
+const disabledPrev = computed(() => {
   const minYear = props.minDate ? new Date(props.minDate).getFullYear() : null;
   const minMonth = props.minDate ? new Date(props.minDate).getMonth() : null;
-  if (minYear < props.year) return false
-  if (minYear === props.year && minMonth < props.month) return false
-  return true
+  if (minYear < props.year) return false;
+  if (minYear === props.year && minMonth < props.month) return false;
+  return true;
 });
 
-const disabledNext = computed(()=>{
+const disabledNext = computed(() => {
   const maxYear = props.maxDate ? new Date(props.maxDate).getFullYear() : null;
   const maxMonth = props.maxDate ? new Date(props.maxDate).getMonth() : null;
-  if (maxYear > props.year) return false
-  if (maxYear === props.year && maxMonth > props.month) return false
-  return true
+  if (maxYear > props.year) return false;
+  if (maxYear === props.year && maxMonth > props.month) return false;
+  return true;
 });
-
 </script>
 
 <style scoped>
