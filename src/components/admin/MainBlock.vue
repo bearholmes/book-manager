@@ -83,7 +83,7 @@
                 type="text"
                 :value="searchTxt"
                 autocomplete="off"
-                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-9 sm:text-sm border-gray-300 rounded-md"
                 placeholder="검색"
                 @input="onInputSearchTxt"
               />
@@ -171,10 +171,10 @@
 <script setup>
 import { currency, debounce } from '~/utils/common';
 import { orderBy } from 'lodash';
-import { computed, defineProps, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { DownloadIcon, SearchIcon, XCircleIcon, SortAscendingIcon, SortDescendingIcon } from '@heroicons/vue/solid';
 import { ExclamationIcon, SpeakerphoneIcon, XIcon } from '@heroicons/vue/outline';
-import BookItem from '~/components/admin/BookItem';
+import BookItem from '~/components/common/BookItem';
 import SidePopEdit from '~/components/admin/SidePopEdit';
 import Alert from '~/components/popup/Alert';
 import Container from '~/components/common/Container';

@@ -7,9 +7,9 @@
 </template>
 
 <script setup>
-import Header from '../components/layouts/HeaderAdmin';
+import Header from '~/components/layouts/HeaderAdmin';
 import { useHead } from 'nuxt/app';
-import ToastList from '../components/popup/ToastList';
+import ToastList from '~/components/popup/ToastList';
 useHead({
   bodyAttrs: {
     class: 'h-full bg-gray-100',

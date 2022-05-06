@@ -38,14 +38,14 @@
 <script setup>
 import { nextTick, ref, watch, reactive, onUnmounted } from 'vue';
 import { uniq } from 'lodash';
+import { Book } from '~/models/book';
 import FileSelect from '~/components/admin/FileSelect';
 import demoFile from '~/assets/demoData.json';
 import Container from '~/components/common/Container';
 import Spinner from '~/components/common/Spinner';
 import MainBlock from '~/components/admin/MainBlock';
-import { Book } from '~/models/book';
-import StatBlock from '../../components/admin/StatBlock';
-import TabBlock from '../../components/admin/TabBlock';
+import StatBlock from '~/components/admin/StatBlock';
+import TabBlock from '~/components/admin/TabBlock';
 
 const selectedFile = ref(null);
 
