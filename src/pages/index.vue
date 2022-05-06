@@ -8,9 +8,9 @@
           <div class="px-4 py-8 sm:px-0 bg-white border border-transparent rounded-md shadow-sm">
             <div class="px-4">
               <button
-                  type="button"
-                  class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                  @click="onClickDemo"
+                type="button"
+                class="block w-full items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                @click="onClickDemo"
               >
                 DEMO
               </button>
@@ -21,9 +21,7 @@
     </main>
     <template v-else>
       <div class="py-20">
-        <MainBlock
-            :book-list="bookList"
-        />
+        <MainBlock :book-list="bookList" />
       </div>
     </template>
   </nuxt-layout>
@@ -34,7 +32,7 @@ import FileSelect from '~/components/admin/FileSelect';
 import demoFile from '~/assets/demoData.json';
 import Container from '~/components/common/Container';
 import { Book } from '~/models/book';
-import MainBlock from "~/components/user/MainBlock";
+import MainBlock from '~/components/user/MainBlock';
 
 const selectedFile = ref(null);
 const bookList = ref([]);
@@ -43,7 +41,6 @@ const status = reactive({
   isLoading: false,
   isSelectedFile: false,
 });
-
 
 onUnmounted(() => {
   bookList.value = [];

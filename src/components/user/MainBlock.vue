@@ -26,17 +26,17 @@
               <XCircleIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
             </div>
             <input
-                id="search"
-                type="text"
-                :value="searchTxt"
-                autocomplete="off"
-                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-9 sm:text-sm border-gray-300 rounded-md"
-                placeholder="검색"
-                @input="onInputSearchTxt"
+              id="search"
+              type="text"
+              :value="searchTxt"
+              autocomplete="off"
+              class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-9 sm:text-sm border-gray-300 rounded-md"
+              placeholder="검색"
+              @input="onInputSearchTxt"
             />
             <p
-                v-if="filterList.length !== bookList.length"
-                class="absolute -bottom-7 bg-blue-200 rounded-md shadow-sm left-9 text-xs py-1 px-2 text-blue-700 bg-opacity-90"
+              v-if="filterList.length !== bookList.length"
+              class="absolute -bottom-7 bg-blue-200 rounded-md shadow-sm left-9 text-xs py-1 px-2 text-blue-700 bg-opacity-90"
             >
               <span class="sr-only">검색됨</span> {{ filterList.length }} 건
             </p>
@@ -49,6 +49,7 @@
         <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" @search="searchBook" />
       </ul>
     </Container>
+    <ContentModal v-model:is-show="isShowContent" :item="selectedBook" />
   </main>
 </template>
 <script setup>
@@ -59,6 +60,7 @@ import { SearchIcon, XCircleIcon, SortAscendingIcon, SortDescendingIcon } from '
 import BookItem from '~/components/common/BookItem';
 import Container from '~/components/common/Container';
 import Select from '~/components/common/Select';
+import ContentModal from './ContentModal';
 
 const props = defineProps({
   bookList: {
@@ -69,19 +71,17 @@ const props = defineProps({
   },
 });
 
-const bookList = computed(()=>props.bookList);
+const bookList = computed(() => props.bookList);
 
 const refContent = ref(null);
 const refList = ref(null);
 
 const isShowContent = ref(false);
 const selectedBook = ref({});
-const selectedIdx = ref(null);
 
 const openBook = (item, index) => {
   isShowContent.value = true;
   selectedBook.value = item;
-  selectedIdx.value = index;
 };
 
 const searchTxt = ref('');
@@ -93,11 +93,11 @@ let onInputSearchTxt = (e) => {
   setDebounceTxt(e);
 };
 const setDebounceTxt = debounce(
-    (e) => {
-      searchTxt.value = e.target.value;
-    },
-    150,
-    false,
+  (e) => {
+    searchTxt.value = e.target.value;
+  },
+  150,
+  false,
 );
 
 const filterList = computed(() => {
@@ -110,13 +110,13 @@ const filterList = computed(() => {
     tmp = bookList.value.filter((item) => {
       const strIsbn = typeof item.ISBN13 === 'string' ? item.ISBN13 : item.ISBN13.toString();
       return (
-          item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-          strIsbn.includes(searchTxt.value) ||
-          item.condition.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-          item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-          item.author.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-          item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
-          item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
+        item.bookName.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        strIsbn.includes(searchTxt.value) ||
+        item.condition.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.publisher.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.author.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.purchasePlace.toLowerCase().includes(searchTxt.value.toLowerCase()) ||
+        item.topic.toLowerCase().includes(searchTxt.value.toLowerCase())
       );
     });
   }
@@ -124,9 +124,9 @@ const filterList = computed(() => {
     return orderBy(tmp, [(item) => new Date(item[sort.value.selected.value]).getTime()], [sort.value.selected.direction]);
   } else if (sort.value.selected.type === 'number') {
     return orderBy(
-        tmp,
-        [(item) => (typeof item[sort.value.selected.value] === 'number' ? item[sort.value.selected.value] : parseInt(item[sort.value.selected.value]))],
-        [sort.value.selected.direction],
+      tmp,
+      [(item) => (typeof item[sort.value.selected.value] === 'number' ? item[sort.value.selected.value] : parseInt(item[sort.value.selected.value]))],
+      [sort.value.selected.direction],
     );
   } else {
     return orderBy(tmp, [sort.value.selected.value], [sort.value.selected.direction]);
