@@ -30,23 +30,7 @@ const props = defineProps({
   item: {
     type: Object,
     default: () => {
-      return {
-        bookName: '',
-        ISBN13: '',
-        condition: '',
-        purchasePrice: '',
-        currency: 'KRW',
-        purchasePriceSec: '',
-        currencySec: '',
-        purchaseDate: '',
-        purchasePlace: '',
-        author: '',
-        topic: '',
-        publisher: '',
-        imageUrl: '',
-        duplicated: '',
-        comment: '',
-      };
+      return {};
     },
   },
 });

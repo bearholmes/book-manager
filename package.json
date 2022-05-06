@@ -1,6 +1,6 @@
 {
   "name": "book-management-in-the-corner-of-the-room",
-  "varsion": "0.0.25",
+  "varsion": "0.0.26",
   "private": true,
   "scripts": {
     "build": "nuxt build",
@@ -29,6 +29,8 @@
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.0",
     "@vuepic/vue-datepicker": "^3.1.1",
+    "chart.js": "^3.7.1",
+    "chartjs-plugin-datalabels": "^2.0.0",
     "dayjs": "^1.11.1",
     "lodash": "^4.17.21",
     "nuxt": "^3.0.0-rc.1",

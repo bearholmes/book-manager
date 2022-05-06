@@ -24,3 +24,5 @@ export const currency = (value, nullTxt = '-') => {
   }
   return value.toString().replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, '$1,');
 };
+
+export const randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));

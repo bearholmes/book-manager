@@ -423,6 +423,7 @@ import {
 } from '@headlessui/vue';
 import DatePicker from '~/components/datepicker/DatePicker';
 import { CheckIcon, SelectorIcon } from '@heroicons/vue/solid';
+import { Book } from '~/models/book';
 
 const props = defineProps({
   isShow: {
@@ -442,24 +443,25 @@ const props = defineProps({
   },
 });
 
-const book = ref({
-  bookName: '',
-  ISBN13: '',
-  condition: '',
-  purchasePrice: '',
-  currency: 'KRW',
-  purchasePriceSec: '',
-  currencySec: '',
-  purchaseDate: '',
-  purchasePlace: '',
-  publicationDate: '',
-  author: '',
-  topic: '',
-  publisher: '',
-  imageUrl: '',
-  duplicated: '',
-  comment: '',
+const emits = defineEmits(['update:isShow', 'create', 'update:topicList', 'update:purchasePlaceList']);
+const topicList = computed({
+  get() {
+    return props.topicList;
+  },
+  set(val) {
+    emits('update:topicList', val);
+  },
 });
+const purchasePlaceList = computed({
+  get() {
+    return props.purchasePlaceList;
+  },
+  set(val) {
+    emits('update:purchasePlaceList', val);
+  },
+});
+
+const book = ref(new Book());
 
 const currencySec = ref('');
 watch(
@@ -491,8 +493,6 @@ watch(
   },
 );
 
-const emit = defineEmits(['update:isShow', 'create']);
-
 const queryTopic = ref('');
 const queryPurchasePlace = ref('');
 
@@ -503,31 +503,31 @@ const reset = () => {
 
 const close = () => {
   reset();
-  emit('update:isShow', false);
+  emits('update:isShow', false);
 };
 
 const filteredTopicList = computed(() =>
   queryTopic.value === ''
-    ? props.topicList
-    : props.topicList.filter((item) => {
+    ? topicList
+    : topicList.value.filter((item) => {
         return item.toLowerCase().includes(queryTopic.value.toLowerCase());
       }),
 );
 const filteredPurchasePlaceList = computed(() =>
   queryPurchasePlace.value === ''
-    ? props.purchasePlaceList
-    : props.purchasePlaceList.filter((item) => {
+    ? purchasePlaceList
+    : purchasePlaceList.value.filter((item) => {
         return item.toLowerCase().includes(queryPurchasePlace.value.toLowerCase());
       }),
 );
 
 const pushTopic = () => {
-  props.topicList.push(queryTopic.value);
+  topicList.value.push(queryTopic.value);
   book.value.topic = queryTopic.value;
 };
 
 const pushPurchasePlace = () => {
-  props.purchasePlaceList.push(queryPurchasePlace.value);
+  purchasePlaceList.value.push(queryPurchasePlace.value);
   book.value.purchasePlace = queryPurchasePlace.value;
 };
 
@@ -540,25 +540,8 @@ conditionList.value = [
 const saveBook = () => {
   // if (!book.value.topic && queryTopic.value) book.value.topic = queryTopic.value;
   // if (!book.value.purchasePlace && queryPurchasePlace.value) book.value.purchasePlace = queryPurchasePlace.value;
-  emit('create', book.value);
-  book.value = {
-    bookName: '',
-    ISBN13: '',
-    condition: '',
-    purchasePrice: '',
-    currency: 'KRW',
-    purchasePriceSec: '',
-    currencySec: '',
-    purchaseDate: '',
-    purchasePlace: '',
-    publicationDate: '',
-    author: '',
-    topic: '',
-    publisher: '',
-    imageUrl: '',
-    duplicated: '',
-    comment: '',
-  };
+  emits('create', book.value);
+  book.value = new Book();
 };
 
 const dateConfig = ref({

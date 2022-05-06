@@ -454,24 +454,7 @@ const props = defineProps({
   item: {
     type: Object,
     default: () => {
-      return {
-        bookName: '',
-        ISBN13: '',
-        condition: '',
-        purchasePrice: '',
-        currency: 'KRW',
-        purchasePriceSec: '',
-        currencySec: '',
-        purchaseDate: '',
-        purchasePlace: '',
-        publicationDate: '',
-        author: '',
-        topic: '',
-        publisher: '',
-        imageUrl: '',
-        duplicated: '',
-        comment: '',
-      };
+      return {};
     },
   },
   topicList: {
@@ -487,13 +470,14 @@ const props = defineProps({
     },
   },
 });
+const emits = defineEmits(['update:isShow', 'update:item', 'delete', 'update:topicList', 'update:purchasePlaceList']);
 
 const book = computed({
   get() {
     return props.item;
   },
   set(value) {
-    emit('update:item', value);
+    emits('update:item', value);
   },
 });
 
@@ -516,6 +500,23 @@ watch(
   { deep: true },
 );
 
+const topicList = computed({
+  get() {
+    return props.topicList;
+  },
+  set(val) {
+    emits('update:topicList', val);
+  },
+});
+const purchasePlaceList = computed({
+  get() {
+    return props.purchasePlaceList;
+  },
+  set(val) {
+    emits('update:purchasePlaceList', val);
+  },
+});
+
 watch(
   () => props.isShow,
   (val) => {
@@ -527,8 +528,6 @@ watch(
   },
 );
 
-const emit = defineEmits(['update:isShow', 'delete']);
-
 const queryTopic = ref('');
 const queryPurchasePlace = ref('');
 
@@ -539,31 +538,31 @@ const reset = () => {
 
 const close = () => {
   reset();
-  emit('update:isShow', false);
+  emits('update:isShow', false);
 };
 
 const filteredTopicList = computed(() =>
   queryTopic.value === ''
-    ? props.topicList
-    : props.topicList.filter((item) => {
+    ? topicList
+    : topicList.value.filter((item) => {
         return item.toLowerCase().includes(queryTopic.value.toLowerCase());
       }),
 );
 const filteredPurchasePlaceList = computed(() =>
   queryPurchasePlace.value === ''
-    ? props.purchasePlaceList
-    : props.purchasePlaceList.filter((item) => {
+    ? purchasePlaceList
+    : purchasePlaceList.value.filter((item) => {
         return item.toLowerCase().includes(queryPurchasePlace.value.toLowerCase());
       }),
 );
 
 const pushTopic = () => {
-  props.topicList.push(queryTopic.value);
+  topicList.value.push(queryTopic.value);
   book.value.topic = queryTopic.value;
 };
 
 const pushPurchasePlace = () => {
-  props.purchasePlaceList.push(queryPurchasePlace.value);
+  purchasePlaceList.value.push(queryPurchasePlace.value);
   book.value.purchasePlace = queryPurchasePlace.value;
 };
 
@@ -574,7 +573,7 @@ conditionList.value = [
 ];
 
 const deleteBook = () => {
-  emit('delete', props.index);
+  emits('delete', props.index);
 };
 
 const keyEvtListener = (e) => {

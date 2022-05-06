@@ -27,13 +27,12 @@
   </div>
 </template>
 <script setup>
-import { useState } from 'nuxt/app';
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import PicturePlus from '../icons/PicturePlus';
 
 const emit = defineEmits(['select']);
 
-const isDropped = useState('dragAndDropCapable', () => false);
+const isDropped = ref(false);
 let inDropTimeout = null;
 
 const onDrop = (e) => {
@@ -54,9 +53,14 @@ const preventDefaults = (e) => {
   e.preventDefault();
 };
 
+const onFileChange = (e) => {
+  let files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+  emit('select', files[0]);
+};
+
 const events = ['dragenter', 'dragover', 'dragleave', 'drop'];
 onMounted(() => {
-  // console.log('onMounted');
   events.forEach((eventName) => {
     document.body.addEventListener(eventName, preventDefaults);
   });
@@ -68,10 +72,9 @@ onUnmounted(() => {
     document.body.removeEventListener(eventName, preventDefaults);
   });
 });
-
-const onFileChange = (e) => {
-  let files = e.target.files || e.dataTransfer.files;
-  if (!files.length) return;
-  emit('select', files[0]);
-};
 </script>
+<style scoped>
+.on {
+  @apply border-blue-300;
+}
+</style>
