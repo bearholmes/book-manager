@@ -1,7 +1,7 @@
 <template>
   <TransitionRoot as="template" :show="props.isShow">
     <div class="fixed z-30 inset-0 overflow-y-auto">
-      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="flex items-end justify-center min-h-screen py-8 px-4 text-center sm:block sm:p-0">
         <TransitionChild
           as="template"
           enter="ease-out duration-300"
@@ -48,7 +48,7 @@
                 </h3>
               </div>
               <p class="mt-3 max-w-2xl text-sm text-gray-500 leading-6">
-                <span v-if="book.topic" class="book-item-tag__block" :class="topicClass">
+                <span v-if="book.topic" class="book-item-tag__block text-black" :style="topicBg">
                   {{ book.topic }}
                 </span>
                 <span class="inline-block ml-2">{{ book.ISBN13 }}</span>
@@ -66,11 +66,11 @@
                 </div>
                 <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">출간일</dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ book.publicationDate || '-' }}</dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ dateFormat(book.publicationDate) }}</dd>
                 </div>
                 <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">구매일</dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ book.purchaseDate || '-' }}</dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ dateFormat(book.purchaseDate) }}</dd>
                 </div>
 
                 <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -111,12 +111,19 @@ import { TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { computed, watch } from 'vue';
 import { XIcon } from '@heroicons/vue/outline';
 import { currency } from '~/utils/common';
+import dayjs from 'dayjs';
 
 const props = defineProps({
   isShow: {
     type: Boolean,
   },
   item: {
+    type: Object,
+    default: () => {
+      return {};
+    },
+  },
+  topicColor: {
     type: Object,
     default: () => {
       return {};
@@ -142,23 +149,15 @@ const close = () => {
   emits('update:isShow', false);
 };
 
-const topicClass = computed(() => {
-  const colorSet = {
-    가죽공예: 'bg-orange-200',
-    기타: 'bg-stone-200',
-    라탄: 'bg-amber-200',
-    무크: 'bg-purple-200',
-    양모자수: 'bg-rose-200',
-    양모펠트: 'bg-pink-200',
-    에코크래프트: 'bg-green-200',
-    자수: 'bg-violet-200',
-    코바늘: 'bg-cyan-200',
-    펀치니들: 'bg-blue-200',
-    펠트: 'bg-indigo-200',
-    폼폼: 'bg-sky-200',
-  };
-  return book.value.topic ? colorSet[book.value.topic] : 'bg-slate-200';
+const topicBg = computed(() => {
+  const color = props.topicColor[props.item.topic];
+  return `background-color:${color};`;
 });
+
+const dateFormat = (val) => {
+  if (!val) return '-';
+  return dayjs(val).format('YYYY.MM.DD');
+};
 </script>
 <style scoped>
 .book-item-tag__block {

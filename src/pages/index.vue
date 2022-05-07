@@ -21,7 +21,7 @@
     </main>
     <template v-else>
       <div class="py-20">
-        <MainBlock :book-list="bookList" />
+        <MainBlock :book-list="bookList" :topic-color="topicColor" />
       </div>
     </template>
   </nuxt-layout>
@@ -33,9 +33,13 @@ import demoFile from '~/assets/demoData.json';
 import Container from '~/components/common/Container';
 import { Book } from '~/models/book';
 import MainBlock from '~/components/user/MainBlock';
+import { ColorQueue } from '../utils/common';
+import { uniq } from 'lodash';
+import { watch } from 'vue';
 
 const selectedFile = ref(null);
 const bookList = ref([]);
+const topicColor = ref({});
 
 const status = reactive({
   isLoading: false,
@@ -76,5 +80,27 @@ const onClickDemo = async () => {
   });
   status.isLoading = true;
   status.isSelectedFile = true;
+};
+
+watch(
+  () => bookList.value,
+  () => {
+    console.log('changed');
+    loadAfter();
+  },
+  { deep: true },
+);
+
+const loadAfter = () => {
+  const topicAllList = bookList.value.map((item) => item.topic);
+  const topicList = uniq(topicAllList)
+    .filter((item) => !!item)
+    .sort();
+  const colorSet = new ColorQueue();
+  topicList.forEach((item) => {
+    if (!topicColor.value[item]) {
+      topicColor.value[item] = colorSet.dequeue();
+    }
+  });
 };
 </script>

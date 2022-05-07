@@ -27,6 +27,7 @@
           v-model:bookList="bookList"
           v-model:topicList="topicList"
           v-model:purchasePlaceList="purchasePlaceList"
+          :topic-color="topicColor"
           :img-null-cnt="imgNullCnt"
         />
         <StatBlock v-show="selectedTab === 'STAT'" :book-list="bookList" />
@@ -46,6 +47,7 @@ import Spinner from '~/components/common/Spinner';
 import MainBlock from '~/components/admin/MainBlock';
 import StatBlock from '~/components/admin/StatBlock';
 import TabBlock from '~/components/admin/TabBlock';
+import { ColorQueue } from '../../utils/common';
 
 const selectedFile = ref(null);
 
@@ -53,6 +55,7 @@ const bookList = ref([]);
 const topicList = ref([]);
 const purchasePlaceList = ref([]);
 const imgNullCnt = ref(0);
+const topicColor = ref({});
 
 const status = reactive({
   isLoading: false,
@@ -116,6 +119,13 @@ const loadAfter = () => {
 
   const imageUrlNullList = bookList.value.filter((item) => !item.imageUrl);
   imgNullCnt.value = imageUrlNullList.length;
+
+  const colorSet = new ColorQueue();
+  topicList.value.forEach((item) => {
+    if (!topicColor.value[item]) {
+      topicColor.value[item] = colorSet.dequeue();
+    }
+  });
 };
 
 const onClickDemo = async () => {

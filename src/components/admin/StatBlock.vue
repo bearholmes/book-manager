@@ -120,17 +120,16 @@ import { orderBy } from 'lodash';
 import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/outline';
 import Chart from '~/components/common/Chart';
 import Container from '~/components/common/Container';
-import { currency, randomBetween } from '~/utils/common';
+import { currency } from '~/utils/common';
+import { ColorQueue, convHtmlColorToInt, getRandomHtmlColor } from '../../utils/common';
 
+const colorSet = new ColorQueue();
 const randomRgba = () => {
-  const min = 40;
-  const max = 210;
-  const r = randomBetween(min, max);
-  const g = randomBetween(min, max);
-  const b = randomBetween(min, max);
+  const color = colorSet.dequeue() || getRandomHtmlColor(50, 200);
+  const { r, g, b } = convHtmlColorToInt(color);
   return {
-    border: `rgba(${r},${g},${b},.8`,
-    bg: `rgba(${r},${g},${b},.2)`,
+    border: `rgba(${r},${g},${b},1`,
+    bg: `rgba(${r},${g},${b},.8)`,
   };
 };
 
@@ -191,7 +190,7 @@ optionDateResult.value = {
   //responsive: true,
   cutout: '60%',
   layout: {
-    padding: 20,
+    padding: 0,
   },
   plugins: {
     legend: {
@@ -223,16 +222,14 @@ optionDateResult.value = {
   },
 };
 const dataDateResult = ref({});
-const barColor = randomRgba();
-const lineColor = randomRgba();
 dataDateResult.value = {
   labels: [],
   datasets: [
     {
       label: '금액',
       data: [],
-      backgroundColor: [barColor.bg],
-      borderColor: [barColor.border],
+      backgroundColor: ['rgba(163, 204, 184, .6)'],
+      borderColor: ['rgba(163, 204, 184, 1)'],
       borderWidth: 2,
       fill: false,
       yAxisID: 'y',
@@ -245,8 +242,8 @@ dataDateResult.value = {
       label: '권수',
       type: 'line',
       data: [],
-      backgroundColor: [lineColor.border],
-      borderColor: [lineColor.bg],
+      backgroundColor: ['rgba(138, 168, 229,.6)'],
+      borderColor: ['rgba(138, 168, 229,1)'],
       pointStyle: 'rectRot',
       yAxisID: 'y1',
     },

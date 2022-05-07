@@ -3,7 +3,7 @@
     <a href="javascript:void(0);" @click="open">
       <div class="book-item-image__block" :style="bgImage" :class="{ blank: !props.item.imageUrl }"></div>
       <div class="-mt-px relative flex-row text-left p-4 pt-6 mb-12">
-        <span v-if="item.topic" class="book-item-tag__block" :class="topicClass">
+        <span v-if="item.topic" class="book-item-tag__block" :style="topicBg">
           {{ item.topic }}
         </span>
         <strong class="font-normal text-sm sm:text-base hover:text-blue-500 hover:underline">{{ item.bookName }}</strong>
@@ -33,6 +33,12 @@ const props = defineProps({
       return {};
     },
   },
+  topicColor: {
+    type: Object,
+    default: () => {
+      return {};
+    },
+  },
 });
 
 const emit = defineEmits(['open', 'search']);
@@ -50,24 +56,10 @@ const search = (text) => {
 
 /**
  * 주제별 컬러셋 설정
- * @type {ComputedRef<*|string>}
  */
-const topicClass = computed(() => {
-  const colorSet = {
-    가죽공예: 'bg-orange-200',
-    기타: 'bg-stone-200',
-    라탄: 'bg-amber-200',
-    무크: 'bg-purple-200',
-    양모자수: 'bg-rose-200',
-    양모펠트: 'bg-pink-200',
-    에코크래프트: 'bg-green-200',
-    자수: 'bg-violet-200',
-    코바늘: 'bg-cyan-200',
-    펀치니들: 'bg-blue-200',
-    펠트: 'bg-indigo-200',
-    폼폼: 'bg-sky-200',
-  };
-  return props.item.topic ? colorSet[props.item.topic] : 'bg-slate-200';
+const topicBg = computed(() => {
+  const color = props.topicColor[props.item.topic];
+  return `background-color:${color};`;
 });
 
 /**

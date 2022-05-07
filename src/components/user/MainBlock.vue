@@ -5,14 +5,14 @@
         <div class="w-4/12 md:w-2/12 relative mr-2 md:mr-0">
           <Select v-model="sort.selected" :options="sort.options" label-text="정렬" :is-show-label="false">
             <template #value="vProps">
-              <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-5 w-5 text-gray-400" />
-              <SortDescendingIcon v-else class="inline-block h-5 w-5 text-gray-400" />
-              <span class="text-gray-700 text-sm ml-1.5">{{ vProps.item.name }}</span>
+              <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <SortDescendingIcon v-else class="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <span class="text-gray-700 text-xs sm:text-sm ml-1.5">{{ vProps.item.name }}</span>
             </template>
             <template #name="vProps">
-              <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-5 w-5 text-gray-400" />
-              <SortDescendingIcon v-else class="inline-block h-5 w-5 text-gray-400" />
-              <span class="text-gray-700 text-sm ml-1.5">{{ vProps.item.name }}</span>
+              <SortAscendingIcon v-if="vProps.item.direction === 'asc'" class="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <SortDescendingIcon v-else class="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <span class="text-gray-700 text-xs sm:text-sm ml-1.5">{{ vProps.item.name }}</span>
             </template>
           </Select>
         </div>
@@ -20,17 +20,17 @@
           <label for="search" class="sr-only">검색</label>
           <div class="mt-1 relative rounded-md shadow-sm">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <SearchIcon class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
             </div>
             <div v-if="searchTxt.length > 0" class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" @click="searchTxt = ''">
-              <XCircleIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <XCircleIcon class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
             </div>
             <input
               id="search"
               type="text"
               :value="searchTxt"
               autocomplete="off"
-              class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-9 sm:text-sm border-gray-300 rounded-md"
+              class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-9 text-xs sm:text-sm border-gray-300 rounded-md leading-6"
               placeholder="검색"
               @input="onInputSearchTxt"
             />
@@ -46,10 +46,18 @@
     </Container>
     <Container class="mt-4">
       <ul ref="refList" role="list" class="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-        <BookItem v-for="(item, index) in filterList" :key="index" :item="item" :index="index" @open="openBook" @search="searchBook" />
+        <BookItem
+          v-for="(item, index) in filterList"
+          :key="index"
+          :item="item"
+          :index="index"
+          :topic-color="props.topicColor"
+          @open="openBook"
+          @search="searchBook"
+        />
       </ul>
     </Container>
-    <ContentModal v-model:is-show="isShowContent" :item="selectedBook" />
+    <ContentModal v-model:is-show="isShowContent" :item="selectedBook" :topic-color="props.topicColor" />
   </main>
 </template>
 <script setup>
@@ -69,6 +77,12 @@ const props = defineProps({
       return [];
     },
   },
+  topicColor: {
+    type: Object,
+    default: () => {
+      return {};
+    },
+  },
 });
 
 const bookList = computed(() => props.bookList);
@@ -79,7 +93,7 @@ const refList = ref(null);
 const isShowContent = ref(false);
 const selectedBook = ref({});
 
-const openBook = (item, index) => {
+const openBook = (item) => {
   isShowContent.value = true;
   selectedBook.value = item;
 };
