@@ -9,7 +9,7 @@
         <p class="mt-1 max-w-2xl text-sm text-gray-500">{{item.license}}</p>
         <div class="mt-5">
           <ul class="divide-y divide-gray-200 text-sm" v-for="(lItem, lIdx) in item.link" :key="lIdx">
-            <li class="py-2"><a :href="lItem.href" target="_blank">{{lItem.name}}</a></li>
+            <li><a :href="lItem.href" target="_blank">{{lItem.name}}</a></li>
           </ul>
         </div>
       </div>
