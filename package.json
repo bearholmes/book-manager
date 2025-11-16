@@ -47,12 +47,14 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tanstack/react-query-devtools": "^5.62.3",
     "dotenv": "^16.4.5",
-    "storybook": "^10.0.7",
-    "@storybook/react-vite": "^10.0.7",
-    "@chromatic-com/storybook": "^4.1.2",
-    "@storybook/addon-docs": "^10.0.7",
-    "@storybook/addon-onboarding": "^10.0.7",
-    "eslint-plugin-storybook": "^10.0.7"
+    "storybook": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/test": "^8.4.7"
   },
   "engines": {
     "node": ">=20.0.0",
