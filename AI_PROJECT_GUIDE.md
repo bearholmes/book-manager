@@ -369,7 +369,6 @@ bookList 데이터
 - [ ] 표지 이미지 에러 처리
 
 ### 향후 계획
-- [ ] 도서 정보 자동 입력 (Daum API 연동)
 - [ ] 복사 기능 (중복 구매 방지)
 - [ ] 라우터 가드 (접근 권한 관리)
 
@@ -441,21 +440,6 @@ const chartData = {
 5. **상태 관리**: Pinia 스토어 업데이트
 6. **테스트**: 데모 데이터로 동작 확인
 7. **린팅**: `npm run lint` 실행
-
-### API 연동 시 고려사항
-
-향후 Daum API 연동 시:
-```javascript
-// composables 폴더 생성 권장
-// composables/useBookApi.js
-export const useBookApi = () => {
-  const fetchBookInfo = async (isbn) => {
-    // API 호출 로직
-  };
-
-  return { fetchBookInfo };
-};
-```
 
 ---
 

@@ -46,6 +46,5 @@ Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) f
 - 정렬시 해당 값 목록에 표시
 
 ### next.
-- 도서정보자동입력(daum  api)
 - 복사기능(중복구매)
 - 라우터가드
