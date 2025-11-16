@@ -15,7 +15,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper 컴포넌트로 상태 관리
-function ModalWrapper(args: any) {
+function ModalWrapper(args: Omit<React.ComponentProps<typeof Modal>, 'isOpen' | 'onClose'>) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -36,6 +36,8 @@ export const Default: Story = {
   render: (args) => <ModalWrapper {...args} />,
   args: {
     title: '기본 모달',
+    isOpen: true,
+    onClose: () => {},
     children: (
       <div>
         <p className="text-gray-700">모달 콘텐츠가 여기에 표시됩니다.</p>
@@ -50,6 +52,8 @@ export const Small: Story = {
   args: {
     title: '작은 모달',
     size: 'sm',
+    isOpen: true,
+    onClose: () => {},
     children: <p className="text-gray-700">작은 크기의 모달입니다.</p>,
   },
 };
@@ -59,6 +63,8 @@ export const Large: Story = {
   args: {
     title: '큰 모달',
     size: 'xl',
+    isOpen: true,
+    onClose: () => {},
     children: (
       <div>
         <p className="text-gray-700">큰 크기의 모달입니다.</p>
@@ -76,6 +82,8 @@ export const WithForm: Story = {
   args: {
     title: '폼이 있는 모달',
     size: 'md',
+    isOpen: true,
+    onClose: () => {},
     children: (
       <form className="space-y-4">
         <div>
@@ -122,6 +130,8 @@ export const LongContent: Story = {
   args: {
     title: '긴 콘텐츠가 있는 모달',
     size: 'lg',
+    isOpen: true,
+    onClose: () => {},
     children: (
       <div className="space-y-4">
         {Array.from({ length: 10 }).map((_, i) => (

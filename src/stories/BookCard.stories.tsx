@@ -28,6 +28,8 @@ const mockBook: Book = {
   condition: '신품',
   purchase_price: 33000,
   currency: 'KRW',
+  purchase_price_sec: null,
+  currency_sec: null,
   purchase_date: '2024-01-15',
   purchase_place: '교보문고',
   topic: '프로그래밍',

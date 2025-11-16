@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 const mockTopics = ['프로그래밍', '소설', '자기계발', '역사', '과학'];
 const mockPurchasePlaces = ['교보문고', '예스24', '알라딘', '온라인서점'];
 
-function FiltersWrapper(args: any) {
+function FiltersWrapper(args: Omit<React.ComponentProps<typeof BookFilters>, 'filters' | 'onChange'>) {
   const [filters, setFilters] = useState<BookFiltersType>({});
 
   return (
@@ -37,6 +37,8 @@ export const Default: Story = {
   args: {
     topics: mockTopics,
     purchasePlaces: mockPurchasePlaces,
+    filters: {},
+    onChange: () => {},
   },
 };
 
@@ -60,6 +62,8 @@ export const WithManyTopics: Story = {
       '여행',
     ],
     purchasePlaces: mockPurchasePlaces,
+    filters: {},
+    onChange: () => {},
   },
 };
 
@@ -68,6 +72,8 @@ export const NoTopics: Story = {
   args: {
     topics: [],
     purchasePlaces: mockPurchasePlaces,
+    filters: {},
+    onChange: () => {},
   },
 };
 
@@ -76,6 +82,8 @@ export const NoPurchasePlaces: Story = {
   args: {
     topics: mockTopics,
     purchasePlaces: [],
+    filters: {},
+    onChange: () => {},
   },
 };
 
@@ -84,5 +92,7 @@ export const Empty: Story = {
   args: {
     topics: [],
     purchasePlaces: [],
+    filters: {},
+    onChange: () => {},
   },
 };

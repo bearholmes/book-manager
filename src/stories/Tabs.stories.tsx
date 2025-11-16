@@ -20,7 +20,7 @@ const tabs = [
   { id: 'tab3', name: '세 번째' },
 ];
 
-function TabsWrapper(args: any) {
+function TabsWrapper(args: Omit<React.ComponentProps<typeof Tabs>, 'activeTab' | 'onChange'>) {
   const [activeTab, setActiveTab] = useState('tab1');
 
   return (
@@ -37,6 +37,8 @@ export const Default: Story = {
   render: (args) => <TabsWrapper {...args} />,
   args: {
     tabs,
+    activeTab: 'tab1',
+    onChange: () => {},
   },
 };
 
@@ -47,6 +49,8 @@ export const TwoTabs: Story = {
       { id: 'list', name: '목록' },
       { id: 'stats', name: '통계' },
     ],
+    activeTab: 'tab1',
+    onChange: () => {},
   },
 };
 
@@ -60,6 +64,8 @@ export const ManyTabs: Story = {
       { id: 'tab4', name: '보안' },
       { id: 'tab5', name: '개인정보' },
     ],
+    activeTab: 'tab1',
+    onChange: () => {},
   },
 };
 
@@ -71,5 +77,7 @@ export const LongNames: Story = {
       { id: 'tab2', name: '매우 긴 탭 이름 두 번째' },
       { id: 'tab3', name: '짧음' },
     ],
+    activeTab: 'tab1',
+    onChange: () => {},
   },
 };
