@@ -18,11 +18,12 @@ export function useCreateBook() {
       } = await supabase.auth.getUser();
       if (!user) throw new Error('인증되지 않았습니다');
 
-      const { data, error } = await supabase
-        .from('books')
-        .insert({ ...book, user_id: user.id })
+      const bookData: BookInsert = { ...book, user_id: user.id };
+      const result = await (supabase.from('books') as any)
+        .insert(bookData)
         .select()
         .single();
+      const { data, error } = result;
 
       if (error) throw error;
       return data;

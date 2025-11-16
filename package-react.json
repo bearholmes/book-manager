@@ -43,6 +43,7 @@
     "autoprefixer": "^10.4.20",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tanstack/react-query-devtools": "^5.62.3",
     "dotenv": "^16.4.5"
   },
   "engines": {

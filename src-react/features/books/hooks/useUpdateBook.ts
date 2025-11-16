@@ -13,12 +13,12 @@ export function useUpdateBook() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: BookUpdate & { id: string }) => {
-      const { data, error } = await supabase
-        .from('books')
+      const result = await (supabase.from('books') as any)
         .update(updates)
         .eq('id', id)
         .select()
         .single();
+      const { data, error} = result;
 
       if (error) throw error;
       return data;

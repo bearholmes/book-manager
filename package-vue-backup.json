@@ -1,0 +1,45 @@
+{
+  "name": "book-management-in-the-corner-of-the-room",
+  "varsion": "0.0.30",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "nuxt start",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore . --fix"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-module": "^3.1.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-nuxt": "^3.2.0",
+    "eslint-plugin-vue": "^8.7.1",
+    "prettier": "^2.6.2"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.5.0",
+    "@heroicons/vue": "^1.0.6",
+    "@nuxtjs/tailwindcss": "^5.0.4",
+    "@pinia/nuxt": "^0.1.8",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.1",
+    "@vuepic/vue-datepicker": "^3.1.1",
+    "chart.js": "^3.7.1",
+    "chartjs-plugin-datalabels": "^2.0.0",
+    "dayjs": "^1.11.1",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.0.0-rc.2",
+    "pinia": "^2.0.13",
+    "sass": "^1.50.1",
+    "vue": "^3.2.33"
+  },
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  }
+}
