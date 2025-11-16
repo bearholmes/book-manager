@@ -1,10 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/useToast';
-import { QUERY_KEYS } from '@/utils/constants';
+import { invalidateBookQueries } from '@/utils/query-helpers';
+import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookInsert } from '@/types/book';
 
+/**
+ * 임포트 결과 정보
+ */
 interface ImportResult {
   total: number;
   success: number;
@@ -13,9 +16,28 @@ interface ImportResult {
 }
 
 /**
- * JSON 파일에서 도서 데이터 임포트
+ * 도서 일괄 임포트 훅
+ *
+ * JSON 파일에서 도서 데이터를 읽어 일괄 등록합니다.
+ * 100개씩 배치 처리하여 대량 데이터도 안정적으로 처리합니다.
+ *
+ * @returns UseMutationResult - TanStack Query mutation 객체
+ *
+ * @example
+ * ```typescript
+ * const { mutate, isPending } = useImportBooks();
+ *
+ * const handleFileSelect = (file: File) => {
+ *   mutate(file, {
+ *     onSuccess: (result) => {
+ *       console.log(`성공: ${result.success}, 실패: ${result.failed}`);
+ *     },
+ *   });
+ * };
+ * ```
  */
 export function useImportBooks() {
+  const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
@@ -104,9 +126,11 @@ export function useImportBooks() {
 
       return result;
     },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.BOOKS });
+    onSuccess: async (result) => {
+      // 모든 도서 관련 쿼리 무효화
+      await invalidateBookQueries(queryClient);
 
+      // 결과에 따른 토스트 메시지
       if (result.failed === 0) {
         toast.success(`${result.success}개의 도서를 성공적으로 임포트했습니다.`);
       } else {
@@ -115,8 +139,13 @@ export function useImportBooks() {
         );
       }
     },
-    onError: (error: Error) => {
-      toast.error(`임포트 실패: ${error.message}`);
+    onError: (error: Error, file) => {
+      // 에러 로깅
+      logError('도서 임포트', error, { fileName: file.name, fileSize: file.size });
+
+      // 사용자 친화적 에러 메시지
+      const userMessage = getErrorMessage(error, '도서 임포트에 실패했습니다');
+      toast.error(userMessage);
     },
   });
 }

@@ -12,7 +12,9 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "type-check": "tsc --noEmit",
-    "migrate": "node scripts/migrate-json-to-supabase.js"
+    "migrate": "node scripts/migrate-json-to-supabase.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -44,7 +46,13 @@
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tanstack/react-query-devtools": "^5.62.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "storybook": "^10.0.7",
+    "@storybook/react-vite": "^10.0.7",
+    "@chromatic-com/storybook": "^4.1.2",
+    "@storybook/addon-docs": "^10.0.7",
+    "@storybook/addon-onboarding": "^10.0.7",
+    "eslint-plugin-storybook": "^10.0.7"
   },
   "engines": {
     "node": ">=20.0.0",

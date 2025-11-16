@@ -1,30 +1,65 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { formatCurrency, formatDate } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import type { Book } from '@/types/book';
 
 interface BookCardProps {
+  /** 도서 정보 */
   book: Book;
+  /** 주제 태그 배경색 */
   topicColor?: string;
+  /** 카드 클릭 핸들러 */
   onClick?: () => void;
+  /** 추가 CSS 클래스 */
   className?: string;
 }
 
 /**
  * 도서 카드 컴포넌트
- * Vue 버전의 BookItem 포팅
+ *
+ * 도서 정보를 카드 형태로 표시하는 컴포넌트입니다.
+ * 키보드 네비게이션과 스크린 리더를 지원합니다.
+ *
+ * React.memo로 최적화되어 props가 변경될 때만 리렌더링됩니다.
+ * 대량의 도서 목록을 렌더링할 때 성능 향상에 도움이 됩니다.
+ *
+ * @example
+ * ```tsx
+ * <BookCard
+ *   book={book}
+ *   topicColor="#E5E7EB"
+ *   onClick={() => openDetailModal(book.id)}
+ * />
+ * ```
  */
-export function BookCard({ book, topicColor, onClick, className }: BookCardProps) {
+export const BookCard = memo(function BookCard({ book, topicColor, onClick, className }: BookCardProps) {
   const [imageError, setImageError] = useState(false);
+
+  // 키보드 이벤트 핸들러 (Enter/Space)
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
+  // ARIA 레이블 생성
+  const ariaLabel = `${book.book_name}${book.author ? `, 저자: ${book.author}` : ''}${
+    book.topic ? `, 주제: ${book.topic}` : ''
+  }${book.purchase_price ? `, 가격: ${formatCurrency(book.purchase_price)}원` : ''}`;
 
   return (
     <div
       className={cn(
         'group relative overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:shadow-md',
-        onClick && 'cursor-pointer',
+        onClick && 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
         className,
       )}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? ariaLabel : undefined}
     >
       {/* 이미지 */}
       <div className="aspect-[3/4] w-full overflow-hidden bg-gray-100">
@@ -104,4 +139,4 @@ export function BookCard({ book, topicColor, onClick, className }: BookCardProps
       </div>
     </div>
   );
-}
+});

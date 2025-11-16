@@ -14,7 +14,7 @@ module.exports = {
   globals: {
     _: true,
   },
-  extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', '@vue/prettier'],
+  extends: ['plugin:vue/vue3-recommended', 'eslint:recommended', '@vue/prettier', 'plugin:storybook/recommended'],
   plugins: ['html', 'vue'],
   rules: {
     'prettier/prettier': [
