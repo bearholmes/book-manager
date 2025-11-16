@@ -12,8 +12,6 @@
       "dist",
       "build",
       ".next",
-      "src",
-      "nuxt.config.ts",
       "tailwind.config.js",
       "postcss.config.js"
     ]

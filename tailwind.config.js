@@ -1,17 +1,28 @@
-module.exports = {
+export default {
   content: [
-    // "./components/**/*.{js,vue,ts}",
-    // "./layouts/**/*.vue",
-    './pages/**/*.vue',
-    // "./plugins/**/*.{js,ts}",
-    // "./nuxt.config.{js,ts}",
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     fontFamily: {
       sans: ['Apple SD Gothic Neo', 'NotoSans', 'sans-serif'],
-      // roboto: ['Roboto', 'sans-serif'],
     },
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed',
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
+        },
+      },
+    },
   },
   plugins: [require('@tailwindcss/aspect-ratio'), require('@tailwindcss/forms')],
 };
