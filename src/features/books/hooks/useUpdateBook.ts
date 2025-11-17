@@ -35,14 +35,14 @@ export function useUpdateBook() {
         throw new Error('도서 ID가 필요합니다');
       }
 
-      // Supabase update (타입 이슈 우회)
-      const result = await (supabase.from('books') as any)
-        .update(updates)
+      // Supabase update
+      // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회
+      const { data, error } = await supabase
+        .from('books')
+        .update(updates as never)
         .eq('id', id)
         .select()
         .single();
-
-      const { data, error } = result;
 
       if (error) throw error;
       return data;

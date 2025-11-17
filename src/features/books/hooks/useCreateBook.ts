@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
 import { invalidateBookQueries } from '@/utils/query-helpers';
-import { getErrorMessage } from '@/utils/error-helpers';
+import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookInsert } from '@/types/book';
 
 /**
@@ -42,13 +42,13 @@ export function useCreateBook() {
       // 사용자 ID 추가
       const bookData: BookInsert = { ...book, user_id: user.id };
 
-      // Supabase insert (타입 이슈 우회)
-      const result = await (supabase.from('books') as any)
-        .insert(bookData)
+      // Supabase insert
+      // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회
+      const { data, error } = await supabase
+        .from('books')
+        .insert(bookData as never)
         .select()
         .single();
-
-      const { data, error } = result;
 
       if (error) throw error;
       return data;
@@ -59,11 +59,8 @@ export function useCreateBook() {
       toast.success('도서가 추가되었습니다');
     },
     onError: (error: Error) => {
-      // 에러 로깅 (프로덕션에서는 Sentry 등 사용)
-      console.error('[Book Create Error]', {
-        message: error.message,
-        timestamp: new Date().toISOString(),
-      });
+      // 에러 로깅
+      logError('도서 추가', error);
 
       // 사용자 친화적 에러 메시지
       const userMessage = getErrorMessage(error, '도서 추가에 실패했습니다');
