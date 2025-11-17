@@ -1,12 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAtomValue } from 'jotai';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useTopicColors } from '@/hooks/useTopicColors';
+import { useBookMetadata } from '@/hooks/useBookMetadata';
+import { userAtom } from '@/store/authAtom';
 import { Spinner } from '@/components/ui/Spinner';
 import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookFilters } from '@/components/book/BookFilters';
+import { ROUTES } from '@/utils/constants';
 import type { Book, BookFilters as BookFiltersType } from '@/types/book';
 
 /**
@@ -15,22 +19,13 @@ import type { Book, BookFilters as BookFiltersType } from '@/types/book';
  */
 export function Home() {
   const navigate = useNavigate();
+  const user = useAtomValue(userAtom);
   const [filters, setFilters] = useState<BookFiltersType>({});
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
   const { data: books, isLoading } = useBooks({ filters });
   const topicColors = useTopicColors(books);
-
-  // 주제 및 구매처 목록 추출
-  const topics = useMemo(() => {
-    if (!books) return [];
-    return [...new Set(books.map((book) => book.topic).filter(Boolean))].sort() as string[];
-  }, [books]);
-
-  const purchasePlaces = useMemo(() => {
-    if (!books) return [];
-    return [...new Set(books.map((book) => book.purchase_place).filter(Boolean))].sort() as string[];
-  }, [books]);
+  const { topics, purchasePlaces } = useBookMetadata(books);
 
   if (isLoading) {
     return (
@@ -52,14 +47,24 @@ export function Home() {
                 나만의 책장을 만들어보세요
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => navigate('/login')}
-              className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
-            >
-              <LogIn className="mr-2 h-4 w-4" />
-              로그인
-            </button>
+            {user ? (
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.ADMIN)}
+                className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
+              >
+                관리자 페이지
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.LOGIN)}
+                className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                로그인
+              </button>
+            )}
           </div>
         </div>
       </div>

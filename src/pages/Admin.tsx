@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Plus, Download, Upload, LogOut, Image as ImageIcon } from 'lucide-react';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
@@ -9,6 +9,7 @@ import { useImportBooks } from '@/features/books/hooks/useImportBooks';
 import { useExportBooks } from '@/features/books/hooks/useExportBooks';
 import { useSignout } from '@/features/auth/hooks/useSignout';
 import { useTopicColors } from '@/hooks/useTopicColors';
+import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { Spinner } from '@/components/ui/Spinner';
 import { Tabs } from '@/components/ui/Tabs';
 import { SidePanel } from '@/components/ui/SidePanel';
@@ -45,17 +46,7 @@ export function Admin() {
   const { mutate: signout } = useSignout();
 
   const topicColors = useTopicColors(books);
-
-  // 주제 및 구매처 목록 추출
-  const topics = useMemo(() => {
-    if (!books) return [];
-    return [...new Set(books.map((book) => book.topic).filter(Boolean))].sort() as string[];
-  }, [books]);
-
-  const purchasePlaces = useMemo(() => {
-    if (!books) return [];
-    return [...new Set(books.map((book) => book.purchase_place).filter(Boolean))].sort() as string[];
-  }, [books]);
+  const { topics, purchasePlaces } = useBookMetadata(books);
 
   const handleAddBook = (data: BookFormData) => {
     createBook(data, {
