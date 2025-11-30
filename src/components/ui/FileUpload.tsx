@@ -1,0 +1,67 @@
+import { useRef } from 'react';
+import { Upload } from 'lucide-react';
+import { cn } from '@/utils/cn';
+
+interface FileUploadProps {
+  accept?: string;
+  onFileSelect: (file: File) => void;
+  disabled?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * 파일 업로드 컴포넌트
+ * Vue 버전의 FileSelect 포팅
+ */
+export function FileUpload({
+  accept = '.json',
+  onFileSelect,
+  disabled = false,
+  className,
+  children,
+}: FileUploadProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onFileSelect(file);
+      // Reset input value to allow selecting the same file again
+      e.target.value = '';
+    }
+  };
+
+  return (
+    <>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={handleChange}
+        disabled={disabled}
+        className="hidden"
+      />
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={disabled}
+        className={cn(
+          'inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+      >
+        {children || (
+          <>
+            <Upload className="mr-2 h-4 w-4" />
+            파일 선택
+          </>
+        )}
+      </button>
+    </>
+  );
+}
