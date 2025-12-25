@@ -26,7 +26,7 @@
 - 집에 굴러다니는 책들을 체계적으로 관리하기 위해 시작
 - 매달 1-2권씩 구매하는 책들의 정보를 간편하게 기록
 - Vue 3 → React 19로 마이그레이션하여 현대적인 기술 스택 적용
-- Supabase를 활용한 실시간 데이터베이스 및 인증 시스템
+- Supabase를 활용한 클라우드 데이터베이스 및 인증 시스템
 
 ---
 
@@ -93,7 +93,7 @@
 - **Zod 3** - 타입 안전한 스키마 검증
 
 ### Backend & Database
-- **Supabase** - PostgreSQL 데이터베이스 + 인증 + 실시간 기능
+- **Supabase** - PostgreSQL 데이터베이스 + 인증
 - **Row Level Security** - 데이터베이스 레벨 보안 정책
 
 ### UI Components

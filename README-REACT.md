@@ -21,7 +21,6 @@ React 19 + Supabase 기반 개인 도서 관리 웹 애플리케이션
 
 - ✅ 사용자 인증 (로그인/회원가입)
 - ✅ 클라우드 기반 데이터 저장 (Supabase)
-- ✅ 실시간 데이터 동기화
 - ✅ Row Level Security (사용자별 데이터 격리)
 - ✅ 서버리스 아키텍처
 - ✅ TypeScript 기반 타입 안정성
