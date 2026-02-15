@@ -1,147 +1,190 @@
 # 방구석 도서관리 2.0 📚
 
-React + Supabase 기반 개인 도서 관리 웹 애플리케이션입니다.
+React 19 + Supabase 기반 개인 도서 관리 웹 애플리케이션
 
-## 핵심 기능
-- 사용자 인증: 로그인, 회원가입, 로그아웃, 비밀번호 찾기(재설정 메일), 새 비밀번호 설정
-- 사용자 화면(`/`): 내 도서 조회, 검색/필터, 도서 상세 확인
-- 도서 관리 화면(`/admin`): 도서 추가/수정/삭제, JSON 임포트/익스포트, 통계 탭
-- 운영 콘솔(`/ops`): 운영 관리자(`super_admin`) 전용 사용자 관리, 권한 변경, 감사 로그 조회
-- 보안: Supabase RLS + 역할 기반 접근 제어(`user`, `admin`, `super_admin`)
+---
 
-## 기술 스택
-- Frontend: React 19, TypeScript, React Router, Tailwind CSS
-- State/Data: Jotai, TanStack Query
-- Form/Validation: React Hook Form, Zod
-- Backend: Supabase (PostgreSQL, Auth, RLS)
-- Tooling: Vite, Biome, Vitest, Playwright, Storybook
+## 🚀 빠른 시작
 
-## 빠른 시작
+### 필수 요구사항
 
-### 1) 요구사항
-- Node.js >= 20
-- pnpm >= 8
-- Supabase 프로젝트
+- Node.js >= 20.0.0
+- pnpm >= 8.0.0
+- Supabase 계정
 
-### 2) 설치
+### 설치 및 실행
+
 ```bash
+# 1. 의존성 설치
 pnpm install
+
+# 2. 환경 변수 설정
 cp .env.example .env
-```
+# .env 파일에 Supabase 정보 입력
 
-### 3) DB 스키마 적용
-Supabase SQL Editor에서 `supabase/schema.sql`을 실행하세요.
+# 3. Supabase 스키마 생성
+# Supabase 대시보드에서 supabase/schema.sql 실행
 
-### 4) 운영 관리자 계정 지정(선택)
-`/ops` 화면 접근을 위해 최소 1명의 `super_admin`이 필요합니다.
+# 4. 데이터 마이그레이션 (선택)
+# 인자로 직접 지정 (권장)
+node scripts/migrate-json-to-supabase.js --file ./data/books.json --user-id <AUTH_USER_UUID>
 
-```sql
-insert into public.user_roles (user_id, role, is_active)
-values ('<YOUR_AUTH_USER_ID>', 'super_admin', true)
-on conflict (user_id)
-do update
-set role = excluded.role,
-    is_active = true,
-    updated_at = now();
-```
+# 또는 대화형(TUI) 입력
+node scripts/migrate-json-to-supabase.js
 
-### 5) 개발 서버 실행
-```bash
+# 5. 개발 서버 실행
 pnpm dev
 ```
 
-기본 개발 주소: `http://localhost:3000`
+자세한 설정 방법은 [SETUP_GUIDE.md](./SETUP_GUIDE.md)를 참조하세요.
 
-## 비밀번호 찾기 설정
-비밀번호 재설정 메일 링크가 정상 동작하려면 Supabase Auth URL 설정이 필요합니다.
+### MIGRATION_USER_ID 확인 방법
 
-1. Supabase Dashboard -> Authentication -> URL Configuration
-2. Site URL에 개발/운영 도메인 설정
-3. Redirect URLs에 다음 경로 추가
-- `http://localhost:3000/reset-password`
-- `https://<your-production-domain>/reset-password`
+마이그레이션 스크립트는 데이터 소유자를 명확히 지정하기 위해 `MIGRATION_USER_ID`(Supabase Auth 사용자 UUID)가 필요합니다.
 
-## 라우트
-- `/login`: 로그인
-- `/signup`: 회원가입
-- `/forgot-password`: 비밀번호 재설정 메일 요청
-- `/reset-password`: 새 비밀번호 설정
-- `/`: 사용자 화면
-- `/admin`: 도서 관리 화면 (로그인 필요)
-- `/ops`: 운영 콘솔 (`super_admin` 필요)
-- `/license`: 라이선스 안내
+1. Supabase Dashboard → `Authentication` → `Users`로 이동
+2. 마이그레이션 대상 사용자 선택
+3. `User ID`(UUID) 값을 복사해 `.env`의 `MIGRATION_USER_ID`에 입력
 
-## 환경 변수
+또는 SQL Editor에서 아래 쿼리로 확인할 수 있습니다.
 
-| 변수명 | 필수 | 설명 |
-|---|---|---|
-| `VITE_SUPABASE_URL` | 예 | Supabase 프로젝트 URL |
-| `VITE_SUPABASE_ANON_KEY` | 예 | Supabase anon key |
-| `SUPABASE_URL` | 마이그레이션 시 예 | 서비스 키용 Supabase URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | 마이그레이션 시 예 | 서비스 키 (절대 클라이언트 노출 금지) |
-| `MIGRATION_USER_ID` | 선택 | 마이그레이션 데이터 소유자 `auth.users.id` |
-| `MIGRATION_SOURCE_FILE` | 선택 | 마이그레이션 기본 JSON 경로 |
-| `VITE_APP_NAME` | 선택 | 앱 이름 |
-| `VITE_APP_VERSION` | 선택 | 앱 버전 |
-| `VITE_APP_ENV` | 선택 | 실행 환경 (`development` 등) |
+```sql
+select id, email, created_at
+from auth.users
+order by created_at desc;
+```
 
-## 마이그레이션(JSON -> Supabase)
+### 마이그레이션 툴 사용법
+
+스크립트 파일: `scripts/migrate-json-to-supabase.js`
+
+- 권장 실행
 ```bash
 pnpm migrate -- --file ./data/books.json --user-id <AUTH_USER_UUID>
 ```
 
-대화형 모드:
+- 대화형 실행(TTY)
+    - 파일 경로와 `MIGRATION_USER_ID`를 프롬프트로 입력
 ```bash
 pnpm migrate
 ```
 
-도움말:
+- 옵션
 ```bash
-pnpm migrate -- --help
+node scripts/migrate-json-to-supabase.js --help
 ```
 
-## 스크립트
+---
+
+## 📁 프로젝트 구조
+
+```
+src-react/
+├── components/        # React 컴포넌트
+├── features/          # 기능별 모듈 (auth, books)
+├── hooks/             # 커스텀 훅
+├── lib/               # 라이브러리 설정
+├── pages/             # 페이지 컴포넌트
+├── store/             # Jotai 전역 상태
+├── styles/            # 스타일
+├── types/             # TypeScript 타입
+└── utils/             # 유틸리티 함수
+```
+
+---
+
+## 🔐 환경 변수
+
+```env
+# Supabase
+VITE_SUPABASE_URL=your-project-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
+
+# App
+VITE_APP_NAME=방구석 도서관리
+VITE_APP_VERSION=2.0.0
+```
+
+---
+
+## 📝 사용 가능한 스크립트
+
 ```bash
-pnpm dev                # 개발 서버
-pnpm build              # 타입체크 + 프로덕션 빌드
-pnpm preview            # 빌드 결과 미리보기
-pnpm lint               # Biome 검사
-pnpm lint:fix           # Biome 자동 수정
-pnpm format             # 코드 포맷팅
-pnpm type-check         # TypeScript 타입 검사
-pnpm test               # Vitest watch
-pnpm test:run           # Vitest 1회 실행
-pnpm test:coverage      # Vitest 커버리지
-pnpm test:e2e           # Playwright E2E
-pnpm storybook          # Storybook 실행
-pnpm build-storybook    # Storybook 빌드
-pnpm migrate            # JSON 마이그레이션 스크립트
+pnpm dev          # 개발 서버 실행
+pnpm build        # 프로덕션 빌드
+pnpm preview      # 빌드 미리보기
+pnpm lint         # 린팅 검사
+pnpm lint:fix     # 린팅 자동 수정
+pnpm format       # 코드 포맷팅
+pnpm type-check   # 타입 체크
+pnpm migrate      # JSON to Supabase 마이그레이션
 ```
 
-## 프로젝트 구조
-```text
-src/
-  components/           # 공통/도메인 UI 컴포넌트
-  features/             # 기능별 훅/로직 (auth, books, ops)
-  hooks/                # 공용 커스텀 훅
-  lib/                  # Supabase, QueryClient 등 인프라
-  pages/                # 라우트 페이지
-  store/                # Jotai atom
-  styles/               # 전역 스타일
-  test/                 # 테스트 설정/헬퍼
-  types/                # 타입 정의
-  utils/                # 상수/유틸/검증
-e2e/                    # Playwright 테스트
-scripts/                # 일회성 유틸리티 (마이그레이션 등)
-supabase/schema.sql     # DB 스키마/정책/RPC
+---
+
+## 🏗 아키텍처
+
+### 데이터 흐름
+
+```
+User → React Component → TanStack Query → Supabase API → PostgreSQL
+                       ↓
+                    Jotai (UI State)
 ```
 
-## 문서
-- `.doc/SETUP_GUIDE.md`
-- `.doc/OPS_GUIDE.md`
-- `.doc/MIGRATION_PLAN.md`
-- `.doc/AI_PROJECT_GUIDE.md`
-- `AGENTS.md`
+### 인증 플로우
 
-## 라이선스
-앱 내 `/license` 경로에서 확인할 수 있습니다.
+```
+Login/Signup → Supabase Auth → JWT Token → RLS Policy → Database Access
+```
+
+## ✨ 주요 변경사항 (v2.0)
+
+### 기술 스택 마이그레이션
+
+| 항목 | v1.0 (Legacy) | v2.0 (New) |
+|------|---------------|------------|
+| 프레임워크 | Nuxt.js 3 + Vue 3 | React 19 |
+| 상태 관리 | Pinia | Jotai |
+| 데이터 저장 | JSON 파일 | Supabase PostgreSQL |
+| API | - | TanStack Query + ofetch |
+| 폼 관리 | - | React Hook Form + Zod |
+| 빌드 도구 | Nuxt 내장 | Vite |
+| 린터 | ESLint + Prettier | Biome |
+| 인증 | - | Supabase Auth |
+
+---
+
+## 📚 문서
+
+- [MIGRATION_PLAN.md](./MIGRATION_PLAN.md) - 마이그레이션 계획 및 설계
+- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - 상세 설정 가이드
+- [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md) - AI 개발자용 가이드 (Legacy)
+
+---
+
+## 🛠 개발 가이드
+
+### 새 기능 추가
+
+1. **hooks 작성**: `features/[feature]/hooks/`
+2. **컴포넌트 작성**: `features/[feature]/components/`
+3. **페이지 연결**: `pages/`
+
+### 코드 스타일
+
+- Biome를 사용한 자동 포맷팅
+- JSDoc 주석 (복잡한 로직에 한함)
+- TypeScript strict mode
+
+---
+
+## 🤝 기여
+
+이 프로젝트는 개인 학습 목적으로 시작되었습니다. 기여를 환영합니다!
+
+---
+
+## 📄 라이선스
+
+자세한 내용은 `/open-license` 페이지를 참조하세요.
