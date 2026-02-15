@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +10,7 @@ import { Spinner } from '@/components/ui/Spinner';
 export function Signup() {
   const navigate = useNavigate();
   const { mutate: signup, isPending } = useSignup();
+  const redirectTimerRef = useRef<number | null>(null);
 
   const {
     register,
@@ -21,18 +23,27 @@ export function Signup() {
   const onSubmit = (data: SignupFormData) => {
     signup(data, {
       onSuccess: () => {
-        setTimeout(() => navigate(ROUTES.LOGIN), 2000);
+        redirectTimerRef.current = window.setTimeout(() => navigate(ROUTES.LOGIN), 2000);
       },
     });
   };
 
+  useEffect(
+    () => () => {
+      if (redirectTimerRef.current !== null) {
+        window.clearTimeout(redirectTimerRef.current);
+      }
+    },
+    [],
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-app px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             회원가입
-          </h2>
+          </h1>
           <p className="mt-2 text-center text-sm text-gray-600">
             새로운 계정을 만들어 시작하세요
           </p>

@@ -33,12 +33,12 @@ export function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-app px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             방구석 도서관리 📚
-          </h2>
+          </h1>
           <p className="mt-2 text-center text-sm text-gray-600">
             로그인하여 도서를 관리하세요
           </p>

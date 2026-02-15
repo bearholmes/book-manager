@@ -19,9 +19,6 @@ export function useLogin() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
-      toast.success('로그인되었습니다');
-    },
     onError: (error: Error) => {
       console.error('로그인 오류:', error);
       toast.error(error.message || '로그인에 실패했습니다');

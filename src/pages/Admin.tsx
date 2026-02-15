@@ -12,6 +12,7 @@ import { useSignout } from '@/features/auth/hooks/useSignout';
 import { useTopicColors } from '@/hooks/useTopicColors';
 import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { Spinner } from '@/components/ui/Spinner';
+import { PageHeader } from '@/components/common/PageHeader';
 import { Tabs } from '@/components/ui/Tabs';
 import { SidePanel } from '@/components/ui/SidePanel';
 import { Modal } from '@/components/ui/Modal';
@@ -108,32 +109,30 @@ export function Admin() {
 
   return (
     <div className="min-h-screen bg-app">
-      {/* Header */}
-      <div className="border-b border-primary-100/80 bg-white/95 shadow-sm backdrop-blur">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">도서 관리</h1>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.HOME)}
-                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-              >
-                <House className="mr-2 h-4 w-4" />
-                사용자 화면
-              </button>
-              <button
-                type="button"
-                onClick={() => signout()}
-                className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                로그아웃
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="도서 관리"
+        subtitle="내 도서를 정리하고 통계를 확인하세요"
+        actions={
+          <>
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.HOME)}
+              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <House className="mr-2 h-4 w-4" />
+              사용자 화면
+            </button>
+            <button
+              type="button"
+              onClick={() => signout()}
+              className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              로그아웃
+            </button>
+          </>
+        }
+      />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Bar */}

@@ -16,20 +16,22 @@ export const addToastAtom = atom(
   null,
   (get, set, toast: Omit<Toast, 'id'>) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const duration = toast.duration ?? 3000;
+
     const newToast: Toast = {
       id,
       type: 'info',
-      duration: 3000,
       ...toast,
+      duration,
     };
 
     set(toastsAtom, [...get(toastsAtom), newToast]);
 
     // 자동 제거
-    if (newToast.duration && newToast.duration > 0) {
+    if (duration > 0) {
       setTimeout(() => {
         set(toastsAtom, (prev) => prev.filter((t) => t.id !== id));
-      }, newToast.duration);
+      }, duration);
     }
   },
 );

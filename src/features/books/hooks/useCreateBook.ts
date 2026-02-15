@@ -7,7 +7,7 @@ import type { BookInsert } from '@/types/book';
 
 function normalizeNullableString(value: unknown): string | null | undefined {
   if (value === null || value === undefined) return value;
-  if (typeof value !== 'string') return value as string;
+  if (typeof value !== 'string') return null;
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
 }

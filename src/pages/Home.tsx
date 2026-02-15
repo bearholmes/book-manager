@@ -7,6 +7,7 @@ import { useTopicColors } from '@/hooks/useTopicColors';
 import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { userAtom } from '@/store/authAtom';
 import { Spinner } from '@/components/ui/Spinner';
+import { PageHeader } from '@/components/common/PageHeader';
 import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookFilters } from '@/components/book/BookFilters';
@@ -38,37 +39,30 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-app">
-      {/* Header */}
-      <div className="border-b border-primary-100/80 bg-white/95 shadow-sm backdrop-blur">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">방구석 도서관리 📚</h1>
-              <p className="mt-1 text-sm text-gray-600">
-                나만의 책장을 만들어보세요
-              </p>
-            </div>
-            {user ? (
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.ADMIN)}
-                className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
-              >
-                관리
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.LOGIN)}
-                className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                로그인
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="방구석 도서관리 📚"
+        subtitle="나만의 책장을 만들어보세요"
+        actions={
+          user ? (
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.ADMIN)}
+              className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
+            >
+              관리
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.LOGIN)}
+              className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              로그인
+            </button>
+          )
+        }
+      />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats */}
