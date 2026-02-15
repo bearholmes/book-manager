@@ -89,7 +89,7 @@ interface ImportResult {
  * 도서 일괄 임포트 훅
  *
  * JSON 파일에서 도서 데이터를 읽어 일괄 등록합니다.
- * 100개씩 배치 처리하여 대량 데이터도 안정적으로 처리합니다.
+ * 전체 데이터를 먼저 검증한 뒤 단일 insert로 저장하여 원자성을 보장합니다.
  *
  * @returns UseMutationResult - TanStack Query mutation 객체
  *
@@ -152,47 +152,48 @@ export function useImportBooks() {
         errors: [],
       };
 
-      // 배치 처리 (100개씩)
-      const batchSize = 100;
-      for (let i = 0; i < jsonData.length; i += batchSize) {
-        const batch = jsonData.slice(i, i + batchSize);
-        const booksToInsert = batch
-          .map((item, index) => {
-            try {
-              return toBookInsert(item, user.id);
-            } catch (error) {
-              result.failed++;
-              result.errors.push({
-                index: i + index,
-                error: error instanceof Error ? error.message : '알 수 없는 오류',
-              });
-              return null;
-            }
-          })
-          .filter((book): book is BookInsert => book !== null);
-
-        if (booksToInsert.length > 0) {
-          const { error } = await supabase
-            .from('books')
-            .insert(booksToInsert as never);
-
-          if (error) {
-            result.failed += booksToInsert.length;
+      const booksToInsert = jsonData
+        .map((item, index) => {
+          try {
+            return toBookInsert(item, user.id);
+          } catch (error) {
             result.errors.push({
-              index: i,
-              error: error.message,
+              index,
+              error: error instanceof Error ? error.message : '알 수 없는 오류',
             });
-          } else {
-            result.success += booksToInsert.length;
+            return null;
           }
-        }
+        })
+        .filter((book): book is BookInsert => book !== null);
+
+      // 하나라도 유효성 검증에 실패하면 전체 중단 (원자성)
+      if (result.errors.length > 0) {
+        result.failed = result.total;
+        return result;
       }
+
+      if (booksToInsert.length === 0) {
+        return result;
+      }
+
+      const { error } = await supabase
+        .from('books')
+        .insert(booksToInsert as never);
+
+      // 단일 insert 실패 시 트랜잭션 단위로 전체 롤백됨
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      result.success = booksToInsert.length;
 
       return result;
     },
     onSuccess: async (result) => {
-      // 모든 도서 관련 쿼리 무효화
-      await invalidateBookQueries(queryClient);
+      // 데이터가 실제 저장된 경우에만 쿼리 무효화
+      if (result.success > 0) {
+        await invalidateBookQueries(queryClient);
+      }
 
       // 결과에 따른 토스트 메시지
       if (result.failed === 0) {
