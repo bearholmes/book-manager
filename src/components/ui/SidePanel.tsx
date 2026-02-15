@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
-import { cn } from '@/utils/cn';
+import clsx from 'clsx';
 
 interface SidePanelProps {
   isOpen: boolean;
@@ -57,9 +57,9 @@ export function SidePanel({
           onClick={onClose}
         />
 
-        <div className={cn('fixed inset-y-0 flex max-w-full', position === 'right' ? 'right-0 pl-10' : 'left-0 pr-10')}>
+        <div className={clsx('fixed inset-y-0 flex max-w-full', position === 'right' ? 'right-0 pl-10' : 'left-0 pr-10')}>
           <div
-            className={cn(
+            className={clsx(
               'relative w-screen max-w-md transform transition ease-in-out duration-300',
               position === 'right' ? 'translate-x-0' : '-translate-x-0',
               className,

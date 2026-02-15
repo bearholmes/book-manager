@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai';
 import { CheckCircle, XCircle, Info, AlertTriangle, X } from 'lucide-react';
 import { removeToastAtom, type Toast } from '@/store/uiAtom';
-import { cn } from '@/utils/cn';
+import clsx from 'clsx';
 
 interface ToastItemProps {
   toast: Toast;
@@ -27,7 +27,7 @@ export function ToastItem({ toast }: ToastItemProps) {
 
   return (
     <div
-      className={cn(
+      className={clsx(
         'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg border shadow-lg',
         'animate-slide-down',
         colors[toast.type || 'info'],

@@ -49,6 +49,10 @@ cp .env.example .env
 # Supabase 대시보드에서 supabase/schema.sql 실행
 
 # 4. 데이터 마이그레이션 (선택)
+# 인자로 직접 지정 (권장)
+node scripts/migrate-json-to-supabase.js --file ./data/books.json --user-id <AUTH_USER_UUID>
+
+# 또는 대화형(TUI) 입력
 node scripts/migrate-json-to-supabase.js
 
 # 5. 개발 서버 실행
@@ -56,6 +60,42 @@ pnpm dev
 ```
 
 자세한 설정 방법은 [SETUP_GUIDE.md](./SETUP_GUIDE.md)를 참조하세요.
+
+### MIGRATION_USER_ID 확인 방법
+
+마이그레이션 스크립트는 데이터 소유자를 명확히 지정하기 위해 `MIGRATION_USER_ID`(Supabase Auth 사용자 UUID)가 필요합니다.
+
+1. Supabase Dashboard → `Authentication` → `Users`로 이동
+2. 마이그레이션 대상 사용자 선택
+3. `User ID`(UUID) 값을 복사해 `.env`의 `MIGRATION_USER_ID`에 입력
+
+또는 SQL Editor에서 아래 쿼리로 확인할 수 있습니다.
+
+```sql
+select id, email, created_at
+from auth.users
+order by created_at desc;
+```
+
+### 마이그레이션 툴 사용법
+
+스크립트 파일: `scripts/migrate-json-to-supabase.js`
+
+- 권장 실행
+```bash
+pnpm migrate -- --file ./data/books.json --user-id <AUTH_USER_UUID>
+```
+
+- 대화형 실행(TTY)
+  - 파일 경로와 `MIGRATION_USER_ID`를 프롬프트로 입력
+```bash
+pnpm migrate
+```
+
+- 옵션
+```bash
+node scripts/migrate-json-to-supabase.js --help
+```
 
 ---
 

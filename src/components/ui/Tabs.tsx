@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import clsx from 'clsx';
 
 interface Tab {
   id: string;
@@ -18,13 +18,13 @@ interface TabsProps {
  */
 export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   return (
-    <div className={cn('border-b border-gray-200', className)}>
+    <div className={clsx('border-b border-gray-200', className)}>
       <nav className="-mb-px flex space-x-8" aria-label="Tabs">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={cn(
+            className={clsx(
               'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors',
               activeTab === tab.id
                 ? 'border-primary-500 text-primary-600'

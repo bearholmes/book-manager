@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { formatCurrency, formatDate } from '@/utils/format';
-import { cn } from '@/utils/cn';
+import clsx from 'clsx';
 import type { Book } from '@/types/book';
 
 interface BookCardProps {
@@ -50,7 +50,7 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
 
   return (
     <div
-      className={cn(
+      className={clsx(
         'group relative overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:shadow-md',
         onClick && 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
         className,

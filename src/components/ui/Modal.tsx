@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { cn } from '@/utils/cn';
+import clsx from 'clsx';
 
 interface ModalProps {
   /** 모달 열림/닫힘 상태 */
@@ -108,7 +108,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
       <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
         <div
           ref={modalRef}
-          className={cn(
+          className={clsx(
             'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full',
             sizeClasses[size],
             'animate-slide-up',

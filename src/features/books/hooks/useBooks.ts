@@ -14,6 +14,18 @@ interface UseBooksOptions {
 }
 
 /**
+ * PostgREST 필터 문자열을 깨뜨릴 수 있는 특수문자를 제거/정규화합니다.
+ * 검색 정확도보다 쿼리 안정성과 안전성을 우선합니다.
+ */
+function sanitizeSearchTerm(rawSearch: string): string {
+  return rawSearch
+    .trim()
+    .replace(/[,%()"'`]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .slice(0, 100);
+}
+
+/**
  * 도서 목록 조회 훅
  *
  * 필터와 정렬 조건에 따라 도서 목록을 조회합니다.
@@ -58,9 +70,12 @@ export function useBooks(options: UseBooksOptions = {}) {
         query = query.eq('condition', filters.condition);
       }
       if (filters.search) {
-        query = query.or(
-          `book_name.ilike.%${filters.search}%,author.ilike.%${filters.search}%,publisher.ilike.%${filters.search}%`,
-        );
+        const safeSearch = sanitizeSearchTerm(filters.search);
+        if (safeSearch) {
+          query = query.or(
+            `book_name.ilike.%${safeSearch}%,author.ilike.%${safeSearch}%,publisher.ilike.%${safeSearch}%`,
+          );
+        }
       }
 
       // 정렬 적용

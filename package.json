@@ -72,5 +72,11 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@remix-run/router": "1.23.2",
+      "lodash": "4.17.23"
+    }
   }
 }
