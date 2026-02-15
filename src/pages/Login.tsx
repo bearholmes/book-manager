@@ -87,6 +87,14 @@ export function Login() {
                   {errors.password.message}
                 </p>
               )}
+              <div className="mt-2 text-right">
+                <Link
+                  to={ROUTES.FORGOT_PASSWORD}
+                  className="text-xs font-semibold text-primary-700 hover:text-primary-900"
+                >
+                  비밀번호 찾기
+                </Link>
+              </div>
             </div>
           </div>
 

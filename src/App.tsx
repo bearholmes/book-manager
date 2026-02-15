@@ -3,11 +3,15 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ROUTES } from '@/utils/constants';
 import { ToastContainer } from '@/components/ui/ToastContainer';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
+import { RoleProtectedRoute } from '@/components/common/RoleProtectedRoute';
 import { AppFooter } from '@/components/common/AppFooter';
 import { Home } from '@/pages/Home';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
+import { ForgotPassword } from '@/pages/ForgotPassword';
+import { ResetPassword } from '@/pages/ResetPassword';
 import { Admin } from '@/pages/Admin';
+import { Ops } from '@/pages/Ops';
 import { NotFound } from '@/pages/NotFound';
 
 function App() {
@@ -19,6 +23,8 @@ function App() {
         <Routes>
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.SIGNUP} element={<Signup />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+          <Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
           <Route
             path={ROUTES.HOME}
             element={
@@ -33,6 +39,14 @@ function App() {
               <ProtectedRoute>
                 <Admin />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.OPS}
+            element={
+              <RoleProtectedRoute requiredRole="super_admin">
+                <Ops />
+              </RoleProtectedRoute>
             }
           />
           <Route path="*" element={<NotFound />} />

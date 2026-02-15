@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Filter } from 'lucide-react';
+import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Filter, Shield } from 'lucide-react';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
 import { useUpdateBook } from '@/features/books/hooks/useUpdateBook';
@@ -9,6 +9,7 @@ import { useImageNullCount } from '@/features/books/hooks/useBookStats';
 import { useImportBooks } from '@/features/books/hooks/useImportBooks';
 import { useExportBooks } from '@/features/books/hooks/useExportBooks';
 import { useSignout } from '@/features/auth/hooks/useSignout';
+import { useCurrentUserRole } from '@/features/auth/hooks/useCurrentUserRole';
 import { useTopicColors } from '@/hooks/useTopicColors';
 import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -57,6 +58,7 @@ export function Admin() {
   const { mutate: importBooks, isPending: isImporting } = useImportBooks();
   const { mutate: exportBooks, isPending: isExporting } = useExportBooks();
   const { mutate: signout } = useSignout();
+  const { data: role = 'user' } = useCurrentUserRole();
 
   const topicColors = useTopicColors(books);
   const { topics, purchasePlaces } = useBookMetadata(books);
@@ -131,6 +133,16 @@ export function Admin() {
               <House className="h-4 w-4" />
               사용자 화면
             </button>
+            {role === 'super_admin' && (
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.OPS)}
+                className="btn-secondary"
+              >
+                <Shield className="h-4 w-4" />
+                운영 콘솔
+              </button>
+            )}
             <button type="button" onClick={() => signout()} className="btn-signout">
               <LogOut className="h-4 w-4" />
               로그아웃

@@ -8,6 +8,32 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          id: string;
+          actor_user_id: string | null;
+          action: string;
+          target_user_id: string | null;
+          metadata: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          actor_user_id?: string | null;
+          action: string;
+          target_user_id?: string | null;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          actor_user_id?: string | null;
+          action?: string;
+          target_user_id?: string | null;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+      };
       books: {
         Row: {
           id: string;
@@ -76,6 +102,32 @@ export interface Database {
           updated_at?: string;
         };
       };
+      user_roles: {
+        Row: {
+          id: string;
+          user_id: string;
+          role: Database['public']['Enums']['app_role'];
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          role?: Database['public']['Enums']['app_role'];
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          role?: Database['public']['Enums']['app_role'];
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {
       book_stats_by_topic: {
@@ -103,7 +155,40 @@ export interface Database {
         };
       };
     };
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
+    Functions: {
+      is_super_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+      ops_list_users: {
+        Args: Record<string, never>;
+        Returns: {
+          user_id: string;
+          email: string | null;
+          created_at: string;
+          last_sign_in_at: string | null;
+          role: Database['public']['Enums']['app_role'];
+          is_active: boolean;
+          book_count: number;
+        }[];
+      };
+      ops_set_user_role: {
+        Args: {
+          p_user_id: string;
+          p_role: Database['public']['Enums']['app_role'];
+          p_is_active?: boolean;
+        };
+        Returns: undefined;
+      };
+      ops_delete_user: {
+        Args: {
+          p_user_id: string;
+        };
+        Returns: undefined;
+      };
+    };
+    Enums: {
+      app_role: 'user' | 'admin' | 'super_admin';
+    };
   };
 }
