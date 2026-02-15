@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Plus, Download, Upload, LogOut, Image as ImageIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Download, Upload, LogOut, Image as ImageIcon, House } from 'lucide-react';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
 import { useUpdateBook } from '@/features/books/hooks/useUpdateBook';
@@ -20,6 +21,7 @@ import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookForm } from '@/components/book/BookForm';
 import { StatisticsCharts } from '@/components/book/StatisticsCharts';
+import { ROUTES } from '@/utils/constants';
 import type { Book, BookFilters as BookFiltersType } from '@/types/book';
 import type { BookFormData } from '@/utils/validation';
 
@@ -28,6 +30,7 @@ import type { BookFormData } from '@/utils/validation';
  * Vue 버전의 admin/index.vue 포팅
  */
 export function Admin() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'list' | 'stats'>('list');
   const [filters, setFilters] = useState<BookFiltersType>({});
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
@@ -93,6 +96,8 @@ export function Admin() {
     { id: 'stats', name: '통계' },
   ];
 
+  const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -102,30 +107,40 @@ export function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-app">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="border-b border-primary-100/80 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900">도서 관리</h1>
-            <button
-              type="button"
-              onClick={() => signout()}
-              className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              로그아웃
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.HOME)}
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                <House className="mr-2 h-4 w-4" />
+                사용자 화면
+              </button>
+              <button
+                type="button"
+                onClick={() => signout()}
+                className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                로그아웃
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Bar */}
-        <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow">
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-primary-100/80 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-6">
             <div>
-              <span className="text-sm text-gray-500">전체 도서</span>
+              <span className="text-sm text-gray-500">{hasActiveFilters ? '조회 결과' : '전체 도서'}</span>
               <p className="text-2xl font-bold text-gray-900">{books?.length || 0}권</p>
             </div>
             {imageNullCount !== undefined && imageNullCount > 0 && (
@@ -197,7 +212,7 @@ export function Admin() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-lg bg-white p-12 text-center shadow">
+                <div className="rounded-xl border border-primary-100/70 bg-white p-12 text-center shadow-sm">
                   <p className="text-gray-500">도서가 없습니다. 도서를 추가해주세요.</p>
                 </div>
               )}

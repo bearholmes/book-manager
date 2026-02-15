@@ -32,7 +32,7 @@ export function StatisticsCharts() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#8b5cf6" name="도서 수" />
+              <Bar dataKey="count" fill={CHART_COLORS[0]} name="도서 수" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -74,7 +74,7 @@ export function StatisticsCharts() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#10b981" name="도서 수" />
+              <Bar dataKey="count" fill={CHART_COLORS[3]} name="도서 수" />
             </BarChart>
           </ResponsiveContainer>
         </div>

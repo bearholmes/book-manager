@@ -4,20 +4,20 @@
 
 // 주제별 색상 매핑
 export const TOPIC_COLORS: Record<number, string> = {
-  1: '#FFEB99',
-  2: '#B3CDFF',
-  3: '#8AA8E5',
-  4: '#CFE4E6',
-  5: '#A3CCB8',
-  6: '#AF99BF',
-  7: '#E6B8A1',
-  8: '#FFFAE5',
-  9: '#E5EEFF',
-  10: '#CCDDFF',
-  11: '#E4EFF0',
-  12: '#CFE5DA',
-  13: '#D0C3D9',
-  14: '#FFEEE6',
+  1: '#e0f2fe',
+  2: '#bae6fd',
+  3: '#bfdbfe',
+  4: '#c7d2fe',
+  5: '#dbeafe',
+  6: '#ccfbf1',
+  7: '#d1fae5',
+  8: '#dcfce7',
+  9: '#fef3c7',
+  10: '#fde68a',
+  11: '#ffedd5',
+  12: '#fde2e2',
+  13: '#fce7f3',
+  14: '#ede9fe',
 };
 
 // 도서 상태 옵션
@@ -36,16 +36,16 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
 
 // 차트 색상
 export const CHART_COLORS = [
-  '#8b5cf6',
-  '#10b981',
-  '#f59e0b',
-  '#3b82f6',
-  '#ef4444',
-  '#8b5cf6',
+  '#0284c7',
+  '#0369a1',
+  '#0ea5e9',
   '#14b8a6',
+  '#10b981',
+  '#84cc16',
+  '#f59e0b',
   '#f97316',
-  '#6366f1',
-  '#ec4899',
+  '#ef4444',
+  '#7c3aed',
 ];
 
 // 페이지 경로

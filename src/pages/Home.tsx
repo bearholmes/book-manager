@@ -26,6 +26,7 @@ export function Home() {
   const { data: books, isLoading } = useBooks({ filters });
   const topicColors = useTopicColors(books);
   const { topics, purchasePlaces } = useBookMetadata(books);
+  const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
 
   if (isLoading) {
     return (
@@ -36,9 +37,9 @@ export function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-app">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="border-b border-primary-100/80 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
@@ -53,7 +54,7 @@ export function Home() {
                 onClick={() => navigate(ROUTES.ADMIN)}
                 className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
               >
-                관리자 페이지
+                관리
               </button>
             ) : (
               <button
@@ -71,9 +72,9 @@ export function Home() {
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats */}
-        <div className="mb-6 rounded-lg bg-white p-4 shadow">
+        <div className="mb-6 rounded-xl border border-primary-100/80 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">전체 도서</span>
+            <span className="text-sm text-gray-500">{hasActiveFilters ? '조회 결과' : '전체 도서'}</span>
             <p className="text-2xl font-bold text-gray-900">{books?.length || 0}권</p>
           </div>
         </div>
@@ -103,9 +104,9 @@ export function Home() {
             ))}
           </div>
         ) : (
-          <div className="rounded-lg bg-white p-12 text-center shadow">
+          <div className="rounded-xl border border-primary-100/70 bg-white p-12 text-center shadow-sm">
             <p className="text-gray-500">
-              도서가 없습니다. 관리자 페이지에서 도서를 추가해주세요.
+              도서가 없습니다. 관리 페이지에서 도서를 추가해주세요.
             </p>
           </div>
         )}

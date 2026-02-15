@@ -3,16 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --app-bg-top: #f5fbff;
+    --app-bg-bottom: #eef4ff;
+    --app-bg-accent: #dbeafe;
+  }
+
   html {
     @apply h-full;
   }
 
   body {
-    @apply h-full bg-gray-50 font-sans text-gray-900 antialiased;
+    background:
+      radial-gradient(circle at 10% 0%, var(--app-bg-accent) 0, transparent 38%),
+      linear-gradient(180deg, var(--app-bg-top), var(--app-bg-bottom));
+    @apply h-full font-sans text-gray-900 antialiased;
   }
 
   #root {
     @apply h-full;
+  }
+}
+
+@layer components {
+  .bg-app {
+    background:
+      radial-gradient(circle at 88% 2%, rgba(125, 211, 252, 0.22) 0, transparent 36%),
+      linear-gradient(180deg, #f8fbff 0%, #eff5ff 100%);
   }
 }
 

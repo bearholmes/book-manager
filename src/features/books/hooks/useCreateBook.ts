@@ -5,6 +5,30 @@ import { invalidateBookQueries } from '@/utils/query-helpers';
 import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookInsert } from '@/types/book';
 
+function normalizeNullableString(value: unknown): string | null | undefined {
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'string') return value as string;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function sanitizeBookInsertPayload(book: Omit<BookInsert, 'user_id'>): Omit<BookInsert, 'user_id'> {
+  return {
+    ...book,
+    isbn13: normalizeNullableString(book.isbn13),
+    author: normalizeNullableString(book.author),
+    publisher: normalizeNullableString(book.publisher),
+    publication_date: normalizeNullableString(book.publication_date),
+    condition: normalizeNullableString(book.condition),
+    currency_sec: normalizeNullableString(book.currency_sec),
+    purchase_date: normalizeNullableString(book.purchase_date),
+    purchase_place: normalizeNullableString(book.purchase_place),
+    topic: normalizeNullableString(book.topic),
+    image_url: normalizeNullableString(book.image_url),
+    comment: normalizeNullableString(book.comment),
+  };
+}
+
 /**
  * 도서 추가 훅
  *
@@ -40,7 +64,10 @@ export function useCreateBook() {
       }
 
       // 사용자 ID 추가
-      const bookData: BookInsert = { ...book, user_id: user.id };
+      const bookData: BookInsert = {
+        ...sanitizeBookInsertPayload(book),
+        user_id: user.id,
+      };
 
       // Supabase insert
       // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회

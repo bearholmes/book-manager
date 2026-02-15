@@ -5,6 +5,30 @@ import { invalidateBookQueries } from '@/utils/query-helpers';
 import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookUpdate } from '@/types/book';
 
+function normalizeNullableString(value: unknown): string | null | undefined {
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'string') return value as string;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function sanitizeBookUpdatePayload(updates: BookUpdate): BookUpdate {
+  return {
+    ...updates,
+    isbn13: normalizeNullableString(updates.isbn13),
+    author: normalizeNullableString(updates.author),
+    publisher: normalizeNullableString(updates.publisher),
+    publication_date: normalizeNullableString(updates.publication_date),
+    condition: normalizeNullableString(updates.condition),
+    currency_sec: normalizeNullableString(updates.currency_sec),
+    purchase_date: normalizeNullableString(updates.purchase_date),
+    purchase_place: normalizeNullableString(updates.purchase_place),
+    topic: normalizeNullableString(updates.topic),
+    image_url: normalizeNullableString(updates.image_url),
+    comment: normalizeNullableString(updates.comment),
+  };
+}
+
 /**
  * 도서 수정 훅
  *
@@ -37,9 +61,11 @@ export function useUpdateBook() {
 
       // Supabase update
       // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회
+      const sanitizedUpdates = sanitizeBookUpdatePayload(updates);
+
       const { data, error } = await supabase
         .from('books')
-        .update(updates as never)
+        .update(sanitizedUpdates as never)
         .eq('id', id)
         .select()
         .single();
