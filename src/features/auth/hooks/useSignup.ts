@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
+import { getErrorMessage } from '@/utils/error-helpers';
 import type { SignupFormData } from '@/utils/validation';
 
 /**
@@ -27,7 +28,7 @@ export function useSignup() {
     },
     onError: (error: Error) => {
       console.error('회원가입 오류:', error);
-      toast.error(error.message || '회원가입에 실패했습니다');
+      toast.error(getErrorMessage(error, '회원가입에 실패했습니다. 입력 내용을 확인해주세요.'));
     },
   });
 }

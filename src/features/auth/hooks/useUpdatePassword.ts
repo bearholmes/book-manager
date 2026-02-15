@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
+import { getErrorMessage } from '@/utils/error-helpers';
 
 interface UpdatePasswordInput {
   password: string;
@@ -24,7 +25,7 @@ export function useUpdatePassword() {
     },
     onError: (error: Error) => {
       console.error('비밀번호 변경 오류:', error);
-      toast.error(error.message || '비밀번호 변경에 실패했습니다');
+      toast.error(getErrorMessage(error, '비밀번호 변경에 실패했습니다. 다시 시도해주세요.'));
     },
   });
 }

@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
+import { getErrorMessage } from '@/utils/error-helpers';
 import { ROUTES } from '@/utils/constants';
 
 /**
@@ -22,7 +23,7 @@ export function useSignout() {
     },
     onError: (error: Error) => {
       console.error('로그아웃 오류:', error);
-      toast.error(error.message || '로그아웃에 실패했습니다');
+      toast.error(getErrorMessage(error, '로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.'));
     },
   });
 }

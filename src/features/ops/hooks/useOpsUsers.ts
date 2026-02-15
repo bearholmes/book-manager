@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
 import type { UserRole } from '@/features/auth/hooks/useCurrentUserRole';
+import { getErrorMessage } from '@/utils/error-helpers';
 
 const OPS_USERS_QUERY_KEY = ['ops-users'];
 const OPS_AUDIT_LOGS_QUERY_KEY = ['ops-audit-logs'];
@@ -97,7 +98,7 @@ export function useOpsSetUserRole() {
       toast.success('권한이 변경되었습니다.');
     },
     onError: (error: Error) => {
-      toast.error(error.message || '권한 변경에 실패했습니다.');
+      toast.error(getErrorMessage(error, '권한 변경에 실패했습니다.'));
     },
   });
 }
@@ -119,7 +120,7 @@ export function useOpsDeleteUser() {
       toast.success('사용자가 삭제되었습니다.');
     },
     onError: (error: Error) => {
-      toast.error(error.message || '사용자 삭제에 실패했습니다.');
+      toast.error(getErrorMessage(error, '사용자 삭제에 실패했습니다.'));
     },
   });
 }

@@ -18,6 +18,7 @@ import { Tabs } from '@/components/ui/Tabs';
 import { ROUTES } from '@/utils/constants';
 import { userAtom } from '@/store/authAtom';
 import { Spinner } from '@/components/ui/Spinner';
+import { getErrorMessage } from '@/utils/error-helpers';
 import {
   useOpsAuditLogs,
   useOpsDeleteUser,
@@ -71,6 +72,12 @@ export function Ops() {
 
   const { mutate: setUserRole, isPending: isSettingRole } = useOpsSetUserRole();
   const { mutate: deleteUser, isPending: isDeletingUser } = useOpsDeleteUser();
+  const usersErrorMessage = error
+    ? getErrorMessage(error, '사용자 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.')
+    : null;
+  const auditErrorMessage = auditError
+    ? getErrorMessage(auditError, '감사 로그를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.')
+    : null;
 
   const stats = useMemo(() => {
     const activeUsers = users.filter((user) => user.is_active).length;
@@ -278,9 +285,7 @@ export function Ops() {
                   <Spinner size="lg" />
                 </div>
               ) : error ? (
-                <div className="surface-muted p-4 text-sm text-red-700">
-                  사용자 목록을 불러오지 못했습니다: {error.message}
-                </div>
+                <div className="surface-muted p-4 text-sm text-red-700">{usersErrorMessage}</div>
               ) : (
                 <>
                   <p className="mb-3 text-xs font-medium text-primary-600">
@@ -411,9 +416,7 @@ export function Ops() {
                   <Spinner size="lg" />
                 </div>
               ) : auditError ? (
-                <div className="surface-muted p-4 text-sm text-red-700">
-                  감사 로그를 불러오지 못했습니다: {auditError.message}
-                </div>
+                <div className="surface-muted p-4 text-sm text-red-700">{auditErrorMessage}</div>
               ) : (
                 <div className="overflow-x-auto rounded-xl border border-primary-100">
                   <table className="w-full min-w-[860px] text-left text-sm">

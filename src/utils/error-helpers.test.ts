@@ -9,10 +9,28 @@ describe('error-helpers', () => {
       expect(message).toContain('네트워크');
     });
 
-    it('일반 Error 객체의 메시지를 반환해야 함', () => {
-      const error = new Error('Custom error message');
+    it('한국어 Error 메시지는 그대로 반환해야 함', () => {
+      const error = new Error('이미 가입된 이메일입니다.');
       const message = getErrorMessage(error);
-      expect(message).toBe('Custom error message');
+      expect(message).toBe('이미 가입된 이메일입니다.');
+    });
+
+    it('로그인 실패 문구를 사용자 친화적으로 변환해야 함', () => {
+      const error = new Error('Invalid login credentials');
+      const message = getErrorMessage(error, '로그인에 실패했습니다');
+      expect(message).toBe('이메일 또는 비밀번호를 확인해주세요.');
+    });
+
+    it('요청 제한 문구를 사용자 친화적으로 변환해야 함', () => {
+      const error = new Error('rate limit');
+      const message = getErrorMessage(error, '요청에 실패했습니다');
+      expect(message).toBe('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+    });
+
+    it('매핑되지 않은 영문 에러는 fallback 메시지를 반환해야 함', () => {
+      const error = new Error('Custom error message');
+      const message = getErrorMessage(error, '처리에 실패했습니다');
+      expect(message).toBe('처리에 실패했습니다');
     });
 
     it('문자열 에러는 fallback 메시지를 반환해야 함', () => {

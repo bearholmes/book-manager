@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/useToast';
+import { getErrorMessage } from '@/utils/error-helpers';
 import type { LoginFormData } from '@/utils/validation';
 
 /**
@@ -21,7 +22,7 @@ export function useLogin() {
     },
     onError: (error: Error) => {
       console.error('로그인 오류:', error);
-      toast.error(error.message || '로그인에 실패했습니다');
+      toast.error(getErrorMessage(error, '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.'));
     },
   });
 }

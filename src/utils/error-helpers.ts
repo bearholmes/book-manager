@@ -9,19 +9,68 @@ export interface AppError extends Error {
   hint?: string;
 }
 
+function extractErrorMessage(error: unknown): string | null {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return (error as { message: string }).message;
+  }
+
+  return null;
+}
+
+function mapKnownErrorMessage(message: string): string | null {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes('invalid login credentials')) {
+    return '이메일 또는 비밀번호를 확인해주세요.';
+  }
+
+  if (normalized.includes('email not confirmed')) {
+    return '이메일 인증 후 로그인해주세요.';
+  }
+
+  if (normalized.includes('user already registered')) {
+    return '이미 가입된 이메일입니다.';
+  }
+
+  if (normalized.includes('rate limit') || normalized.includes('for security purposes')) {
+    return '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.';
+  }
+
+  if (normalized.includes('invalid token') || normalized.includes('token has expired')) {
+    return '인증이 만료되었습니다. 다시 로그인해주세요.';
+  }
+
+  if (normalized.includes('new password should be different')) {
+    return '새 비밀번호는 기존 비밀번호와 다르게 설정해주세요.';
+  }
+
+  if (normalized.includes('password should be at least')) {
+    return '비밀번호는 최소 6자 이상이어야 합니다.';
+  }
+
+  if (normalized.includes('permission denied') || normalized.includes('not authorized')) {
+    return '권한이 없습니다. 관리자에게 문의하세요.';
+  }
+
+  return null;
+}
+
 /**
  * 네트워크 에러인지 확인
  */
 export function isNetworkError(error: unknown): boolean {
-  if (error instanceof Error) {
-    return (
-      error.message.includes('fetch') ||
-      error.message.includes('network') ||
-      error.message.includes('Failed to fetch') ||
-      error.message.includes('NetworkError')
-    );
-  }
-  return false;
+  const message = extractErrorMessage(error)?.toLowerCase() || '';
+  return (
+    message.includes('fetch') ||
+    message.includes('network') ||
+    message.includes('failed to fetch') ||
+    message.includes('networkerror')
+  );
 }
 
 /**
@@ -41,29 +90,35 @@ export function isSupabaseError(error: unknown): error is PostgrestError {
  * 인증 에러인지 확인
  */
 export function isAuthError(error: unknown): boolean {
+  const message = extractErrorMessage(error)?.toLowerCase() || '';
+
   if (isSupabaseError(error)) {
     return (
       error.code === 'PGRST301' || // JWT expired
       error.code === 'PGRST204' || // No rows returned (user not found)
-      error.message.includes('JWT') ||
-      error.message.includes('인증')
+      message.includes('jwt') ||
+      message.includes('invalid token') ||
+      message.includes('token has expired') ||
+      message.includes('인증')
     );
   }
-  return false;
+  return message.includes('jwt') || message.includes('invalid token');
 }
 
 /**
  * RLS 위반 에러인지 확인
  */
 export function isRLSError(error: unknown): boolean {
+  const message = extractErrorMessage(error)?.toLowerCase() || '';
+
   if (isSupabaseError(error)) {
     return (
       error.code === '42501' || // insufficient_privilege
-      error.message.includes('policy') ||
-      error.message.includes('permission')
+      message.includes('policy') ||
+      message.includes('permission')
     );
   }
-  return false;
+  return message.includes('permission denied') || message.includes('not authorized');
 }
 
 /**
@@ -115,19 +170,20 @@ export function getErrorMessage(error: unknown, fallbackMessage = '오류가 발
     if (error.code === '23502') {
       return '필수 항목이 누락되었습니다.';
     }
+  }
 
-    // Supabase 메시지가 있으면 사용
-    if (error.message) {
-      return error.message;
+  const rawMessage = extractErrorMessage(error);
+  if (rawMessage) {
+    const mapped = mapKnownErrorMessage(rawMessage);
+    if (mapped) {
+      return mapped;
+    }
+
+    if (/[가-힣]/.test(rawMessage)) {
+      return rawMessage;
     }
   }
 
-  // 일반 Error 객체
-  if (error instanceof Error) {
-    return error.message || fallbackMessage;
-  }
-
-  // 알 수 없는 에러
   return fallbackMessage;
 }
 
