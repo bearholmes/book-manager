@@ -46,7 +46,7 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
   // ARIA 레이블 생성
   const ariaLabel = `${book.book_name}${book.author ? `, 저자: ${book.author}` : ''}${
     book.topic ? `, 주제: ${book.topic}` : ''
-  }${book.purchase_price ? `, 가격: ${formatCurrency(book.purchase_price)}원` : ''}`;
+  }${book.purchase_price !== null ? `, 가격: ${formatCurrency(book.purchase_price)}원` : ''}`;
 
   return (
     <div
@@ -118,7 +118,7 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
 
         {/* 구매 정보 */}
         <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-          {book.purchase_price && (
+          {book.purchase_price !== null && (
             <span className="font-medium text-gray-900">
               {formatCurrency(book.purchase_price)}원
             </span>

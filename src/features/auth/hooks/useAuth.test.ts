@@ -115,19 +115,14 @@ describe('useAuth', () => {
   });
 
   it('인증 상태 변경 시 사용자가 업데이트되어야 함', async () => {
-    let authStateCallback: ((event: string, session: Session | null) => void) | null = null;
-
     vi.mocked(supabase.auth.getSession).mockResolvedValue({
       data: { session: null },
       error: null,
     });
 
-    vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((callback) => {
-      authStateCallback = callback;
-      return {
-        data: { subscription: { unsubscribe: unsubscribeMock } },
-      } as any;
-    });
+    vi.mocked(supabase.auth.onAuthStateChange).mockReturnValue({
+      data: { subscription: { unsubscribe: unsubscribeMock } },
+    } as any);
 
     const { result } = renderHook(() => useAuth());
 
@@ -137,9 +132,11 @@ describe('useAuth', () => {
     });
 
     // 로그인 이벤트 시뮬레이션
-    if (authStateCallback) {
-      authStateCallback('SIGNED_IN', mockSession);
-    }
+    const authStateCallback = vi.mocked(supabase.auth.onAuthStateChange).mock.calls[0]?.[0] as
+      | ((event: string, session: Session | null) => void)
+      | undefined;
+    expect(authStateCallback).toBeDefined();
+    authStateCallback?.('SIGNED_IN', mockSession);
 
     await waitFor(() => {
       expect(result.current.user).toEqual(mockUser);
@@ -147,19 +144,14 @@ describe('useAuth', () => {
   });
 
   it('로그아웃 시 사용자가 null로 설정되어야 함', async () => {
-    let authStateCallback: ((event: string, session: Session | null) => void) | null = null;
-
     vi.mocked(supabase.auth.getSession).mockResolvedValue({
       data: { session: mockSession },
       error: null,
     });
 
-    vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((callback) => {
-      authStateCallback = callback;
-      return {
-        data: { subscription: { unsubscribe: unsubscribeMock } },
-      } as any;
-    });
+    vi.mocked(supabase.auth.onAuthStateChange).mockReturnValue({
+      data: { subscription: { unsubscribe: unsubscribeMock } },
+    } as any);
 
     const { result } = renderHook(() => useAuth());
 
@@ -169,9 +161,11 @@ describe('useAuth', () => {
     });
 
     // 로그아웃 이벤트 시뮬레이션
-    if (authStateCallback) {
-      authStateCallback('SIGNED_OUT', null);
-    }
+    const authStateCallback = vi.mocked(supabase.auth.onAuthStateChange).mock.calls[0]?.[0] as
+      | ((event: string, session: Session | null) => void)
+      | undefined;
+    expect(authStateCallback).toBeDefined();
+    authStateCallback?.('SIGNED_OUT', null);
 
     await waitFor(() => {
       expect(result.current.user).toBeNull();

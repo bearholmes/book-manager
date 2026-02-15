@@ -25,7 +25,7 @@ export default defineConfig({
           'query-vendor': ['@tanstack/react-query', 'jotai'],
           'supabase-vendor': ['@supabase/supabase-js'],
           'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'utils-vendor': ['date-fns', 'clsx', 'tailwind-merge'],
+          'utils-vendor': ['date-fns', 'clsx'],
         },
       },
     },

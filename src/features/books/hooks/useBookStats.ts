@@ -26,6 +26,21 @@ export interface BookStatsByYear {
   count: number;
 }
 
+interface TopicStatRow {
+  topic: string | null;
+  book_count: number | null;
+}
+
+interface PlaceStatRow {
+  purchase_place: string | null;
+  book_count: number | null;
+}
+
+interface YearStatRow {
+  year: number | null;
+  book_count: number | null;
+}
+
 /**
  * 주제별 도서 통계 조회 훅
  *
@@ -47,10 +62,14 @@ export function useBookStatsByTopic() {
       const { data, error } = await supabase
         .from('book_stats_by_topic')
         .select('*')
-        .order('count', { ascending: false });
+        .order('book_count', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as BookStatsByTopic[];
+      const rows = (data || []) as TopicStatRow[];
+      return rows.map((row) => ({
+        topic: row.topic || '미분류',
+        count: Number(row.book_count || 0),
+      }));
     },
   });
 }
@@ -76,10 +95,14 @@ export function useBookStatsByPlace() {
       const { data, error } = await supabase
         .from('book_stats_by_place')
         .select('*')
-        .order('count', { ascending: false });
+        .order('book_count', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as BookStatsByPlace[];
+      const rows = (data || []) as PlaceStatRow[];
+      return rows.map((row) => ({
+        purchase_place: row.purchase_place || '미분류',
+        count: Number(row.book_count || 0),
+      }));
     },
   });
 }
@@ -108,7 +131,11 @@ export function useBookStatsByYear() {
         .order('year', { ascending: true });
 
       if (error) throw error;
-      return (data || []) as BookStatsByYear[];
+      const rows = (data || []) as YearStatRow[];
+      return rows.map((row) => ({
+        year: Number(row.year || 0),
+        count: Number(row.book_count || 0),
+      }));
     },
   });
 }

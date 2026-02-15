@@ -107,7 +107,7 @@ export function BookDetailModal({ book, isOpen, onClose, topicColor, onEdit, onD
         <div className="border-t border-gray-200 pt-6">
           <h3 className="mb-4 text-lg font-semibold text-gray-900">구매 정보</h3>
           <div className="grid gap-4 sm:grid-cols-2">
-            {book.purchase_price && (
+            {book.purchase_price !== null && (
               <div className="flex items-start gap-2">
                 <DollarSign className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
                 <div>

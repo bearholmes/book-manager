@@ -101,7 +101,7 @@ describe('useCreateBook', () => {
   it('인증되지 않은 경우 에러를 발생시켜야 함', async () => {
     // 인증되지 않은 상태 모킹
     vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: null },
+      data: { user: null as any },
       error: null,
     });
 

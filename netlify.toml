@@ -1,11 +1,10 @@
 [build]
-  command = "yarn build"
+  command = "pnpm build"
   publish = "dist"
-  functions = ".output/server"
 
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/index"
+  to = "/index.html"
   status = 200
 
 [[headers]]
