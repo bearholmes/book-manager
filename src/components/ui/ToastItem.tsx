@@ -1,57 +1,34 @@
+import { type Toast, removeToastAtom } from '@/store/uiAtom';
 import { useSetAtom } from 'jotai';
-import { CheckCircle, XCircle, Info, AlertTriangle, X } from 'lucide-react';
-import { removeToastAtom, type Toast } from '@/store/uiAtom';
-import clsx from 'clsx';
+import { X } from 'lucide-react';
 
 interface ToastItemProps {
   toast: Toast;
 }
 
-const icons = {
-  success: CheckCircle,
-  error: XCircle,
-  info: Info,
-  warning: AlertTriangle,
-};
-
-const colors = {
-  success: 'bg-green-50 text-green-800 border-green-200',
-  error: 'bg-red-50 text-red-800 border-red-200',
-  info: 'bg-blue-50 text-blue-800 border-blue-200',
-  warning: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-};
-
 export function ToastItem({ toast }: ToastItemProps) {
   const removeToast = useSetAtom(removeToastAtom);
-  const Icon = icons[toast.type || 'info'];
+  const toastType = toast.type || 'info';
+  const isAssertive = toastType === 'error' || toastType === 'warning';
 
   return (
     <div
-      className={clsx(
-        'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg border shadow-lg',
-        'animate-slide-down',
-        colors[toast.type || 'info'],
-      )}
+      className="pointer-events-auto w-full rounded-xl bg-primary-900 px-4 py-3 text-white shadow-panel animate-in-up"
+      role={isAssertive ? 'alert' : 'status'}
+      aria-live={isAssertive ? 'assertive' : 'polite'}
     >
-      <div className="p-4">
-        <div className="flex items-start">
-          <div className="flex-shrink-0">
-            <Icon className="h-5 w-5" aria-hidden="true" />
-          </div>
-          <div className="ml-3 w-0 flex-1 pt-0.5">
-            <p className="text-sm font-medium">{toast.message}</p>
-          </div>
-          <div className="ml-4 flex flex-shrink-0">
-            <button
-              type="button"
-              className="inline-flex rounded-md hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              onClick={() => removeToast(toast.id)}
-            >
-              <span className="sr-only">Close</span>
-              <X className="h-5 w-5" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
+      <div className="flex items-center gap-2.5">
+        <p className="min-w-0 flex-1 break-words text-sm font-medium leading-5 text-white/95">
+          {toast.message}
+        </p>
+        <button
+          type="button"
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/65 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-0"
+          onClick={() => removeToast(toast.id)}
+        >
+          <span className="sr-only">닫기</span>
+          <X className="h-3.5 w-3.5" aria-hidden="true" />
+        </button>
       </div>
     </div>
   );

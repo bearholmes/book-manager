@@ -1,5 +1,5 @@
-import { useAtomValue } from 'jotai';
 import { toastsAtom } from '@/store/uiAtom';
+import { useAtomValue } from 'jotai';
 import { ToastItem } from './ToastItem';
 
 export function ToastContainer() {
@@ -8,8 +8,12 @@ export function ToastContainer() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 flex items-end px-4 py-6 sm:items-end sm:p-6">
-      <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+    <div className="pointer-events-none fixed inset-x-0 bottom-16 z-[60] px-4 sm:bottom-16">
+      <div
+        className="mx-auto flex w-full max-w-md flex-col-reverse gap-2.5"
+        aria-live="polite"
+        aria-relevant="additions text"
+      >
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} />
         ))}
