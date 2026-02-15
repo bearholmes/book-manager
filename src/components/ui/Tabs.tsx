@@ -18,17 +18,18 @@ interface TabsProps {
  */
 export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   return (
-    <div className={clsx('border-b border-gray-200', className)}>
-      <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+    <div className={clsx('surface-muted p-1.5', className)}>
+      <nav className="grid grid-cols-2 gap-1.5" aria-label="Tabs">
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => onChange(tab.id)}
             className={clsx(
-              'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors',
+              'rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors',
               activeTab === tab.id
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                ? 'bg-white text-primary-900 shadow-soft'
+                : 'text-primary-700 hover:bg-white/70 hover:text-primary-900',
             )}
             aria-current={activeTab === tab.id ? 'page' : undefined}
           >

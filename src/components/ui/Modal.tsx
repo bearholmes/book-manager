@@ -99,7 +99,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+        className="fixed inset-0 bg-primary-950/45 backdrop-blur-[2px] transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -109,22 +109,21 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
         <div
           ref={modalRef}
           className={clsx(
-            'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full',
+            'animate-in-up relative w-full transform overflow-hidden rounded-2xl border border-primary-100/80 bg-white/95 text-left shadow-panel transition-all sm:my-8',
             sizeClasses[size],
-            'animate-slide-up',
             className,
           )}
         >
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-              <h3 className="text-lg font-semibold text-gray-900" id="modal-title">
+            <div className="flex items-center justify-between border-b border-primary-100/90 px-6 py-4">
+              <h3 className="text-xl font-semibold text-primary-900" id="modal-title">
                 {title}
               </h3>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                className="rounded-lg p-1 text-primary-400 hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               >
                 <span className="sr-only">Close</span>
                 <X className="h-6 w-6" />

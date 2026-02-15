@@ -4,20 +4,20 @@
 
 // 주제별 색상 매핑
 export const TOPIC_COLORS: Record<number, string> = {
-  1: '#e0f2fe',
-  2: '#bae6fd',
-  3: '#bfdbfe',
-  4: '#c7d2fe',
-  5: '#dbeafe',
-  6: '#ccfbf1',
-  7: '#d1fae5',
-  8: '#dcfce7',
-  9: '#fef3c7',
-  10: '#fde68a',
-  11: '#ffedd5',
-  12: '#fde2e2',
-  13: '#fce7f3',
-  14: '#ede9fe',
+  1: '#e5edf6',
+  2: '#d9e6f4',
+  3: '#e9efdf',
+  4: '#f1e7d4',
+  5: '#f5e1cf',
+  6: '#e8f1eb',
+  7: '#e6ebe2',
+  8: '#f4e8e0',
+  9: '#dbe8ec',
+  10: '#e3dfef',
+  11: '#f2ebdd',
+  12: '#ece3d8',
+  13: '#f6e3d5',
+  14: '#e0e8f1',
 };
 
 // 도서 상태 옵션
@@ -36,16 +36,16 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
 
 // 차트 색상
 export const CHART_COLORS = [
-  '#0284c7',
-  '#0369a1',
-  '#0ea5e9',
-  '#14b8a6',
-  '#10b981',
-  '#84cc16',
-  '#f59e0b',
-  '#f97316',
-  '#ef4444',
-  '#7c3aed',
+  '#355575',
+  '#4f7094',
+  '#2f6b6d',
+  '#4f7b57',
+  '#8c6c3f',
+  '#c1673f',
+  '#9b4a35',
+  '#5a6e8a',
+  '#7a8f5f',
+  '#a85d4d',
 ];
 
 // 페이지 경로
@@ -69,4 +69,6 @@ export const QUERY_KEYS = {
 export const STORAGE_KEYS = {
   THEME: 'book-manager-theme',
   FILTER_PRESET: 'book-manager-filter-preset',
+  MOBILE_FILTER_OPEN: 'book-manager-mobile-filter-open',
+  SEARCH_HISTORY: 'book-manager-search-history',
 } as const;

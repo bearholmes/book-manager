@@ -32,7 +32,12 @@ interface BookCardProps {
  * />
  * ```
  */
-export const BookCard = memo(function BookCard({ book, topicColor, onClick, className }: BookCardProps) {
+export const BookCard = memo(function BookCard({
+  book,
+  topicColor,
+  onClick,
+  className,
+}: BookCardProps) {
   const [imageError, setImageError] = useState(false);
 
   // 키보드 이벤트 핸들러 (Enter/Space)
@@ -51,8 +56,9 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
   return (
     <div
       className={clsx(
-        'group relative overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:shadow-md',
-        onClick && 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+        'group relative overflow-hidden rounded-2xl border border-primary-100/90 bg-white/95 shadow-soft transition duration-200 hover:-translate-y-1 hover:shadow-panel',
+        onClick &&
+          'cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
         className,
       )}
       onClick={onClick}
@@ -61,23 +67,25 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? ariaLabel : undefined}
     >
+      {book.topic && (
+        <div
+          className="absolute inset-x-0 top-0 h-1.5"
+          style={{ backgroundColor: topicColor || '#d9e6f4' }}
+        />
+      )}
+
       {/* 이미지 */}
-      <div className="aspect-[3/4] w-full overflow-hidden bg-gray-100">
+      <div className="aspect-[4/5] w-full overflow-hidden border-b border-primary-100/80 bg-primary-50/60">
         {book.image_url && !imageError ? (
           <img
             src={book.image_url}
             alt={book.book_name}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">
-            <svg
-              className="h-16 w-16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+          <div className="flex h-full items-center justify-center text-primary-300">
+            <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -90,25 +98,23 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
       </div>
 
       {/* 정보 */}
-      <div className="p-4">
+      <div className="space-y-2 p-4">
         {/* 도서명 */}
-        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900">
+        <h3 className="line-clamp-2 text-base font-semibold leading-snug text-primary-900">
           {book.book_name}
         </h3>
 
         {/* 저자 */}
-        {book.author && (
-          <p className="mt-1 line-clamp-1 text-xs text-gray-600">{book.author}</p>
-        )}
+        {book.author && <p className="line-clamp-1 text-sm text-primary-700">{book.author}</p>}
 
         {/* 주제 태그 */}
         {book.topic && (
-          <div className="mt-2">
+          <div>
             <span
-              className="inline-block rounded-full px-2 py-1 text-xs font-medium"
+              className="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
               style={{
-                backgroundColor: topicColor || '#E5E7EB',
-                color: '#1F2937',
+                backgroundColor: topicColor || '#d9e6f4',
+                color: '#172a3c',
               }}
             >
               {book.topic}
@@ -117,21 +123,19 @@ export const BookCard = memo(function BookCard({ book, topicColor, onClick, clas
         )}
 
         {/* 구매 정보 */}
-        <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+        <div className="flex items-center justify-between gap-3 pt-1 text-xs text-primary-500">
           {book.purchase_price !== null && (
-            <span className="font-medium text-gray-900">
+            <span className="font-semibold text-primary-800">
               {formatCurrency(book.purchase_price)}원
             </span>
           )}
-          {book.purchase_date && (
-            <span>{formatDate(book.purchase_date, 'yyyy.MM.dd')}</span>
-          )}
+          {book.purchase_date && <span>{formatDate(book.purchase_date, 'yyyy.MM.dd')}</span>}
         </div>
 
         {/* 중복 구매 표시 */}
         {book.duplicated && (
-          <div className="mt-2">
-            <span className="inline-block rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+          <div>
+            <span className="inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">
               중복구매
             </span>
           </div>

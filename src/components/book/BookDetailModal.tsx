@@ -1,5 +1,14 @@
-import { useState } from 'react';
-import { Calendar, DollarSign, MapPin, Package, Tag, User } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import {
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  DollarSign,
+  MapPin,
+  Package,
+  Tag,
+  User,
+} from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { formatCurrency, formatDate, formatISBN } from '@/utils/format';
 import type { Book } from '@/types/book';
@@ -17,19 +26,85 @@ interface BookDetailModalProps {
  * 도서 상세 모달 컴포넌트
  * Vue 버전의 ContentModal 포팅
  */
-export function BookDetailModal({ book, isOpen, onClose, topicColor, onEdit, onDelete }: BookDetailModalProps) {
+export function BookDetailModal({
+  book,
+  isOpen,
+  onClose,
+  topicColor,
+  onEdit,
+  onDelete,
+}: BookDetailModalProps) {
   const [imageError, setImageError] = useState(false);
+  const [showExtraInfo, setShowExtraInfo] = useState(false);
 
   if (!book) return null;
 
+  const summaryItems = useMemo(
+    () =>
+      [
+        book.author ? { label: '저자', value: book.author, icon: User } : null,
+        book.publisher ? { label: '출판사', value: book.publisher, icon: Package } : null,
+        book.topic
+          ? {
+              label: '주제',
+              value: book.topic,
+              icon: Tag,
+              color: topicColor || '#d9e6f4',
+            }
+          : null,
+      ].filter(Boolean) as Array<{
+        label: string;
+        value: string;
+        icon: typeof User;
+        color?: string;
+      }>,
+    [book.author, book.publisher, book.topic, topicColor],
+  );
+
+  const purchaseItems = useMemo(
+    () =>
+      [
+        book.purchase_price !== null
+          ? {
+              label: '구매 가격',
+              value: `${formatCurrency(book.purchase_price)} ${book.currency || 'KRW'}`,
+              icon: DollarSign,
+            }
+          : null,
+        book.purchase_date
+          ? { label: '구매일', value: formatDate(book.purchase_date), icon: Calendar }
+          : null,
+        book.purchase_place ? { label: '구매처', value: book.purchase_place, icon: MapPin } : null,
+        book.condition ? { label: '상태', value: book.condition, icon: Package } : null,
+      ].filter(Boolean) as Array<{ label: string; value: string; icon: typeof Package }>,
+    [book.condition, book.currency, book.purchase_date, book.purchase_place, book.purchase_price],
+  );
+
+  const extraItems = useMemo(
+    () =>
+      [
+        book.isbn13 ? { label: 'ISBN-13', value: formatISBN(book.isbn13), mono: true } : null,
+        book.publication_date
+          ? { label: '출판일', value: formatDate(book.publication_date) }
+          : null,
+        book.comment ? { label: '메모', value: book.comment, multiline: true } : null,
+      ].filter(Boolean) as Array<{
+        label: string;
+        value: string;
+        mono?: boolean;
+        multiline?: boolean;
+      }>,
+    [book.comment, book.isbn13, book.publication_date],
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <div className="space-y-6">
+      <div className="space-y-6 text-primary-900">
         {/* 이미지 및 기본 정보 */}
-        <div className="flex flex-col gap-6 sm:flex-row">
+        <div className="flex flex-col gap-6 md:flex-row">
           {/* 표지 이미지 */}
-          <div className="w-full sm:w-48">
-            <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-gray-100">
+          <div className="w-full md:w-56">
+            <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl border border-primary-100 bg-primary-50/70">
               {book.image_url && !imageError ? (
                 <img
                   src={book.image_url}
@@ -38,7 +113,7 @@ export function BookDetailModal({ book, isOpen, onClose, topicColor, onEdit, onD
                   onError={() => setImageError(true)}
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-gray-400">
+                <div className="flex h-full items-center justify-center text-primary-300">
                   <svg className="h-20 w-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -55,159 +130,132 @@ export function BookDetailModal({ book, isOpen, onClose, topicColor, onEdit, onD
           {/* 기본 정보 */}
           <div className="flex-1 space-y-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">{book.book_name}</h2>
+              <h2 className="text-3xl font-semibold leading-tight text-primary-900">
+                {book.book_name}
+              </h2>
               {book.duplicated && (
-                <span className="mt-2 inline-block rounded bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
+                <span className="mt-3 inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-800">
                   중복구매
                 </span>
               )}
             </div>
 
-            {book.author && (
-              <div className="flex items-start gap-2">
-                <User className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">저자</p>
-                  <p className="mt-1 text-sm text-gray-900">{book.author}</p>
-                </div>
-              </div>
-            )}
-
-            {book.publisher && (
-              <div className="flex items-start gap-2">
-                <Package className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">출판사</p>
-                  <p className="mt-1 text-sm text-gray-900">{book.publisher}</p>
-                </div>
-              </div>
-            )}
-
-            {book.topic && (
-              <div className="flex items-start gap-2">
-                <Tag className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">주제</p>
-                  <span
-                    className="mt-1 inline-block rounded-full px-3 py-1 text-sm font-medium"
-                    style={{
-                      backgroundColor: topicColor || '#E5E7EB',
-                      color: '#1F2937',
-                    }}
+            {summaryItems.length > 0 && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {summaryItems.map((item) => (
+                  <div
+                    key={`${item.label}-${item.value}`}
+                    className="surface-muted flex items-start gap-2 p-3"
                   >
-                    {book.topic}
-                  </span>
-                </div>
+                    <item.icon className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary-500" />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                        {item.label}
+                      </p>
+                      {item.label === '주제' ? (
+                        <span
+                          className="mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold"
+                          style={{
+                            backgroundColor: item.color,
+                            color: '#172a3c',
+                          }}
+                        >
+                          {item.value}
+                        </span>
+                      ) : (
+                        <p className="mt-1 text-sm text-primary-900">{item.value}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
 
         {/* 구매 정보 */}
-        <div className="border-t border-gray-200 pt-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">구매 정보</h3>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {book.purchase_price !== null && (
-              <div className="flex items-start gap-2">
-                <DollarSign className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">구매 가격</p>
-                  <p className="mt-1 text-sm font-semibold text-gray-900">
-                    {formatCurrency(book.purchase_price)} {book.currency || 'KRW'}
-                  </p>
+        <div className="border-t border-primary-100 pt-6">
+          <h3 className="mb-4 text-xl font-semibold text-primary-900">구매 정보</h3>
+          {purchaseItems.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {purchaseItems.map((item) => (
+                <div
+                  key={`${item.label}-${item.value}`}
+                  className="surface-muted flex items-start gap-2 p-3"
+                >
+                  <item.icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary-500" />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-primary-900">{item.value}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {book.purchase_date && (
-              <div className="flex items-start gap-2">
-                <Calendar className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">구매일</p>
-                  <p className="mt-1 text-sm text-gray-900">{formatDate(book.purchase_date)}</p>
-                </div>
-              </div>
-            )}
-
-            {book.purchase_place && (
-              <div className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">구매처</p>
-                  <p className="mt-1 text-sm text-gray-900">{book.purchase_place}</p>
-                </div>
-              </div>
-            )}
-
-            {book.condition && (
-              <div className="flex items-start gap-2">
-                <Package className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">상태</p>
-                  <p className="mt-1 text-sm text-gray-900">{book.condition}</p>
-                </div>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-primary-600">등록된 구매 정보가 없습니다.</p>
+          )}
         </div>
 
         {/* 추가 정보 */}
-        {(book.isbn13 || book.publication_date || book.comment) && (
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">추가 정보</h3>
-            <div className="space-y-3">
-              {book.isbn13 && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">ISBN-13</p>
-                  <p className="mt-1 font-mono text-sm text-gray-900">{formatISBN(book.isbn13)}</p>
-                </div>
+        {extraItems.length > 0 && (
+          <div className="border-t border-primary-100 pt-6">
+            <button
+              type="button"
+              className="btn-ghost w-full justify-between"
+              onClick={() => setShowExtraInfo((prev) => !prev)}
+              aria-expanded={showExtraInfo}
+              aria-controls="book-extra-info"
+            >
+              <span>추가 정보</span>
+              {showExtraInfo ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
               )}
+            </button>
 
-              {book.publication_date && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">출판일</p>
-                  <p className="mt-1 text-sm text-gray-900">{formatDate(book.publication_date)}</p>
+            <div
+              id="book-extra-info"
+              className={`grid transition-all duration-200 ${showExtraInfo ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+            >
+              <div className="overflow-hidden">
+                <div className="space-y-3">
+                  {extraItems.map((item) => (
+                    <div key={`${item.label}-${item.value}`} className="surface-muted p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                        {item.label}
+                      </p>
+                      <p
+                        className={`mt-1 text-sm text-primary-900 ${item.mono ? 'font-mono' : ''} ${item.multiline ? 'whitespace-pre-wrap' : ''}`}
+                      >
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              )}
-
-              {book.comment && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">메모</p>
-                  <p className="mt-1 text-sm text-gray-900">{book.comment}</p>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         )}
 
         {/* 액션 버튼 */}
-        <div className="flex justify-between border-t border-gray-200 pt-4">
+        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-primary-100 pt-4">
           <div className="flex gap-2">
             {onDelete && (
-              <button
-                type="button"
-                onClick={() => onDelete(book)}
-                className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700"
-              >
+              <button type="button" onClick={() => onDelete(book)} className="btn-danger">
                 삭제
               </button>
             )}
           </div>
           <div className="flex gap-2">
             {onEdit && (
-              <button
-                type="button"
-                onClick={() => onEdit(book)}
-                className="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
-              >
+              <button type="button" onClick={() => onEdit(book)} className="btn-primary">
                 수정
               </button>
             )}
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            >
+            <button type="button" onClick={onClose} className="btn-ghost">
               닫기
             </button>
           </div>

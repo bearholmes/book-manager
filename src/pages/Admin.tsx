@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Download, Upload, LogOut, Image as ImageIcon, House } from 'lucide-react';
+import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Filter } from 'lucide-react';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
 import { useUpdateBook } from '@/features/books/hooks/useUpdateBook';
@@ -11,6 +11,7 @@ import { useExportBooks } from '@/features/books/hooks/useExportBooks';
 import { useSignout } from '@/features/auth/hooks/useSignout';
 import { useTopicColors } from '@/hooks/useTopicColors';
 import { useBookMetadata } from '@/hooks/useBookMetadata';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Spinner } from '@/components/ui/Spinner';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Tabs } from '@/components/ui/Tabs';
@@ -39,8 +40,16 @@ export function Admin() {
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+  const debouncedSearch = useDebounce(filters.search, 250);
+  const queryFilters = useMemo(
+    () => ({
+      ...filters,
+      search: debouncedSearch,
+    }),
+    [debouncedSearch, filters],
+  );
 
-  const { data: books, isLoading } = useBooks({ filters });
+  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters });
   const { data: imageNullCount } = useImageNullCount();
   const { mutate: createBook, isPending: isCreating } = useCreateBook();
   const { mutate: updateBook, isPending: isUpdating } = useUpdateBook();
@@ -98,6 +107,10 @@ export function Admin() {
   ];
 
   const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
+  const isSearching = !!filters.search && (filters.search !== debouncedSearch || isFetching);
+  const activeFilterCount = [filters.search, filters.topic, filters.purchase_place].filter(
+    Boolean,
+  ).length;
 
   if (isLoading) {
     return (
@@ -111,23 +124,15 @@ export function Admin() {
     <div className="min-h-screen bg-app">
       <PageHeader
         title="도서 관리"
-        subtitle="내 도서를 정리하고 통계를 확인하세요"
+        subtitle="도서 데이터 품질과 컬렉션 현황을 함께 관리하세요"
         actions={
           <>
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.HOME)}
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            >
-              <House className="mr-2 h-4 w-4" />
+            <button type="button" onClick={() => navigate(ROUTES.HOME)} className="btn-secondary">
+              <House className="h-4 w-4" />
               사용자 화면
             </button>
-            <button
-              type="button"
-              onClick={() => signout()}
-              className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
+            <button type="button" onClick={() => signout()} className="btn-signout">
+              <LogOut className="h-4 w-4" />
               로그아웃
             </button>
           </>
@@ -135,56 +140,77 @@ export function Admin() {
       />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Stats Bar */}
-        <div className="mb-6 flex items-center justify-between rounded-xl border border-primary-100/80 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-6">
-            <div>
-              <span className="text-sm text-gray-500">{hasActiveFilters ? '조회 결과' : '전체 도서'}</span>
-              <p className="text-2xl font-bold text-gray-900">{books?.length || 0}권</p>
-            </div>
-            {imageNullCount !== undefined && imageNullCount > 0 && (
-              <div className="flex items-center gap-2 rounded-md bg-yellow-50 px-3 py-2">
-                <ImageIcon className="h-5 w-5 text-yellow-600" />
-                <span className="text-sm text-yellow-800">
-                  이미지 없음: {imageNullCount}권
+        <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+          <article className="kpi-card">
+            <p className="text-sm font-semibold text-primary-600">
+              {hasActiveFilters ? '조회 결과' : '전체 도서'}
+            </p>
+            <div className="mt-2 flex items-end justify-between gap-4">
+              <p className="font-serif text-4xl font-semibold text-primary-900">
+                {books?.length || 0}
+                <span className="ml-1 font-sans text-lg font-semibold text-primary-700">권</span>
+              </p>
+              {hasActiveFilters && (
+                <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
+                  필터 {activeFilterCount}개
                 </span>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </article>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <article className="kpi-card">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-primary-600">활성 필터</p>
+              <Filter className="h-4 w-4 text-primary-500" />
+            </div>
+            <p className="mt-2 text-2xl font-semibold text-primary-900">{activeFilterCount}개</p>
+          </article>
+
+          <article className="kpi-card">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-primary-600">이미지 누락</p>
+              <ImageIcon className="h-4 w-4 text-accent-600" />
+            </div>
+            <p className="mt-2 text-2xl font-semibold text-primary-900">{imageNullCount ?? 0}권</p>
+          </article>
+        </div>
+
+        <div className="mb-6 surface-card p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={() => setShowAddPanel(true)} className="btn-primary">
+              <Plus className="h-4 w-4" />
+              도서 추가
+            </button>
+
             <FileUpload
               accept=".json"
               onFileSelect={handleImport}
               disabled={isImporting}
-              className="text-sm"
+              className="w-full sm:w-auto"
             >
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="h-4 w-4" />
               {isImporting ? '임포트 중...' : 'JSON 임포트'}
             </FileUpload>
+
             <button
               type="button"
               onClick={() => exportBooks()}
               disabled={isExporting || !books || books.length === 0}
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-secondary w-full sm:w-auto"
             >
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="h-4 w-4" />
               {isExporting ? '익스포트 중...' : 'JSON 익스포트'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowAddPanel(true)}
-              className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              도서 추가
             </button>
           </div>
         </div>
 
         {/* Tabs */}
-        <Tabs tabs={tabs} activeTab={activeTab} onChange={(id) => setActiveTab(id as 'list' | 'stats')} />
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onChange={(id) => setActiveTab(id as 'list' | 'stats')}
+          className="max-w-sm"
+        />
 
         {/* Tab Content */}
         <div className="mt-6">
@@ -196,11 +222,13 @@ export function Admin() {
                 onChange={setFilters}
                 topics={topics}
                 purchasePlaces={purchasePlaces}
+                isSearching={isSearching}
+                resultCount={books?.length ?? 0}
               />
 
               {/* Book Grid */}
               {books && books.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {books.map((book) => (
                     <BookCard
                       key={book.id}
@@ -211,8 +239,30 @@ export function Admin() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-xl border border-primary-100/70 bg-white p-12 text-center shadow-sm">
-                  <p className="text-gray-500">도서가 없습니다. 도서를 추가해주세요.</p>
+                <div className="surface-card p-12 text-center">
+                  <h2 className="text-xl font-semibold text-primary-900">관리할 도서가 없습니다</h2>
+                  <p className="mt-2 text-sm text-primary-700">
+                    새 도서를 추가하거나 JSON 파일을 임포트해 컬렉션을 채워보세요.
+                  </p>
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddPanel(true)}
+                      className="btn-primary"
+                    >
+                      <Plus className="h-4 w-4" />
+                      도서 추가
+                    </button>
+                    <FileUpload
+                      accept=".json"
+                      onFileSelect={handleImport}
+                      disabled={isImporting}
+                      className="w-full sm:w-auto"
+                    >
+                      <Upload className="h-4 w-4" />
+                      JSON 임포트
+                    </FileUpload>
+                  </div>
                 </div>
               )}
             </div>
@@ -238,11 +288,7 @@ export function Admin() {
       )}
 
       {/* Add Book Panel */}
-      <SidePanel
-        isOpen={showAddPanel}
-        onClose={() => setShowAddPanel(false)}
-        title="도서 추가"
-      >
+      <SidePanel isOpen={showAddPanel} onClose={() => setShowAddPanel(false)} title="도서 추가">
         <BookForm
           onSubmit={handleAddBook}
           onCancel={() => setShowAddPanel(false)}
@@ -251,11 +297,7 @@ export function Admin() {
       </SidePanel>
 
       {/* Edit Book Panel */}
-      <SidePanel
-        isOpen={!!editingBook}
-        onClose={() => setEditingBook(null)}
-        title="도서 수정"
-      >
+      <SidePanel isOpen={!!editingBook} onClose={() => setEditingBook(null)} title="도서 수정">
         {editingBook && (
           <BookForm
             book={editingBook}
@@ -274,17 +316,16 @@ export function Admin() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-primary-700">
             정말로 <strong>{bookToDelete?.book_name}</strong>을(를) 삭제하시겠습니까?
-            <br />
-            이 작업은 되돌릴 수 없습니다.
+            <br />이 작업은 되돌릴 수 없습니다.
           </p>
           <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setShowDeleteModal(false)}
               disabled={isDeleting}
-              className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50"
+              className="btn-ghost"
             >
               취소
             </button>
@@ -292,7 +333,7 @@ export function Admin() {
               type="button"
               onClick={handleDeleteConfirm}
               disabled={isDeleting}
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 disabled:opacity-50"
+              className="btn-danger"
             >
               {isDeleting ? '삭제 중...' : '삭제'}
             </button>

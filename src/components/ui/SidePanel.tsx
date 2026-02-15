@@ -49,34 +49,41 @@ export function SidePanel({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-50 overflow-hidden"
+      aria-labelledby="slide-over-title"
+      role="dialog"
+      aria-modal="true"
+    >
       {/* Backdrop */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-          onClick={onClose}
-        />
+        <div className="absolute inset-0 bg-primary-950/45 backdrop-blur-[2px]" onClick={onClose} />
 
-        <div className={clsx('fixed inset-y-0 flex max-w-full', position === 'right' ? 'right-0 pl-10' : 'left-0 pr-10')}>
+        <div
+          className={clsx(
+            'fixed inset-y-0 flex max-w-full',
+            position === 'right' ? 'right-0 pl-10' : 'left-0 pr-10',
+          )}
+        >
           <div
             className={clsx(
-              'relative w-screen max-w-md transform transition ease-in-out duration-300',
+              'animate-in-right relative w-screen max-w-md transform transition ease-in-out duration-300',
               position === 'right' ? 'translate-x-0' : '-translate-x-0',
               className,
             )}
           >
-            <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+            <div className="flex h-full flex-col overflow-y-scroll border-l border-primary-100/70 bg-paper-50 shadow-panel">
               {/* Header */}
               {title && (
-                <div className="bg-primary-600 px-4 py-6 sm:px-6">
+                <div className="border-b border-primary-100/90 bg-white/90 px-4 py-6 sm:px-6">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-medium text-white" id="slide-over-title">
+                    <h2 className="text-xl font-semibold text-primary-900" id="slide-over-title">
                       {title}
                     </h2>
                     <button
                       type="button"
                       onClick={onClose}
-                      className="rounded-md text-primary-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                      className="rounded-lg p-1 text-primary-500 hover:bg-primary-100 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     >
                       <span className="sr-only">Close panel</span>
                       <X className="h-6 w-6" />

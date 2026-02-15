@@ -3,6 +3,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ROUTES } from '@/utils/constants';
 import { ToastContainer } from '@/components/ui/ToastContainer';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
+import { AppFooter } from '@/components/common/AppFooter';
 import { Home } from '@/pages/Home';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
@@ -14,27 +15,30 @@ function App() {
 
   return (
     <>
-      <Routes>
-        <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.SIGNUP} element={<Signup />} />
-        <Route
-          path={ROUTES.HOME}
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.ADMIN}
-          element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <div className="pb-12">
+        <Routes>
+          <Route path={ROUTES.LOGIN} element={<Login />} />
+          <Route path={ROUTES.SIGNUP} element={<Signup />} />
+          <Route
+            path={ROUTES.HOME}
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.ADMIN}
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      <AppFooter />
       <ToastContainer />
     </>
   );
