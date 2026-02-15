@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useAuth } from './useAuth';
 import { supabase } from '@/lib/supabase';
 import type { Session, User } from '@supabase/supabase-js';
@@ -136,7 +136,9 @@ describe('useAuth', () => {
       | ((event: string, session: Session | null) => void)
       | undefined;
     expect(authStateCallback).toBeDefined();
-    authStateCallback?.('SIGNED_IN', mockSession);
+    act(() => {
+      authStateCallback?.('SIGNED_IN', mockSession);
+    });
 
     await waitFor(() => {
       expect(result.current.user).toEqual(mockUser);
@@ -165,7 +167,9 @@ describe('useAuth', () => {
       | ((event: string, session: Session | null) => void)
       | undefined;
     expect(authStateCallback).toBeDefined();
-    authStateCallback?.('SIGNED_OUT', null);
+    act(() => {
+      authStateCallback?.('SIGNED_OUT', null);
+    });
 
     await waitFor(() => {
       expect(result.current.user).toBeNull();

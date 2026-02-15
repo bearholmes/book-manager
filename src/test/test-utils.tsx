@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider as JotaiProvider } from 'jotai';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 
 /**
  * 테스트용 QueryClient 생성
@@ -32,11 +32,11 @@ interface AllProvidersProps {
  */
 function AllProviders({ children, queryClient = createTestQueryClient() }: AllProvidersProps) {
   return (
-    <BrowserRouter>
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </JotaiProvider>
-    </BrowserRouter>
+    </MemoryRouter>
   );
 }
 
