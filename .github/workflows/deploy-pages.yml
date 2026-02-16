@@ -39,6 +39,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate required env
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ]; then
+            echo "Missing required secret: VITE_SUPABASE_URL"
+            exit 1
+          fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "Missing required secret: VITE_SUPABASE_ANON_KEY"
+            exit 1
+          fi
+
       - name: Build
         run: pnpm build
 
