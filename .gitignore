@@ -7,3 +7,12 @@ node_modules
 .env
 .idea
 dist
+storybook-static
+package-lock.json
+
+# 테스트 관련
+coverage
+playwright-report
+test-results
+.nyc_output
+/.env

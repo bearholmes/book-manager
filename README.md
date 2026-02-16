@@ -1,51 +1,190 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/8b487474-1c9f-4335-a977-3fde0cbe4d85/deploy-status)](https://app.netlify.com/sites/book-management-demo/deploys)
-# 방구석 도서관리 📚
+# 방구석 도서관리 2.0 📚
 
-- 집에 굴러다니는 책을 관리하기 위해 시작.
-- 한 달에 1-2권을 구매하는 데, DB까지 필요할까. JSON 파일으로 관리해보자.
+React 19 + Supabase 기반 개인 도서 관리 웹 애플리케이션
 
-## DEMO
-- User : https://book-management-demo.netlify.app/
-- Admin : https://book-management-demo.netlify.app/admin
+---
 
-## 히스토리
-- nuxt.js 3.0 RC 출시에 따라 알아볼 겸, 프레임워크로 선택
-  - [nuxt 3 documentation](https://v3.nuxtjs.org) 
-- 퇴근 후, 주말 등 틈틈이 시간내서 작업 
+## 🚀 빠른 시작
 
-## 설정
+### 필수 요구사항
 
-Make sure to install the dependencies:
+- Node.js >= 20.0.0
+- pnpm >= 8.0.0
+- Supabase 계정
+
+### 설치 및 실행
 
 ```bash
-# npm
-npm install
+# 1. 의존성 설치
+pnpm install
+
+# 2. 환경 변수 설정
+cp .env.example .env
+# .env 파일에 Supabase 정보 입력
+
+# 3. Supabase 스키마 생성
+# Supabase 대시보드에서 supabase/schema.sql 실행
+
+# 4. 데이터 마이그레이션 (선택)
+# 인자로 직접 지정 (권장)
+node scripts/migrate-json-to-supabase.js --file ./data/books.json --user-id <AUTH_USER_UUID>
+
+# 또는 대화형(TUI) 입력
+node scripts/migrate-json-to-supabase.js
+
+# 5. 개발 서버 실행
+pnpm dev
 ```
 
-### Development Server
+자세한 설정 방법은 [SETUP_GUIDE.md](./SETUP_GUIDE.md)를 참조하세요.
 
-Start the development server on http://localhost:3000
+### MIGRATION_USER_ID 확인 방법
+
+마이그레이션 스크립트는 데이터 소유자를 명확히 지정하기 위해 `MIGRATION_USER_ID`(Supabase Auth 사용자 UUID)가 필요합니다.
+
+1. Supabase Dashboard → `Authentication` → `Users`로 이동
+2. 마이그레이션 대상 사용자 선택
+3. `User ID`(UUID) 값을 복사해 `.env`의 `MIGRATION_USER_ID`에 입력
+
+또는 SQL Editor에서 아래 쿼리로 확인할 수 있습니다.
+
+```sql
+select id, email, created_at
+from auth.users
+order by created_at desc;
+```
+
+### 마이그레이션 툴 사용법
+
+스크립트 파일: `scripts/migrate-json-to-supabase.js`
+
+- 권장 실행
+```bash
+pnpm migrate -- --file ./data/books.json --user-id <AUTH_USER_UUID>
+```
+
+- 대화형 실행(TTY)
+    - 파일 경로와 `MIGRATION_USER_ID`를 프롬프트로 입력
+```bash
+pnpm migrate
+```
+
+- 옵션
+```bash
+node scripts/migrate-json-to-supabase.js --help
+```
+
+---
+
+## 📁 프로젝트 구조
+
+```
+src-react/
+├── components/        # React 컴포넌트
+├── features/          # 기능별 모듈 (auth, books)
+├── hooks/             # 커스텀 훅
+├── lib/               # 라이브러리 설정
+├── pages/             # 페이지 컴포넌트
+├── store/             # Jotai 전역 상태
+├── styles/            # 스타일
+├── types/             # TypeScript 타입
+└── utils/             # 유틸리티 함수
+```
+
+---
+
+## 🔐 환경 변수
+
+```env
+# Supabase
+VITE_SUPABASE_URL=your-project-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
+
+# App
+VITE_APP_NAME=방구석 도서관리
+VITE_APP_VERSION=2.0.0
+```
+
+---
+
+## 📝 사용 가능한 스크립트
 
 ```bash
-npm run dev
+pnpm dev          # 개발 서버 실행
+pnpm build        # 프로덕션 빌드
+pnpm preview      # 빌드 미리보기
+pnpm lint         # 린팅 검사
+pnpm lint:fix     # 린팅 자동 수정
+pnpm format       # 코드 포맷팅
+pnpm type-check   # 타입 체크
+pnpm migrate      # JSON to Supabase 마이그레이션
 ```
 
-### Production
+---
 
-Build the application for production:
+## 🏗 아키텍처
 
-```bash
-npm run build
-npm run preview
+### 데이터 흐름
+
+```
+User → React Component → TanStack Query → Supabase API → PostgreSQL
+                       ↓
+                    Jotai (UI State)
 ```
 
-Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) for more information.
+### 인증 플로우
 
-## TODO
-- 추가시 유효성/필수표시, 표지이미지 에러처리
-- 정렬시 해당 값 목록에 표시
+```
+Login/Signup → Supabase Auth → JWT Token → RLS Policy → Database Access
+```
 
-### next.
-- 도서정보자동입력(daum  api)
-- 복사기능(중복구매)
-- 라우터가드
+## ✨ 주요 변경사항 (v2.0)
+
+### 기술 스택 마이그레이션
+
+| 항목 | v1.0 (Legacy) | v2.0 (New) |
+|------|---------------|------------|
+| 프레임워크 | Nuxt.js 3 + Vue 3 | React 19 |
+| 상태 관리 | Pinia | Jotai |
+| 데이터 저장 | JSON 파일 | Supabase PostgreSQL |
+| API | - | TanStack Query + ofetch |
+| 폼 관리 | - | React Hook Form + Zod |
+| 빌드 도구 | Nuxt 내장 | Vite |
+| 린터 | ESLint + Prettier | Biome |
+| 인증 | - | Supabase Auth |
+
+---
+
+## 📚 문서
+
+- [MIGRATION_PLAN.md](./MIGRATION_PLAN.md) - 마이그레이션 계획 및 설계
+- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - 상세 설정 가이드
+- [AI_PROJECT_GUIDE.md](./AI_PROJECT_GUIDE.md) - AI 개발자용 가이드 (Legacy)
+
+---
+
+## 🛠 개발 가이드
+
+### 새 기능 추가
+
+1. **hooks 작성**: `features/[feature]/hooks/`
+2. **컴포넌트 작성**: `features/[feature]/components/`
+3. **페이지 연결**: `pages/`
+
+### 코드 스타일
+
+- Biome를 사용한 자동 포맷팅
+- JSDoc 주석 (복잡한 로직에 한함)
+- TypeScript strict mode
+
+---
+
+## 🤝 기여
+
+이 프로젝트는 개인 학습 목적으로 시작되었습니다. 기여를 환영합니다!
+
+---
+
+## 📄 라이선스
+
+자세한 내용은 `/open-license` 페이지를 참조하세요.

@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --app-bg-top: #fcfaf4;
+    --app-bg-bottom: #f1ecdf;
+    --app-bg-wash: rgba(23, 42, 60, 0.07);
+    --app-grid: rgba(23, 42, 60, 0.05);
+  }
+
+  html {
+    @apply h-full;
+    min-width: 320px;
+  }
+
+  body {
+    background: radial-gradient(circle at 8% 3%, var(--app-bg-wash) 0, transparent 42%),
+      linear-gradient(180deg, var(--app-bg-top), var(--app-bg-bottom));
+    @apply h-full font-sans text-primary-950 antialiased;
+    min-width: 320px;
+  }
+
+  #root {
+    @apply h-full;
+    min-width: 320px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-tight text-primary-900;
+  }
+}
+
+@layer components {
+  .bg-app {
+    background: radial-gradient(circle at 92% 0%, rgba(248, 107, 59, 0.1) 0, transparent 28%),
+      radial-gradient(circle at 8% 6%, rgba(53, 85, 117, 0.08) 0, transparent 40%),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 22px,
+        var(--app-grid) 22px,
+        var(--app-grid) 23px
+      ), linear-gradient(180deg, var(--app-bg-top) 0%, var(--app-bg-bottom) 100%);
+  }
+
+  .surface-card {
+    @apply rounded-2xl border border-primary-100/90 bg-white/90 shadow-soft backdrop-blur-sm;
+  }
+
+  .surface-muted {
+    @apply rounded-2xl border border-primary-100/80 bg-paper-50/90;
+  }
+
+  .kpi-card {
+    @apply surface-card p-4 sm:p-5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-primary-700 bg-primary-700 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-primary-200 bg-white px-4 py-2.5 text-sm font-semibold text-primary-800 shadow-soft transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-transparent bg-primary-50/60 px-4 py-2.5 text-sm font-semibold text-primary-800 transition-colors hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-red-700 bg-red-700 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-signout {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-primary-200 bg-paper-50 px-4 py-2.5 text-sm font-semibold text-primary-800 shadow-soft transition-colors hover:border-accent-200 hover:bg-accent-50 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .field-base {
+    @apply block w-full rounded-xl border-primary-200 bg-white px-3 py-2.5 text-sm text-primary-950 placeholder:text-primary-400 focus:border-primary-500 focus:ring-primary-500;
+  }
+
+  .select-base {
+    @apply block w-full rounded-xl border-primary-200 bg-white px-3 py-2.5 text-sm text-primary-950 focus:border-primary-500 focus:ring-primary-500;
+  }
+}
+
+@layer utilities {
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes toast-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes toast-timer {
+    0% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+
+  .animate-in-up {
+    animation: fade-up 220ms ease-out;
+  }
+
+  .animate-in-right {
+    animation: slide-in-right 260ms ease-out;
+  }
+
+  .animate-toast-pop {
+    animation: toast-pop 220ms ease-out;
+  }
+
+  .animate-toast-timer {
+    animation-name: toast-timer;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
