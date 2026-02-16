@@ -183,6 +183,8 @@ export interface Database {
       ops_delete_user: {
         Args: {
           p_user_id: string;
+          p_storage_deleted_count?: number;
+          p_storage_cleanup_error?: string | null;
         };
         Returns: undefined;
       };

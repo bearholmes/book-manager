@@ -16,3 +16,4 @@ playwright-report
 test-results
 .nyc_output
 /.env
+/output/playwright/

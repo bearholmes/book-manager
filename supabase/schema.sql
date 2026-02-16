@@ -260,15 +260,20 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION ops_delete_user(p_user_id UUID)
+DROP FUNCTION IF EXISTS ops_delete_user(UUID);
+
+CREATE OR REPLACE FUNCTION ops_delete_user(
+  p_user_id UUID,
+  p_storage_deleted_count INTEGER DEFAULT 0,
+  p_storage_cleanup_error TEXT DEFAULT NULL
+)
 RETURNS VOID
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  v_storage_deleted_count INTEGER := 0;
-  v_storage_cleanup_error TEXT := NULL;
+  v_target_email TEXT := NULL;
 BEGIN
   IF NOT is_super_admin() THEN
     RAISE EXCEPTION 'forbidden';
@@ -278,20 +283,10 @@ BEGIN
     RAISE EXCEPTION 'cannot delete self';
   END IF;
 
-  BEGIN
-    WITH deleted_objects AS (
-      DELETE FROM storage.objects
-      WHERE bucket_id = 'book-covers'
-        AND split_part(name, '/', 1) = p_user_id::TEXT
-      RETURNING 1
-    )
-    SELECT COUNT(*)::INTEGER
-      INTO v_storage_deleted_count
-    FROM deleted_objects;
-  EXCEPTION
-    WHEN OTHERS THEN
-      v_storage_cleanup_error := SQLERRM;
-  END;
+  SELECT email
+    INTO v_target_email
+  FROM auth.users
+  WHERE id = p_user_id;
 
   INSERT INTO public.audit_logs (actor_user_id, action, target_user_id, metadata)
   VALUES (
@@ -303,10 +298,17 @@ BEGIN
       'ops_console',
       'target_user_id',
       p_user_id,
+      'target_email',
+      v_target_email,
+      'storage_cleanup_status',
+      CASE
+        WHEN p_storage_cleanup_error IS NULL THEN 'done'
+        ELSE 'error'
+      END,
       'storage_deleted_count',
-      v_storage_deleted_count,
+      GREATEST(COALESCE(p_storage_deleted_count, 0), 0),
       'storage_cleanup_error',
-      v_storage_cleanup_error
+      p_storage_cleanup_error
     )
   );
 
@@ -319,11 +321,11 @@ $$;
 
 REVOKE ALL ON FUNCTION ops_list_users() FROM PUBLIC;
 REVOKE ALL ON FUNCTION ops_set_user_role(UUID, app_role, BOOLEAN) FROM PUBLIC;
-REVOKE ALL ON FUNCTION ops_delete_user(UUID) FROM PUBLIC;
+REVOKE ALL ON FUNCTION ops_delete_user(UUID, INTEGER, TEXT) FROM PUBLIC;
 
 GRANT EXECUTE ON FUNCTION ops_list_users() TO authenticated, service_role;
 GRANT EXECUTE ON FUNCTION ops_set_user_role(UUID, app_role, BOOLEAN) TO authenticated, service_role;
-GRANT EXECUTE ON FUNCTION ops_delete_user(UUID) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION ops_delete_user(UUID, INTEGER, TEXT) TO authenticated, service_role;
 
 -- ============================================
 -- 6. Storage 정책 (도서 표지 이미지)
@@ -368,6 +370,24 @@ CREATE POLICY "Users can delete own book covers"
   USING (
     bucket_id = 'book-covers' AND
     auth.uid()::TEXT = (storage.foldername(name))[1]
+  );
+
+-- DELETE: 운영 관리자는 모든 사용자 이미지를 정리 가능
+DROP POLICY IF EXISTS "Super admins can delete any book covers" ON storage.objects;
+CREATE POLICY "Super admins can delete any book covers"
+  ON storage.objects FOR DELETE
+  USING (
+    bucket_id = 'book-covers' AND
+    is_super_admin()
+  );
+
+-- SELECT: 운영 관리자는 모든 사용자 이미지를 조회 가능 (Storage API list 용도)
+DROP POLICY IF EXISTS "Super admins can view any book covers" ON storage.objects;
+CREATE POLICY "Super admins can view any book covers"
+  ON storage.objects FOR SELECT
+  USING (
+    bucket_id = 'book-covers' AND
+    is_super_admin()
   );
 
 -- ============================================
