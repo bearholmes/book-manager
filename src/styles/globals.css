@@ -12,16 +12,19 @@
 
   html {
     @apply h-full;
+    min-width: 320px;
   }
 
   body {
     background: radial-gradient(circle at 8% 3%, var(--app-bg-wash) 0, transparent 42%),
       linear-gradient(180deg, var(--app-bg-top), var(--app-bg-bottom));
     @apply h-full font-sans text-primary-950 antialiased;
+    min-width: 320px;
   }
 
   #root {
     @apply h-full;
+    min-width: 320px;
   }
 
   h1,

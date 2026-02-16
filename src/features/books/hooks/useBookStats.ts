@@ -116,3 +116,18 @@ export function useImageNullCount() {
     },
   });
 }
+
+/** 전체 도서 개수 조회 훅 */
+export function useBookTotalCount() {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.BOOK_STATS, 'total-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('books')
+        .select('*', { count: 'exact', head: true });
+
+      if (error) throw error;
+      return count || 0;
+    },
+  });
+}

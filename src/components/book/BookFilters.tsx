@@ -230,15 +230,15 @@ export function BookFilters({
 
   return (
     <section className={clsx('surface-card p-4 sm:p-5', className)} aria-label="도서 필터">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-4 w-4 text-primary-600" />
           <h2 className="text-base font-semibold text-primary-900">검색 필터</h2>
+          {showResultCount && typeof resultCount === 'number' && (
+            <span className="text-sm font-semibold text-primary-700 leading-6">총 {resultCount}권</span>
+          )}
         </div>
         <div className="flex items-center gap-2">
-          {showResultCount && typeof resultCount === 'number' && (
-            <span className="text-sm font-semibold text-primary-700">총 {resultCount}권</span>
-          )}
           {onSortChange && (
             <div className="w-[170px] sm:w-[190px]">
               <label htmlFor="book-sort" className="sr-only">
@@ -281,7 +281,7 @@ export function BookFilters({
         id="book-filters-fields"
         className={clsx(
           'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6',
-          isMobileOpen ? 'grid' : 'hidden lg:grid',
+          isMobileOpen ? 'grid' : 'hidden lg:grid', 'mt-4'
         )}
       >
         {/* 검색 */}

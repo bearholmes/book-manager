@@ -1,18 +1,22 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { LogIn, LogOut, Settings2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
-import { useBooks } from '@/features/books/hooks/useBooks';
+import { useInfiniteBooks } from '@/features/books/hooks/useInfiniteBooks';
 import { useSignout } from '@/features/auth/hooks/useSignout';
+import {
+  useBookStatsByPlace,
+  useBookStatsByTopic,
+  useBookTotalCount,
+} from '@/features/books/hooks/useBookStats';
 import { useTopicColors } from '@/hooks/useTopicColors';
-import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { useDebounce } from '@/hooks/useDebounce';
 import { userAtom } from '@/store/authAtom';
 import { Spinner } from '@/components/ui/Spinner';
 import { PageHeader } from '@/components/common/PageHeader';
-import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookFilters } from '@/components/book/BookFilters';
+import { VirtualizedBookGrid } from '@/components/book/VirtualizedBookGrid';
 import { ROUTES } from '@/utils/constants';
 import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/book';
 
@@ -35,15 +39,42 @@ export function Home() {
     [debouncedSearch, filters],
   );
 
-  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters, sort });
-  const { data: allBooks } = useBooks();
+  const {
+    data,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteBooks({ filters: queryFilters, sort });
+  const { data: totalBooksCount } = useBookTotalCount();
+  const { data: topicStats } = useBookStatsByTopic();
+  const { data: placeStats } = useBookStatsByPlace();
+  const books = useMemo(() => data?.pages.flatMap((page) => page.books) || [], [data]);
+  const resultCount = data?.pages[0]?.totalCount ?? books.length;
   const topicColors = useTopicColors(books);
-  const { topics, purchasePlaces } = useBookMetadata(allBooks);
+  const topics = useMemo(
+    () => topicStats?.filter((item) => item.topic !== '미분류').map((item) => item.topic) || [],
+    [topicStats],
+  );
+  const purchasePlaces = useMemo(
+    () =>
+      placeStats
+        ?.filter((item) => item.purchase_place !== '미분류')
+        .map((item) => item.purchase_place) || [],
+    [placeStats],
+  );
   const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
-  const hasAnyBooks = (allBooks?.length ?? 0) > 0;
-  const isSearching = !!filters.search && (filters.search !== debouncedSearch || isFetching);
+  const hasAnyBooks = (totalBooksCount ?? 0) > 0;
+  const isSearching =
+    !!filters.search && (filters.search !== debouncedSearch || (isFetching && !isFetchingNextPage));
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (isLoading && !books) {
+  if (isLoading && books.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="lg" />
@@ -78,7 +109,7 @@ export function Home() {
       />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {(isFetching || hasActiveFilters || (books?.length ?? 0) > 0) && (
+        {(isFetching || hasActiveFilters || resultCount > 0) && (
           <div className="sticky top-3 z-20 mb-5">
             <BookFilters
               className="mb-0"
@@ -89,24 +120,22 @@ export function Home() {
               topics={topics}
               purchasePlaces={purchasePlaces}
               isSearching={isSearching}
-              resultCount={books?.length ?? 0}
+              resultCount={resultCount}
             />
           </div>
         )}
 
         {/* Book Grid */}
-        {books && books.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-            {books.map((book) => (
-              <BookCard
-                key={book.id}
-                book={book}
-                topicColor={book.topic ? topicColors[book.topic] : undefined}
-                showPurchaseMeta={false}
-                onClick={() => setSelectedBook(book)}
-              />
-            ))}
-          </div>
+        {books.length > 0 ? (
+          <VirtualizedBookGrid
+            books={books}
+            topicColors={topicColors}
+            showPurchaseMeta={false}
+            onBookClick={setSelectedBook}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onLoadMore={handleLoadMore}
+          />
         ) : hasAnyBooks && hasActiveFilters ? (
           <div className="rounded-xl border border-primary-200 bg-white px-5 py-6 text-center">
             <h2 className="text-lg font-semibold text-primary-900">검색 결과가 없습니다</h2>

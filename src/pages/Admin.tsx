@@ -1,17 +1,21 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Shield } from 'lucide-react';
-import { useBooks } from '@/features/books/hooks/useBooks';
+import { useInfiniteBooks } from '@/features/books/hooks/useInfiniteBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
 import { useUpdateBook } from '@/features/books/hooks/useUpdateBook';
 import { useDeleteBook } from '@/features/books/hooks/useDeleteBook';
-import { useImageNullCount } from '@/features/books/hooks/useBookStats';
+import {
+  useBookStatsByPlace,
+  useBookStatsByTopic,
+  useBookTotalCount,
+  useImageNullCount,
+} from '@/features/books/hooks/useBookStats';
 import { useImportBooks } from '@/features/books/hooks/useImportBooks';
 import { useExportBooks } from '@/features/books/hooks/useExportBooks';
 import { useSignout } from '@/features/auth/hooks/useSignout';
 import { useCurrentUserRole } from '@/features/auth/hooks/useCurrentUserRole';
 import { useTopicColors } from '@/hooks/useTopicColors';
-import { useBookMetadata } from '@/hooks/useBookMetadata';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Spinner } from '@/components/ui/Spinner';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -20,10 +24,10 @@ import { SidePanel } from '@/components/ui/SidePanel';
 import { Modal } from '@/components/ui/Modal';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { BookFilters } from '@/components/book/BookFilters';
-import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookForm } from '@/components/book/BookForm';
 import { StatisticsCharts } from '@/components/book/StatisticsCharts';
+import { VirtualizedBookGrid } from '@/components/book/VirtualizedBookGrid';
 import { ROUTES } from '@/utils/constants';
 import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/book';
 import type { BookFormData } from '@/utils/validation';
@@ -50,8 +54,19 @@ export function Admin() {
     [debouncedSearch, filters],
   );
 
-  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters, sort });
-  const { data: allBooks } = useBooks();
+  const {
+    data,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteBooks({ filters: queryFilters, sort });
+  const books = useMemo(() => data?.pages.flatMap((page) => page.books) || [], [data]);
+  const resultCount = data?.pages[0]?.totalCount ?? books.length;
+  const { data: totalBooksCount } = useBookTotalCount();
+  const { data: topicStats } = useBookStatsByTopic();
+  const { data: placeStats } = useBookStatsByPlace();
   const { data: imageNullCount } = useImageNullCount();
   const { mutate: createBook, isPending: isCreating } = useCreateBook();
   const { mutate: updateBook, isPending: isUpdating } = useUpdateBook();
@@ -62,8 +77,18 @@ export function Admin() {
   const { data: role = 'user' } = useCurrentUserRole();
 
   const topicColors = useTopicColors(books);
-  const { topics, purchasePlaces } = useBookMetadata(allBooks);
-  const hasAnyBooks = (allBooks?.length ?? 0) > 0;
+  const topics = useMemo(
+    () => topicStats?.filter((item) => item.topic !== '미분류').map((item) => item.topic) || [],
+    [topicStats],
+  );
+  const purchasePlaces = useMemo(
+    () =>
+      placeStats
+        ?.filter((item) => item.purchase_place !== '미분류')
+        .map((item) => item.purchase_place) || [],
+    [placeStats],
+  );
+  const hasAnyBooks = (totalBooksCount ?? 0) > 0;
 
   const handleAddBook = (data: BookFormData) => {
     createBook(data, {
@@ -111,8 +136,15 @@ export function Admin() {
   ];
 
   const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
-  const isSearching = !!filters.search && (filters.search !== debouncedSearch || isFetching);
-  if (isLoading && !books) {
+  const isSearching =
+    !!filters.search && (filters.search !== debouncedSearch || (isFetching && !isFetchingNextPage));
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  if (isLoading && books.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="lg" />
@@ -157,7 +189,7 @@ export function Admin() {
             </p>
             <div className="mt-2">
               <p className="font-serif text-4xl font-semibold text-primary-900">
-                {books?.length || 0}
+                {resultCount}
                 <span className="ml-1 font-sans text-lg font-semibold text-primary-700">권</span>
               </p>
             </div>
@@ -192,7 +224,7 @@ export function Admin() {
             <button
               type="button"
               onClick={() => exportBooks()}
-              disabled={isExporting || !books || books.length === 0}
+              disabled={isExporting || resultCount === 0}
               className="btn-secondary w-full sm:w-auto"
             >
               <Download className="h-4 w-4" />
@@ -223,23 +255,21 @@ export function Admin() {
                   topics={topics}
                   purchasePlaces={purchasePlaces}
                   isSearching={isSearching}
-                  resultCount={books?.length ?? 0}
+                  resultCount={resultCount}
                 />
               </div>
 
               {/* Book Grid */}
-              {books && books.length > 0 ? (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-                  {books.map((book) => (
-                    <BookCard
-                      key={book.id}
-                      book={book}
-                      topicColor={book.topic ? topicColors[book.topic] : undefined}
-                      showPurchaseMeta={false}
-                      onClick={() => setSelectedBook(book)}
-                    />
-                  ))}
-                </div>
+              {books.length > 0 ? (
+                <VirtualizedBookGrid
+                  books={books}
+                  topicColors={topicColors}
+                  showPurchaseMeta={false}
+                  onBookClick={setSelectedBook}
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                  onLoadMore={handleLoadMore}
+                />
               ) : hasAnyBooks && hasActiveFilters ? (
                 <div className="rounded-xl border border-primary-200 bg-white px-5 py-6 text-center">
                   <h2 className="text-lg font-semibold text-primary-900">검색 결과가 없습니다</h2>
