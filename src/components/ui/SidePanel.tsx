@@ -13,7 +13,6 @@ interface SidePanelProps {
 
 /**
  * 사이드 패널 컴포넌트
- * Vue 버전의 SidePopNew/SidePopEdit 포팅
  */
 export function SidePanel({
   isOpen,

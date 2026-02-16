@@ -41,20 +41,7 @@ interface YearStatRow {
   book_count: number | null;
 }
 
-/**
- * 주제별 도서 통계 조회 훅
- *
- * Database View(book_stats_by_topic)를 사용하여
- * 주제별 도서 개수를 집계합니다.
- *
- * @returns UseQueryResult - 주제별 통계 배열 (개수 내림차순)
- *
- * @example
- * ```typescript
- * const { data: topicStats } = useBookStatsByTopic();
- * // [{ topic: '프로그래밍', count: 45 }, { topic: '소설', count: 23 }, ...]
- * ```
- */
+/** 주제별 도서 개수 통계를 조회합니다. */
 export function useBookStatsByTopic() {
   return useQuery({
     queryKey: [...QUERY_KEYS.BOOK_STATS, 'topic'],
@@ -74,20 +61,7 @@ export function useBookStatsByTopic() {
   });
 }
 
-/**
- * 구매처별 도서 통계 조회 훅
- *
- * Database View(book_stats_by_place)를 사용하여
- * 구매처별 도서 개수를 집계합니다.
- *
- * @returns UseQueryResult - 구매처별 통계 배열 (개수 내림차순)
- *
- * @example
- * ```typescript
- * const { data: placeStats } = useBookStatsByPlace();
- * // [{ purchase_place: '교보문고', count: 67 }, ...]
- * ```
- */
+/** 구매처별 도서 개수 통계를 조회합니다. */
 export function useBookStatsByPlace() {
   return useQuery({
     queryKey: [...QUERY_KEYS.BOOK_STATS, 'place'],
@@ -107,20 +81,7 @@ export function useBookStatsByPlace() {
   });
 }
 
-/**
- * 연도별 도서 통계 조회 훅
- *
- * Database View(book_stats_by_year)를 사용하여
- * 구매 연도별 도서 개수를 집계합니다.
- *
- * @returns UseQueryResult - 연도별 통계 배열 (연도 오름차순)
- *
- * @example
- * ```typescript
- * const { data: yearStats } = useBookStatsByYear();
- * // [{ year: 2020, count: 12 }, { year: 2021, count: 34 }, ...]
- * ```
- */
+/** 연도별 도서 개수 통계를 조회합니다. */
 export function useBookStatsByYear() {
   return useQuery({
     queryKey: [...QUERY_KEYS.BOOK_STATS, 'year'],
@@ -140,20 +101,7 @@ export function useBookStatsByYear() {
   });
 }
 
-/**
- * 이미지가 없는 도서 개수 조회 훅
- *
- * 표지 이미지(image_url)가 null이거나 빈 문자열인
- * 도서의 개수를 조회합니다.
- *
- * @returns UseQueryResult - 이미지 없는 도서 개수
- *
- * @example
- * ```typescript
- * const { data: imageNullCount } = useImageNullCount();
- * // 5 (이미지 없는 도서가 5권)
- * ```
- */
+/** 이미지가 없는 도서의 개수를 조회합니다. */
 export function useImageNullCount() {
   return useQuery({
     queryKey: [...QUERY_KEYS.BOOK_STATS, 'image-null'],

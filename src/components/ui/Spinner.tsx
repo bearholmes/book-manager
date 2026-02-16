@@ -5,6 +5,9 @@ interface SpinnerProps {
   className?: string;
 }
 
+/**
+ * Spinner 컴포넌트를 렌더링합니다.
+ */
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   const sizeClasses = {
     sm: 'h-4 w-4 border-2',

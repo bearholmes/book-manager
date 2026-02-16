@@ -17,8 +17,7 @@ import { ROUTES } from '@/utils/constants';
 import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/book';
 
 /**
- * 홈 페이지 (사용자용)
- * Vue 버전의 index.vue 포팅
+ * 사용자 홈 페이지를 렌더링합니다.
  */
 export function Home() {
   const navigate = useNavigate();

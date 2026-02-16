@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Filter, Shield } from 'lucide-react';
+import { Plus, Download, Upload, LogOut, Image as ImageIcon, House, Shield } from 'lucide-react';
 import { useBooks } from '@/features/books/hooks/useBooks';
 import { useCreateBook } from '@/features/books/hooks/useCreateBook';
 import { useUpdateBook } from '@/features/books/hooks/useUpdateBook';
@@ -29,8 +29,7 @@ import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/boo
 import type { BookFormData } from '@/utils/validation';
 
 /**
- * 관리자 페이지
- * Vue 버전의 admin/index.vue 포팅
+ * 관리자 페이지를 렌더링합니다.
  */
 export function Admin() {
   const navigate = useNavigate();
@@ -113,10 +112,6 @@ export function Admin() {
 
   const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
   const isSearching = !!filters.search && (filters.search !== debouncedSearch || isFetching);
-  const activeFilterCount = [filters.search, filters.topic, filters.purchase_place].filter(
-    Boolean,
-  ).length;
-
   if (isLoading && !books) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -155,30 +150,17 @@ export function Admin() {
       />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <article className="kpi-card">
             <p className="text-sm font-semibold text-primary-600">
               {hasActiveFilters ? '조회 결과' : '전체 도서'}
             </p>
-            <div className="mt-2 flex items-end justify-between gap-4">
+            <div className="mt-2">
               <p className="font-serif text-4xl font-semibold text-primary-900">
                 {books?.length || 0}
                 <span className="ml-1 font-sans text-lg font-semibold text-primary-700">권</span>
               </p>
-              {hasActiveFilters && (
-                <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
-                  필터 {activeFilterCount}개
-                </span>
-              )}
             </div>
-          </article>
-
-          <article className="kpi-card">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-primary-600">활성 필터</p>
-              <Filter className="h-4 w-4 text-primary-500" />
-            </div>
-            <p className="mt-2 text-2xl font-semibold text-primary-900">{activeFilterCount}개</p>
           </article>
 
           <article className="kpi-card">

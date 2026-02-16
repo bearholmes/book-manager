@@ -25,32 +25,7 @@ function sanitizeSearchTerm(rawSearch: string): string {
     .slice(0, 100);
 }
 
-/**
- * 도서 목록 조회 훅
- *
- * 필터와 정렬 조건에 따라 도서 목록을 조회합니다.
- * 검색, 주제별/구매처별 필터링, 다양한 정렬 옵션을 지원합니다.
- *
- * @param options - 필터 및 정렬 옵션
- * @returns UseQueryResult - TanStack Query 쿼리 객체
- *
- * @example
- * ```typescript
- * // 기본 사용 (전체 도서, 최신순)
- * const { data: books, isLoading } = useBooks();
- *
- * // 검색어로 필터링
- * const { data: searchResults } = useBooks({
- *   filters: { search: 'React' }
- * });
- *
- * // 주제별 필터링 + 이름순 정렬
- * const { data: filteredBooks } = useBooks({
- *   filters: { topic: '프로그래밍' },
- *   sort: { field: 'book_name', order: 'asc' }
- * });
- * ```
- */
+/** 필터/정렬 옵션을 기반으로 도서 목록을 조회합니다. */
 export function useBooks(options: UseBooksOptions = {}) {
   const { filters = {}, sort = { field: 'created_at', order: 'desc' } } = options;
 
@@ -60,7 +35,6 @@ export function useBooks(options: UseBooksOptions = {}) {
     queryFn: async () => {
       let query = supabase.from('books').select('*');
 
-      // 필터 적용
       if (filters.topic) {
         query = query.eq('topic', filters.topic);
       }
@@ -79,7 +53,7 @@ export function useBooks(options: UseBooksOptions = {}) {
         }
       }
 
-      // 정렬 적용
+      // 서버 정렬을 사용해 페이지 전환 시 일관된 순서를 유지합니다.
       query = query.order(sort.field, { ascending: sort.order === 'asc' });
 
       const { data, error } = await query;

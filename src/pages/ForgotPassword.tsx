@@ -7,6 +7,9 @@ import { passwordResetRequestSchema, type PasswordResetRequestFormData } from '@
 import { ROUTES } from '@/utils/constants';
 import { Spinner } from '@/components/ui/Spinner';
 
+/**
+ * ForgotPassword 컴포넌트를 렌더링합니다.
+ */
 export function ForgotPassword() {
   const { mutate: sendResetEmail, isPending } = useForgotPassword();
   const [requestedEmail, setRequestedEmail] = useState<string | null>(null);

@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/utils/constants';
 
+/**
+ * NotFound 컴포넌트를 렌더링합니다.
+ */
 export function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4">

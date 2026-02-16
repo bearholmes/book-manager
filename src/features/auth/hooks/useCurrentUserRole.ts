@@ -5,6 +5,9 @@ import { userAtom } from '@/store/authAtom';
 
 export type UserRole = 'user' | 'admin' | 'super_admin';
 
+/**
+ * normalizeRole 값을 정규화합니다.
+ */
 function normalizeRole(role: string | null | undefined): UserRole {
   if (role === 'admin' || role === 'super_admin') {
     return role;
@@ -12,6 +15,9 @@ function normalizeRole(role: string | null | undefined): UserRole {
   return 'user';
 }
 
+/**
+ * useCurrentUserRole 훅을 제공합니다.
+ */
 export function useCurrentUserRole() {
   const user = useAtomValue(userAtom);
 

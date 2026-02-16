@@ -12,7 +12,6 @@ interface FileUploadProps {
 
 /**
  * 파일 업로드 컴포넌트
- * Vue 버전의 FileSelect 포팅
  */
 export function FileUpload({
   accept = '.json',

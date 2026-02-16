@@ -4,6 +4,9 @@ interface PageHeaderProps {
   actions?: React.ReactNode;
 }
 
+/**
+ * PageHeader 컴포넌트를 렌더링합니다.
+ */
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
     <header className="border-b border-primary-100/80 bg-white/85 backdrop-blur-sm">

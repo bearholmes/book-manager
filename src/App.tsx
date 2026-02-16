@@ -14,6 +14,9 @@ import { Admin } from '@/pages/Admin';
 import { Ops } from '@/pages/Ops';
 import { NotFound } from '@/pages/NotFound';
 
+/**
+ * App 컴포넌트를 렌더링합니다.
+ */
 function App() {
   useAuth(); // 인증 상태 초기화
 

@@ -8,6 +8,9 @@ import { resetPasswordSchema, type ResetPasswordFormData } from '@/utils/validat
 import { ROUTES } from '@/utils/constants';
 import { Spinner } from '@/components/ui/Spinner';
 
+/**
+ * ResetPassword 컴포넌트를 렌더링합니다.
+ */
 export function ResetPassword() {
   const navigate = useNavigate();
   const authLoading = useAtomValue(authLoadingAtom);

@@ -13,7 +13,6 @@ interface BookFormProps {
 
 /**
  * 도서 추가/수정 폼 컴포넌트
- * Vue 버전의 NewItem/SidePopNew/SidePopEdit 포팅
  */
 export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormProps) {
   const {

@@ -14,7 +14,6 @@ interface TabsProps {
 
 /**
  * 탭 컴포넌트
- * Vue 버전의 TabBlock 포팅
  */
 export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   return (

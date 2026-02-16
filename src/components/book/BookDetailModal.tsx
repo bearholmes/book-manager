@@ -22,7 +22,6 @@ interface BookDetailModalProps {
 
 /**
  * 도서 상세 모달 컴포넌트
- * Vue 버전의 ContentModal 포팅
  */
 export function BookDetailModal({
   book,

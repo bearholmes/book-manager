@@ -2,6 +2,9 @@ import { toastsAtom } from '@/store/uiAtom';
 import { useAtomValue } from 'jotai';
 import { ToastItem } from './ToastItem';
 
+/**
+ * ToastContainer 컴포넌트를 렌더링합니다.
+ */
 export function ToastContainer() {
   const toasts = useAtomValue(toastsAtom);
 

@@ -8,6 +8,9 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+/**
+ * ProtectedRoute 컴포넌트를 렌더링합니다.
+ */
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const isAuthenticated = useAtomValue(isAuthenticatedAtom);
   const authLoading = useAtomValue(authLoadingAtom);

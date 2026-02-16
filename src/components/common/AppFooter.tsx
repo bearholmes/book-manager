@@ -1,3 +1,6 @@
+/**
+ * AppFooter 컴포넌트를 렌더링합니다.
+ */
 export function AppFooter() {
   const appName = import.meta.env.VITE_APP_NAME || '방구석 도서관리';
   const appVersion = import.meta.env.VITE_APP_VERSION || '';

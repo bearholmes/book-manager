@@ -2,7 +2,6 @@
  * 애플리케이션 전역 상수
  */
 
-// 주제별 색상 매핑
 export const TOPIC_COLORS: Record<number, string> = {
   1: '#e5edf6',
   2: '#d9e6f4',
@@ -20,13 +19,10 @@ export const TOPIC_COLORS: Record<number, string> = {
   14: '#e0e8f1',
 };
 
-// 도서 상태 옵션
 export const BOOK_CONDITIONS = ['신품', '중고'] as const;
 
-// 통화 옵션
 export const CURRENCIES = ['KRW', 'USD', 'JPY', 'EUR'] as const;
 
-// 도서 정렬 옵션
 export const BOOK_SORT_OPTIONS = [
   { value: 'created_at:desc', label: '최신 등록순' },
   { value: 'created_at:asc', label: '오래된 등록순' },
@@ -35,16 +31,6 @@ export const BOOK_SORT_OPTIONS = [
   { value: 'book_name:asc', label: '도서명 오름차순' },
   { value: 'book_name:desc', label: '도서명 내림차순' },
 ] as const;
-
-// 통화 기호
-export const CURRENCY_SYMBOLS: Record<string, string> = {
-  KRW: '₩',
-  USD: '$',
-  JPY: '¥',
-  EUR: '€',
-};
-
-// 차트 색상
 export const CHART_COLORS = [
   '#355575',
   '#4f7094',
@@ -58,7 +44,6 @@ export const CHART_COLORS = [
   '#a85d4d',
 ];
 
-// 페이지 경로
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
@@ -70,7 +55,6 @@ export const ROUTES = {
   LICENSE: '/license',
 } as const;
 
-// Query Keys
 export const QUERY_KEYS = {
   BOOKS: ['books'] as const,
   BOOK_STATS: ['book-stats'] as const,
@@ -78,7 +62,6 @@ export const QUERY_KEYS = {
   BOOK_PLACES: ['book-places'] as const,
 } as const;
 
-// Storage Keys
 export const STORAGE_KEYS = {
   THEME: 'book-manager-theme',
   FILTER_PRESET: 'book-manager-filter-preset',

@@ -16,10 +16,16 @@ const roleRank: Record<UserRole, number> = {
   super_admin: 3,
 };
 
+/**
+ * hasRequiredRole 로직을 처리합니다.
+ */
 function hasRequiredRole(currentRole: UserRole, requiredRole: UserRole) {
   return roleRank[currentRole] >= roleRank[requiredRole];
 }
 
+/**
+ * RoleProtectedRoute 컴포넌트를 렌더링합니다.
+ */
 export function RoleProtectedRoute({ children, requiredRole }: RoleProtectedRouteProps) {
   const isAuthenticated = useAtomValue(isAuthenticatedAtom);
   const authLoading = useAtomValue(authLoadingAtom);

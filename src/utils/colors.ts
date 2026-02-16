@@ -2,7 +2,6 @@ import { TOPIC_COLORS } from './constants';
 
 /**
  * 주제별 색상을 자동으로 할당하는 클래스
- * Vue 버전의 ColorQueue 포팅
  */
 export class ColorQueue {
   private colors: string[];

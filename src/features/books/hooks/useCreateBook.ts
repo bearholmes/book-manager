@@ -5,6 +5,9 @@ import { invalidateBookQueries } from '@/utils/query-helpers';
 import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookInsert } from '@/types/book';
 
+/**
+ * normalizeNullableString 값을 정규화합니다.
+ */
 function normalizeNullableString(value: unknown): string | null | undefined {
   if (value === null || value === undefined) return value;
   if (typeof value !== 'string') return null;
@@ -12,6 +15,9 @@ function normalizeNullableString(value: unknown): string | null | undefined {
   return trimmed ? trimmed : null;
 }
 
+/**
+ * sanitizeBookInsertPayload 값의 입력 안전성을 보정합니다.
+ */
 function sanitizeBookInsertPayload(book: Omit<BookInsert, 'user_id'>): Omit<BookInsert, 'user_id'> {
   return {
     ...book,
@@ -29,32 +35,13 @@ function sanitizeBookInsertPayload(book: Omit<BookInsert, 'user_id'>): Omit<Book
   };
 }
 
-/**
- * 도서 추가 훅
- *
- * 새로운 도서를 데이터베이스에 추가합니다.
- * 현재 인증된 사용자의 user_id가 자동으로 설정됩니다.
- *
- * @returns UseMutationResult - TanStack Query mutation 객체
- *
- * @example
- * ```typescript
- * const { mutate, isPending } = useCreateBook();
- *
- * const handleSubmit = (data: BookFormData) => {
- *   mutate(data, {
- *     onSuccess: () => navigate('/admin'),
- *   });
- * };
- * ```
- */
+/** 현재 로그인 사용자 기준으로 새 도서를 생성합니다. */
 export function useCreateBook() {
   const queryClient = useQueryClient();
   const toast = useToast();
 
   return useMutation({
     mutationFn: async (book: Omit<BookInsert, 'user_id'>) => {
-      // 현재 인증된 사용자 확인
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -63,14 +50,12 @@ export function useCreateBook() {
         throw new Error('인증되지 않았습니다. 로그인 후 다시 시도해주세요.');
       }
 
-      // 사용자 ID 추가
+      // RLS 정책을 만족하도록 현재 사용자 ID를 payload에 주입합니다.
       const bookData: BookInsert = {
         ...sanitizeBookInsertPayload(book),
         user_id: user.id,
       };
 
-      // Supabase insert
-      // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회
       const { data, error } = await supabase
         .from('books')
         .insert(bookData as never)
@@ -81,15 +66,11 @@ export function useCreateBook() {
       return data;
     },
     onSuccess: async () => {
-      // 모든 도서 관련 쿼리 무효화
       await invalidateBookQueries(queryClient);
       toast.success('도서가 추가되었습니다');
     },
     onError: (error: Error) => {
-      // 에러 로깅
       logError('도서 추가', error);
-
-      // 사용자 친화적 에러 메시지
       const userMessage = getErrorMessage(error, '도서 추가에 실패했습니다');
       toast.error(userMessage);
     },

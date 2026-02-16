@@ -24,13 +24,15 @@ interface BookFiltersProps {
   className?: string;
 }
 
+/**
+ * mergeAndSortOptions 로직을 처리합니다.
+ */
 function mergeAndSortOptions(current: string[], incoming: string[]) {
   return [...new Set([...current, ...incoming])].sort((a, b) => a.localeCompare(b));
 }
 
 /**
  * 도서 필터 컴포넌트
- * Vue 버전의 필터 기능 포팅
  */
 export function BookFilters({
   filters,

@@ -6,6 +6,9 @@ interface ToastItemProps {
   toast: Toast;
 }
 
+/**
+ * ToastItem 컴포넌트를 렌더링합니다.
+ */
 export function ToastItem({ toast }: ToastItemProps) {
   const removeToast = useSetAtom(removeToastAtom);
   const toastType = toast.type || 'info';

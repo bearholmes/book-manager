@@ -5,6 +5,9 @@ import { invalidateBookQueries } from '@/utils/query-helpers';
 import { getErrorMessage, logError } from '@/utils/error-helpers';
 import type { BookUpdate } from '@/types/book';
 
+/**
+ * normalizeNullableString 값을 정규화합니다.
+ */
 function normalizeNullableString(value: unknown): string | null | undefined {
   if (value === null || value === undefined) return value;
   if (typeof value !== 'string') return null;
@@ -12,6 +15,9 @@ function normalizeNullableString(value: unknown): string | null | undefined {
   return trimmed ? trimmed : null;
 }
 
+/**
+ * sanitizeBookUpdatePayload 값의 입력 안전성을 보정합니다.
+ */
 function sanitizeBookUpdatePayload(updates: BookUpdate): BookUpdate {
   return {
     ...updates,
@@ -29,26 +35,7 @@ function sanitizeBookUpdatePayload(updates: BookUpdate): BookUpdate {
   };
 }
 
-/**
- * 도서 수정 훅
- *
- * 기존 도서 정보를 업데이트합니다.
- * RLS 정책에 의해 본인이 추가한 도서만 수정 가능합니다.
- *
- * @returns UseMutationResult - TanStack Query mutation 객체
- *
- * @example
- * ```typescript
- * const { mutate, isPending } = useUpdateBook();
- *
- * const handleUpdate = () => {
- *   mutate(
- *     { id: book.id, book_name: '새 제목' },
- *     { onSuccess: () => closeModal() }
- *   );
- * };
- * ```
- */
+/** 대상 도서를 업데이트하고 관련 캐시를 갱신합니다. */
 export function useUpdateBook() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -59,8 +46,7 @@ export function useUpdateBook() {
         throw new Error('도서 ID가 필요합니다');
       }
 
-      // Supabase update
-      // Note: 타입 단언을 사용하여 Supabase 클라이언트 타입 추론 이슈 우회
+      // nullable 문자열 필드를 null 기준으로 정규화해 DB 스키마와 일치시킵니다.
       const sanitizedUpdates = sanitizeBookUpdatePayload(updates);
 
       const { data, error } = await supabase
@@ -74,15 +60,11 @@ export function useUpdateBook() {
       return data;
     },
     onSuccess: async () => {
-      // 모든 도서 관련 쿼리 무효화
       await invalidateBookQueries(queryClient);
       toast.success('도서가 수정되었습니다');
     },
     onError: (error: Error, variables) => {
-      // 에러 로깅
       logError('도서 수정', error, { bookId: variables.id });
-
-      // 사용자 친화적 에러 메시지
       const userMessage = getErrorMessage(error, '도서 수정에 실패했습니다');
       toast.error(userMessage);
     },

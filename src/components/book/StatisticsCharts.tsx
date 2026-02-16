@@ -28,6 +28,9 @@ interface StatsTableProps {
   showShare?: boolean;
 }
 
+/**
+ * StatsTable 컴포넌트를 렌더링합니다.
+ */
 function StatsTable({ labelHeader, rows, showShare = false }: StatsTableProps) {
   const total = rows.reduce((sum, row) => sum + row.count, 0);
   const columnWidths = showShare ? ['50%', '22%', '28%'] : ['68%', '32%'];
@@ -84,7 +87,6 @@ function StatsTable({ labelHeader, rows, showShare = false }: StatsTableProps) {
 
 /**
  * 통계 차트 컴포넌트
- * Vue 버전의 StatBlock 포팅
  */
 export function StatisticsCharts() {
   const { data: topicStats, isLoading: topicLoading } = useBookStatsByTopic();

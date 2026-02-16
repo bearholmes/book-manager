@@ -7,6 +7,9 @@ import { signupSchema, type SignupFormData } from '@/utils/validation';
 import { ROUTES } from '@/utils/constants';
 import { Spinner } from '@/components/ui/Spinner';
 
+/**
+ * Signup 컴포넌트를 렌더링합니다.
+ */
 export function Signup() {
   const navigate = useNavigate();
   const { mutate: signup, isPending } = useSignup();

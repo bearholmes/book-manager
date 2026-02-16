@@ -11,10 +11,16 @@ const MAX_BOOK_NAME_LENGTH = 500;
 const MAX_TEXT_LENGTH = 1000;
 const MAX_URL_LENGTH = 2000;
 
+/**
+ * isRecord 여부를 판별합니다.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/**
+ * normalizeString 값을 정규화합니다.
+ */
 function normalizeString(value: unknown, maxLength = MAX_TEXT_LENGTH): string | null {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
@@ -22,12 +28,18 @@ function normalizeString(value: unknown, maxLength = MAX_TEXT_LENGTH): string | 
   return trimmed.slice(0, maxLength);
 }
 
+/**
+ * normalizeDate 값을 정규화합니다.
+ */
 function normalizeDate(value: unknown): string | null {
   const date = normalizeString(value, 10);
   if (!date) return null;
   return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null;
 }
 
+/**
+ * normalizeNumber 값을 정규화합니다.
+ */
 function normalizeNumber(value: unknown): number | null {
   if (value === null || value === undefined || value === '') return null;
   const numeric = typeof value === 'number' ? value : Number(value);
@@ -35,15 +47,24 @@ function normalizeNumber(value: unknown): number | null {
   return numeric;
 }
 
+/**
+ * normalizeBoolean 값을 정규화합니다.
+ */
 function normalizeBoolean(value: unknown): boolean {
   return value === true || value === 'true' || value === 1 || value === '1';
 }
 
+/**
+ * normalizeCondition 값을 정규화합니다.
+ */
 function normalizeCondition(value: unknown): '신품' | '중고' | null {
   if (value === '신품' || value === '중고') return value;
   return null;
 }
 
+/**
+ * toBookInsert 로직을 처리합니다.
+ */
 function toBookInsert(item: unknown, userId: string): BookInsert {
   if (!isRecord(item)) {
     throw new Error('객체 형식이 아닙니다.');
@@ -75,9 +96,7 @@ function toBookInsert(item: unknown, userId: string): BookInsert {
   };
 }
 
-/**
- * 임포트 결과 정보
- */
+/** 임포트 결과 요약입니다. */
 interface ImportResult {
   total: number;
   success: number;
@@ -85,27 +104,7 @@ interface ImportResult {
   errors: Array<{ index: number; error: string }>;
 }
 
-/**
- * 도서 일괄 임포트 훅
- *
- * JSON 파일에서 도서 데이터를 읽어 일괄 등록합니다.
- * 전체 데이터를 먼저 검증한 뒤 단일 insert로 저장하여 원자성을 보장합니다.
- *
- * @returns UseMutationResult - TanStack Query mutation 객체
- *
- * @example
- * ```typescript
- * const { mutate, isPending } = useImportBooks();
- *
- * const handleFileSelect = (file: File) => {
- *   mutate(file, {
- *     onSuccess: (result) => {
- *       console.log(`성공: ${result.success}, 실패: ${result.failed}`);
- *     },
- *   });
- * };
- * ```
- */
+/** JSON 파일을 검증 후 일괄 등록합니다. */
 export function useImportBooks() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -120,7 +119,6 @@ export function useImportBooks() {
         throw new Error('파일이 너무 큽니다. 10MB 이하 JSON 파일만 업로드해주세요.');
       }
 
-      // 파일 읽기
       const text = await file.text();
       let jsonData: unknown[];
 
@@ -137,7 +135,6 @@ export function useImportBooks() {
         throw new Error(`한 번에 최대 ${MAX_IMPORT_ITEMS}개까지만 임포트할 수 있습니다.`);
       }
 
-      // 현재 사용자 가져오기
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -166,7 +163,7 @@ export function useImportBooks() {
         })
         .filter((book): book is BookInsert => book !== null);
 
-      // 하나라도 유효성 검증에 실패하면 전체 중단 (원자성)
+      // 부분 반영을 막기 위해 하나라도 실패하면 DB insert를 수행하지 않습니다.
       if (result.errors.length > 0) {
         result.failed = result.total;
         return result;
@@ -180,7 +177,6 @@ export function useImportBooks() {
         .from('books')
         .insert(booksToInsert as never);
 
-      // 단일 insert 실패 시 트랜잭션 단위로 전체 롤백됨
       if (error) {
         throw new Error(error.message);
       }
@@ -190,12 +186,10 @@ export function useImportBooks() {
       return result;
     },
     onSuccess: async (result) => {
-      // 데이터가 실제 저장된 경우에만 쿼리 무효화
       if (result.success > 0) {
         await invalidateBookQueries(queryClient);
       }
 
-      // 결과에 따른 토스트 메시지
       if (result.failed === 0) {
         toast.success(`${result.success}개의 도서를 성공적으로 임포트했습니다.`);
       } else {
@@ -205,10 +199,7 @@ export function useImportBooks() {
       }
     },
     onError: (error: Error, file) => {
-      // 에러 로깅
       logError('도서 임포트', error, { fileName: file.name, fileSize: file.size });
-
-      // 사용자 친화적 에러 메시지
       const userMessage = getErrorMessage(error, '도서 임포트에 실패했습니다');
       toast.error(userMessage);
     },

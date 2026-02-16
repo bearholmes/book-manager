@@ -9,6 +9,9 @@ import { loginSchema, type LoginFormData } from '@/utils/validation';
 import { ROUTES } from '@/utils/constants';
 import { Spinner } from '@/components/ui/Spinner';
 
+/**
+ * Login 컴포넌트를 렌더링합니다.
+ */
 export function Login() {
   const navigate = useNavigate();
   const isAuthenticated = useAtomValue(isAuthenticatedAtom);

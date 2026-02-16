@@ -27,6 +27,9 @@ import {
 } from '@/features/ops/hooks/useOpsUsers';
 import type { UserRole } from '@/features/auth/hooks/useCurrentUserRole';
 
+/**
+ * formatDate 값을 포맷합니다.
+ */
 function formatDate(date: string | null) {
   if (!date) return '-';
   try {
@@ -36,12 +39,18 @@ function formatDate(date: string | null) {
   }
 }
 
+/**
+ * actionLabel 로직을 처리합니다.
+ */
 function actionLabel(action: string) {
   if (action === 'set_user_role') return '권한 변경';
   if (action === 'delete_user') return '사용자 삭제';
   return action;
 }
 
+/**
+ * actionPillClass 로직을 처리합니다.
+ */
 function actionPillClass(action: string) {
   if (action === 'delete_user') {
     return 'border-red-200 bg-red-50 text-red-700';
@@ -52,6 +61,9 @@ function actionPillClass(action: string) {
   return 'border-primary-100 bg-paper-100 text-primary-700';
 }
 
+/**
+ * Ops 컴포넌트를 렌더링합니다.
+ */
 export function Ops() {
   const navigate = useNavigate();
   const me = useAtomValue(userAtom);

@@ -45,6 +45,9 @@ export interface OpsAuditLog {
   created_at: string;
 }
 
+/**
+ * normalizeRole 값을 정규화합니다.
+ */
 function normalizeRole(role: string | null | undefined): UserRole {
   if (role === 'admin' || role === 'super_admin') {
     return role;
@@ -52,6 +55,9 @@ function normalizeRole(role: string | null | undefined): UserRole {
   return 'user';
 }
 
+/**
+ * useOpsUsers 훅을 제공합니다.
+ */
 export function useOpsUsers() {
   return useQuery({
     queryKey: OPS_USERS_QUERY_KEY,
@@ -79,6 +85,9 @@ interface SetUserRoleInput {
   isActive?: boolean;
 }
 
+/**
+ * useOpsSetUserRole 훅을 제공합니다.
+ */
 export function useOpsSetUserRole() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -103,6 +112,9 @@ export function useOpsSetUserRole() {
   });
 }
 
+/**
+ * useOpsDeleteUser 훅을 제공합니다.
+ */
 export function useOpsDeleteUser() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -125,6 +137,9 @@ export function useOpsDeleteUser() {
   });
 }
 
+/**
+ * useOpsAuditLogs 훅을 제공합니다.
+ */
 export function useOpsAuditLogs(limit = 80) {
   return useQuery({
     queryKey: [...OPS_AUDIT_LOGS_QUERY_KEY, limit],
