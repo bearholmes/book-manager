@@ -6,6 +6,8 @@ import { getErrorMessage } from '@/utils/error-helpers';
 
 const OPS_USERS_QUERY_KEY = ['ops-users'];
 const OPS_AUDIT_LOGS_QUERY_KEY = ['ops-audit-logs'];
+const BOOK_COVERS_BUCKET = 'book-covers';
+const STORAGE_BATCH_SIZE = 100;
 
 interface OpsUserRow {
   user_id: string;
@@ -85,6 +87,93 @@ interface SetUserRoleInput {
   isActive?: boolean;
 }
 
+interface StorageCleanupResult {
+  deletedCount: number;
+  cleanupError: string | null;
+}
+
+interface StorageListEntry {
+  name: string;
+  id: string | null;
+}
+
+function extractRawErrorMessage(error: unknown): string {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return (error as { message: string }).message;
+  }
+  return getErrorMessage(error, 'Storage API 정리 중 오류가 발생했습니다.');
+}
+
+async function listStoragePathsRecursively(basePath: string): Promise<string[]> {
+  const queue: string[] = [basePath];
+  const paths: string[] = [];
+
+  while (queue.length > 0) {
+    const currentPath = queue.shift();
+    if (!currentPath) continue;
+
+    let offset = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase.storage.from(BOOK_COVERS_BUCKET).list(currentPath, {
+        limit: STORAGE_BATCH_SIZE,
+        offset,
+        sortBy: { column: 'name', order: 'asc' },
+      });
+
+      if (error) throw error;
+
+      const entries = (data || []) as StorageListEntry[];
+      for (const entry of entries) {
+        if (!entry.name) continue;
+
+        const fullPath = `${currentPath}/${entry.name}`;
+        if (entry.id === null) {
+          queue.push(fullPath);
+          continue;
+        }
+
+        paths.push(fullPath);
+      }
+
+      hasMore = entries.length === STORAGE_BATCH_SIZE;
+      offset += STORAGE_BATCH_SIZE;
+    }
+  }
+
+  return paths;
+}
+
+async function cleanupUserStorage(userId: string): Promise<StorageCleanupResult> {
+  try {
+    const paths = await listStoragePathsRecursively(userId);
+    if (paths.length === 0) {
+      return { deletedCount: 0, cleanupError: null };
+    }
+
+    let deletedCount = 0;
+    for (let i = 0; i < paths.length; i += STORAGE_BATCH_SIZE) {
+      const chunk = paths.slice(i, i + STORAGE_BATCH_SIZE);
+      const { error } = await supabase.storage.from(BOOK_COVERS_BUCKET).remove(chunk);
+      if (error) throw error;
+      deletedCount += chunk.length;
+    }
+
+    return { deletedCount, cleanupError: null };
+  } catch (error) {
+    return {
+      deletedCount: 0,
+      cleanupError: extractRawErrorMessage(error),
+    };
+  }
+}
+
 /**
  * useOpsSetUserRole 훅을 제공합니다.
  */
@@ -120,15 +209,23 @@ export function useOpsDeleteUser() {
   const toast = useToast();
 
   return useMutation({
-    mutationFn: async (userId: string) => {
+    mutationFn: async (userId: string): Promise<StorageCleanupResult> => {
+      const cleanupResult = await cleanupUserStorage(userId);
       const { error } = await (supabase as any).rpc('ops_delete_user', {
         p_user_id: userId,
+        p_storage_deleted_count: cleanupResult.deletedCount,
+        p_storage_cleanup_error: cleanupResult.cleanupError,
       });
       if (error) throw error;
+      return cleanupResult;
     },
-    onSuccess: async () => {
+    onSuccess: async (cleanupResult) => {
       await queryClient.invalidateQueries({ queryKey: OPS_USERS_QUERY_KEY });
       await queryClient.invalidateQueries({ queryKey: OPS_AUDIT_LOGS_QUERY_KEY });
+      if (cleanupResult.cleanupError) {
+        toast.warning('사용자는 삭제되었지만 스토리지 정리에 실패했습니다. 감사 로그를 확인해주세요.');
+        return;
+      }
       toast.success('사용자가 삭제되었습니다.');
     },
     onError: (error: Error) => {

@@ -127,6 +127,22 @@ export function Ops() {
     return userEmailMap.get(userId) || userId;
   };
 
+  const resolveAuditTarget = (targetUserId: string | null, metadata: Record<string, unknown> | null) => {
+    if (metadata && typeof metadata.target_email === 'string' && metadata.target_email) {
+      return metadata.target_email;
+    }
+
+    if (targetUserId) {
+      return resolveEmail(targetUserId);
+    }
+
+    if (metadata && typeof metadata.target_user_id === 'string' && metadata.target_user_id) {
+      return userEmailMap.get(metadata.target_user_id) || metadata.target_user_id;
+    }
+
+    return '-';
+  };
+
   const metadataSummary = (metadata: Record<string, unknown> | null) => {
     if (!metadata) return '-';
     if (typeof metadata.role === 'string') {
@@ -139,10 +155,16 @@ export function Ops() {
       const active = metadata.is_active === false ? '비활성' : '활성';
       return `권한: ${roleText} / 상태: ${active}`;
     }
+    if (metadata.storage_cleanup_status === 'requires_storage_api') {
+      return '스토리지 정리 필요 (Storage API 별도 처리)';
+    }
     if (typeof metadata.storage_deleted_count === 'number') {
       const storageInfo = `스토리지 ${metadata.storage_deleted_count}건 정리`;
-      const hasError = typeof metadata.storage_cleanup_error === 'string';
-      return hasError ? `${storageInfo} (오류 있음)` : storageInfo;
+      const cleanupError =
+        typeof metadata.storage_cleanup_error === 'string'
+          ? metadata.storage_cleanup_error.trim()
+          : '';
+      return cleanupError ? `${storageInfo} (오류: ${cleanupError})` : storageInfo;
     }
     try {
       return JSON.stringify(metadata);
@@ -161,7 +183,7 @@ export function Ops() {
 
   const handleDeleteUser = (userId: string, email: string) => {
     const confirmed = window.confirm(
-      `${email} 사용자를 삭제할까요?\n관련 도서 및 Storage 파일이 함께 삭제됩니다.`,
+      `${email} 사용자를 삭제할까요?\n관련 도서 및 Storage 파일이 함께 정리됩니다.`,
     );
     if (!confirmed) return;
     deleteUser(userId);
@@ -458,7 +480,7 @@ export function Ops() {
                             {resolveEmail(log.actor_user_id)}
                           </td>
                           <td className="px-3 py-3 text-primary-700 whitespace-nowrap">
-                            {resolveEmail(log.target_user_id)}
+                            {resolveAuditTarget(log.target_user_id, log.metadata)}
                           </td>
                           <td className="px-3 py-3 text-primary-700">
                             {metadataSummary(log.metadata)}
