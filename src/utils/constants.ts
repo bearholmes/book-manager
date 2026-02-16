@@ -28,10 +28,10 @@ export const CURRENCIES = ['KRW', 'USD', 'JPY', 'EUR'] as const;
 
 // 도서 정렬 옵션
 export const BOOK_SORT_OPTIONS = [
-  { value: 'created_at:desc', label: '등록일 최신순' },
-  { value: 'created_at:asc', label: '등록일 오래된순' },
-  { value: 'purchase_date:desc', label: '구매일 최신순' },
-  { value: 'purchase_date:asc', label: '구매일 오래된순' },
+  { value: 'created_at:desc', label: '최신 등록순' },
+  { value: 'created_at:asc', label: '오래된 등록순' },
+  { value: 'purchase_date:desc', label: '최신 구매순' },
+  { value: 'purchase_date:asc', label: '오래된 구매순' },
   { value: 'book_name:asc', label: '도서명 오름차순' },
   { value: 'book_name:desc', label: '도서명 내림차순' },
 ] as const;

@@ -253,18 +253,17 @@ export function Admin() {
                       key={book.id}
                       book={book}
                       topicColor={book.topic ? topicColors[book.topic] : undefined}
+                      showPurchaseMeta={false}
                       onClick={() => setSelectedBook(book)}
                     />
                   ))}
                 </div>
               ) : hasAnyBooks && hasActiveFilters ? (
-                <div className="surface-card p-8 text-center">
-                  <h2 className="text-xl font-semibold text-primary-900">검색 결과가 없습니다</h2>
-                  <p className="mt-2 text-sm text-primary-700">
-                    검색어를 줄이거나 필터를 초기화해 다시 확인해보세요.
-                  </p>
-                  <button type="button" onClick={() => setFilters({})} className="btn-secondary mt-4">
-                    조건 전체 해제
+                <div className="rounded-xl border border-primary-200 bg-white px-5 py-6 text-center">
+                  <h2 className="text-lg font-semibold text-primary-900">검색 결과가 없습니다</h2>
+                  <p className="mt-1 text-sm text-primary-700">검색어 또는 필터 조건을 조정해보세요.</p>
+                  <button type="button" onClick={() => setFilters({})} className="btn-secondary mt-3 h-9">
+                    필터 초기화
                   </button>
                 </div>
               ) : !hasAnyBooks ? (
