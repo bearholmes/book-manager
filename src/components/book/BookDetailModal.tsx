@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
   Calendar,
-  ChevronDown,
-  ChevronUp,
   DollarSign,
   MapPin,
   Package,
@@ -35,7 +33,6 @@ export function BookDetailModal({
   onDelete,
 }: BookDetailModalProps) {
   const [imageError, setImageError] = useState(false);
-  const [showExtraInfo, setShowExtraInfo] = useState(false);
 
   if (!book) return null;
 
@@ -201,41 +198,19 @@ export function BookDetailModal({
         {/* 추가 정보 */}
         {extraItems.length > 0 && (
           <div className="border-t border-primary-100 pt-6">
-            <button
-              type="button"
-              className="btn-ghost w-full justify-between"
-              onClick={() => setShowExtraInfo((prev) => !prev)}
-              aria-expanded={showExtraInfo}
-              aria-controls="book-extra-info"
-            >
-              <span>추가 정보</span>
-              {showExtraInfo ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </button>
-
-            <div
-              id="book-extra-info"
-              className={`grid transition-all duration-200 ${showExtraInfo ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-            >
-              <div className="overflow-hidden">
-                <div className="space-y-3">
-                  {extraItems.map((item) => (
-                    <div key={`${item.label}-${item.value}`} className="surface-muted p-3">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
-                        {item.label}
-                      </p>
-                      <p
-                        className={`mt-1 text-sm text-primary-900 ${item.mono ? 'font-mono' : ''} ${item.multiline ? 'whitespace-pre-wrap' : ''}`}
-                      >
-                        {item.value}
-                      </p>
-                    </div>
-                  ))}
+            <div className="space-y-3">
+              {extraItems.map((item) => (
+                <div key={`${item.label}-${item.value}`} className="surface-muted p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                    {item.label}
+                  </p>
+                  <p
+                    className={`mt-1 text-sm text-primary-900 ${item.mono ? 'font-mono' : ''} ${item.multiline ? 'whitespace-pre-wrap' : ''}`}
+                  >
+                    {item.value}
+                  </p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         )}

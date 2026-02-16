@@ -8,6 +8,8 @@ interface BookCardProps {
   book: Book;
   /** 주제 태그 배경색 */
   topicColor?: string;
+  /** 구매 가격/구매일 노출 여부 */
+  showPurchaseMeta?: boolean;
   /** 카드 클릭 핸들러 */
   onClick?: () => void;
   /** 추가 CSS 클래스 */
@@ -35,6 +37,7 @@ interface BookCardProps {
 export const BookCard = memo(function BookCard({
   book,
   topicColor,
+  showPurchaseMeta = true,
   onClick,
   className,
 }: BookCardProps) {
@@ -51,7 +54,11 @@ export const BookCard = memo(function BookCard({
   // ARIA 레이블 생성
   const ariaLabel = `${book.book_name}${book.author ? `, 저자: ${book.author}` : ''}${
     book.topic ? `, 주제: ${book.topic}` : ''
-  }${book.purchase_price !== null ? `, 가격: ${formatCurrency(book.purchase_price)}원` : ''}`;
+  }${
+    showPurchaseMeta && book.purchase_price !== null
+      ? `, 가격: ${formatCurrency(book.purchase_price)}원`
+      : ''
+  }`;
 
   return (
     <div
@@ -98,7 +105,7 @@ export const BookCard = memo(function BookCard({
       </div>
 
       {/* 정보 */}
-      <div className="space-y-2 p-4">
+      <div className="flex min-h-[9rem] flex-col gap-2 p-4">
         {/* 도서명 */}
         <h3 className="line-clamp-2 text-base font-semibold leading-snug text-primary-900">
           {book.book_name}
@@ -107,39 +114,41 @@ export const BookCard = memo(function BookCard({
         {/* 저자 */}
         {book.author && <p className="line-clamp-1 text-sm text-primary-700">{book.author}</p>}
 
-        {/* 주제 태그 */}
-        {book.topic && (
-          <div>
-            <span
-              className="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
-              style={{
-                backgroundColor: topicColor || '#d9e6f4',
-                color: '#172a3c',
-              }}
-            >
-              {book.topic}
-            </span>
+        {/* 메타 태그 */}
+        {(book.topic || book.duplicated) && (
+          <div className={clsx('flex flex-wrap items-center gap-2', !showPurchaseMeta && 'mt-auto')}>
+            {book.topic && (
+              <span
+                className="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
+                style={{
+                  backgroundColor: topicColor || '#d9e6f4',
+                  color: '#172a3c',
+                }}
+              >
+                {book.topic}
+              </span>
+            )}
+
+            {book.duplicated && (
+              <span className="inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">
+                중복구매
+              </span>
+            )}
           </div>
         )}
 
         {/* 구매 정보 */}
-        <div className="flex items-center justify-between gap-3 pt-1 text-xs text-primary-500">
-          {book.purchase_price !== null && (
-            <span className="font-semibold text-primary-800">
-              {formatCurrency(book.purchase_price)}원
-            </span>
-          )}
-          {book.purchase_date && <span>{formatDate(book.purchase_date, 'yyyy.MM.dd')}</span>}
-        </div>
-
-        {/* 중복 구매 표시 */}
-        {book.duplicated && (
-          <div>
-            <span className="inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">
-              중복구매
-            </span>
+        {showPurchaseMeta && (
+          <div className="flex items-center justify-between gap-3 pt-1 text-xs text-primary-500">
+            {book.purchase_price !== null && (
+              <span className="font-semibold text-primary-800">
+                {formatCurrency(book.purchase_price)}원
+              </span>
+            )}
+            {book.purchase_date && <span>{formatDate(book.purchase_date, 'yyyy.MM.dd')}</span>}
           </div>
         )}
+
       </div>
     </div>
   );

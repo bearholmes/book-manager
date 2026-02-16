@@ -56,6 +56,7 @@ export function useBooks(options: UseBooksOptions = {}) {
 
   return useQuery({
     queryKey: [...QUERY_KEYS.BOOKS, filters, sort],
+    placeholderData: (previousData) => previousData,
     queryFn: async () => {
       let query = supabase.from('books').select('*');
 

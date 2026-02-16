@@ -43,12 +43,13 @@ describe('BookFilters', () => {
 
       const topicSelect = screen.getByRole('combobox', { name: /주제/ });
       const options = topicSelect.querySelectorAll('option');
+      const optionTexts = Array.from(options).map((option) => option.textContent);
 
       expect(options).toHaveLength(mockTopics.length + 1); // +1 for "전체 주제"
       expect(options[0]).toHaveTextContent('전체 주제');
-      expect(options[1]).toHaveTextContent('프로그래밍');
-      expect(options[2]).toHaveTextContent('과학');
-      expect(options[3]).toHaveTextContent('소설');
+      expect(optionTexts).toContain('프로그래밍');
+      expect(optionTexts).toContain('과학');
+      expect(optionTexts).toContain('소설');
     });
 
     it('구매처 옵션이 올바르게 렌더링되어야 함', () => {
@@ -90,6 +91,34 @@ describe('BookFilters', () => {
       expect(screen.getByDisplayValue('클린 코드')).toBeInTheDocument();
       expect(screen.getByDisplayValue('프로그래밍')).toBeInTheDocument();
       expect(screen.getByDisplayValue('교보문고')).toBeInTheDocument();
+    });
+
+    it('필터 적용으로 전달 옵션이 줄어도 기존 옵션 목록을 유지해야 함', () => {
+      const { rerender } = renderWithProviders(
+        <BookFilters
+          filters={{}}
+          onChange={mockOnChange}
+          topics={mockTopics}
+          purchasePlaces={mockPurchasePlaces}
+        />
+      );
+
+      rerender(
+        <BookFilters
+          filters={{ topic: '프로그래밍', purchase_place: '교보문고' }}
+          onChange={mockOnChange}
+          topics={['프로그래밍']}
+          purchasePlaces={['교보문고']}
+        />
+      );
+
+      const topicOptions = screen.getByRole('combobox', { name: /주제/ }).querySelectorAll('option');
+      const placeOptions = screen
+        .getByRole('combobox', { name: /구매처/ })
+        .querySelectorAll('option');
+
+      expect(topicOptions).toHaveLength(mockTopics.length + 1);
+      expect(placeOptions).toHaveLength(mockPurchasePlaces.length + 1);
     });
   });
 

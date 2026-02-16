@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { BookOpen, Filter, LogIn, LogOut, Settings2 } from 'lucide-react';
+import { LogIn, LogOut, Settings2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { useBooks } from '@/features/books/hooks/useBooks';
@@ -14,7 +14,7 @@ import { BookCard } from '@/components/book/BookCard';
 import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookFilters } from '@/components/book/BookFilters';
 import { ROUTES } from '@/utils/constants';
-import type { Book, BookFilters as BookFiltersType } from '@/types/book';
+import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/book';
 
 /**
  * 홈 페이지 (사용자용)
@@ -25,6 +25,7 @@ export function Home() {
   const user = useAtomValue(userAtom);
   const { mutate: signout } = useSignout();
   const [filters, setFilters] = useState<BookFiltersType>({});
+  const [sort, setSort] = useState<BookSort>({ field: 'created_at', order: 'desc' });
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const debouncedSearch = useDebounce(filters.search, 250);
   const queryFilters = useMemo(
@@ -35,16 +36,15 @@ export function Home() {
     [debouncedSearch, filters],
   );
 
-  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters });
+  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters, sort });
+  const { data: allBooks } = useBooks();
   const topicColors = useTopicColors(books);
-  const { topics, purchasePlaces } = useBookMetadata(books);
+  const { topics, purchasePlaces } = useBookMetadata(allBooks);
   const hasActiveFilters = !!(filters.search || filters.topic || filters.purchase_place);
+  const hasAnyBooks = (allBooks?.length ?? 0) > 0;
   const isSearching = !!filters.search && (filters.search !== debouncedSearch || isFetching);
-  const activeFilterCount = [filters.search, filters.topic, filters.purchase_place].filter(
-    Boolean,
-  ).length;
 
-  if (isLoading) {
+  if (isLoading && !books) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="lg" />
@@ -79,54 +79,20 @@ export function Home() {
       />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          <article className="kpi-card">
-            <p className="text-sm font-semibold text-primary-600">
-              {hasActiveFilters ? '조회 결과' : '전체 도서'}
-            </p>
-            <div className="mt-2 flex items-end justify-between gap-4">
-              <p className="font-serif text-4xl font-semibold text-primary-900">
-                {books?.length || 0}
-                <span className="ml-1 font-sans text-lg font-semibold text-primary-700">권</span>
-              </p>
-              {hasActiveFilters && (
-                <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
-                  필터 {activeFilterCount}개
-                </span>
-              )}
-            </div>
-          </article>
-
-          <article className="kpi-card">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-primary-600">활성 필터</p>
-              <Filter className="h-4 w-4 text-primary-500" />
-            </div>
-            <p className="mt-2 text-2xl font-semibold text-primary-900">{activeFilterCount}개</p>
-          </article>
-
-          <article className="kpi-card">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-primary-600">탐색 모드</p>
-              <BookOpen className="h-4 w-4 text-primary-500" />
-            </div>
-            <p className="mt-2 text-xl font-semibold text-primary-900">
-              {hasActiveFilters ? '맞춤 탐색' : '전체 탐색'}
-            </p>
-          </article>
-        </div>
-
-        {/* Filters */}
-        {books && (books.length > 0 || hasActiveFilters) && (
-          <BookFilters
-            className="mb-6"
-            filters={filters}
-            onChange={setFilters}
-            topics={topics}
-            purchasePlaces={purchasePlaces}
-            isSearching={isSearching}
-            resultCount={books.length}
-          />
+        {(isFetching || hasActiveFilters || (books?.length ?? 0) > 0) && (
+          <div className="sticky top-3 z-20 mb-5">
+            <BookFilters
+              className="mb-0"
+              filters={filters}
+              onChange={setFilters}
+              sort={sort}
+              onSortChange={setSort}
+              topics={topics}
+              purchasePlaces={purchasePlaces}
+              isSearching={isSearching}
+              resultCount={books?.length ?? 0}
+            />
+          </div>
         )}
 
         {/* Book Grid */}
@@ -137,11 +103,22 @@ export function Home() {
                 key={book.id}
                 book={book}
                 topicColor={book.topic ? topicColors[book.topic] : undefined}
+                showPurchaseMeta={false}
                 onClick={() => setSelectedBook(book)}
               />
             ))}
           </div>
-        ) : (
+        ) : hasAnyBooks && hasActiveFilters ? (
+          <div className="surface-card p-8 text-center">
+            <h2 className="text-xl font-semibold text-primary-900">검색 결과가 없습니다</h2>
+            <p className="mt-2 text-sm text-primary-700">
+              검색어를 줄이거나 필터를 초기화해 다시 확인해보세요.
+            </p>
+            <button type="button" onClick={() => setFilters({})} className="btn-secondary mt-4">
+              조건 전체 해제
+            </button>
+          </div>
+        ) : !hasAnyBooks ? (
           <div className="surface-card p-12 text-center">
             <h2 className="text-xl font-semibold text-primary-900">아직 등록된 도서가 없습니다</h2>
             <p className="mt-2 text-sm text-primary-700">
@@ -157,7 +134,7 @@ export function Home() {
               {user ? '관리 화면으로 이동' : '로그인하러 가기'}
             </button>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Book Detail Modal */}

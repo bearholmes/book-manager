@@ -25,7 +25,7 @@ import { BookDetailModal } from '@/components/book/BookDetailModal';
 import { BookForm } from '@/components/book/BookForm';
 import { StatisticsCharts } from '@/components/book/StatisticsCharts';
 import { ROUTES } from '@/utils/constants';
-import type { Book, BookFilters as BookFiltersType } from '@/types/book';
+import type { Book, BookFilters as BookFiltersType, BookSort } from '@/types/book';
 import type { BookFormData } from '@/utils/validation';
 
 /**
@@ -36,6 +36,7 @@ export function Admin() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'list' | 'stats'>('list');
   const [filters, setFilters] = useState<BookFiltersType>({});
+  const [sort, setSort] = useState<BookSort>({ field: 'created_at', order: 'desc' });
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
@@ -50,7 +51,8 @@ export function Admin() {
     [debouncedSearch, filters],
   );
 
-  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters });
+  const { data: books, isLoading, isFetching } = useBooks({ filters: queryFilters, sort });
+  const { data: allBooks } = useBooks();
   const { data: imageNullCount } = useImageNullCount();
   const { mutate: createBook, isPending: isCreating } = useCreateBook();
   const { mutate: updateBook, isPending: isUpdating } = useUpdateBook();
@@ -61,7 +63,8 @@ export function Admin() {
   const { data: role = 'user' } = useCurrentUserRole();
 
   const topicColors = useTopicColors(books);
-  const { topics, purchasePlaces } = useBookMetadata(books);
+  const { topics, purchasePlaces } = useBookMetadata(allBooks);
+  const hasAnyBooks = (allBooks?.length ?? 0) > 0;
 
   const handleAddBook = (data: BookFormData) => {
     createBook(data, {
@@ -114,7 +117,7 @@ export function Admin() {
     Boolean,
   ).length;
 
-  if (isLoading) {
+  if (isLoading && !books) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size="lg" />
@@ -229,14 +232,18 @@ export function Admin() {
           {activeTab === 'list' ? (
             <div className="space-y-6">
               {/* Filters */}
-              <BookFilters
-                filters={filters}
-                onChange={setFilters}
-                topics={topics}
-                purchasePlaces={purchasePlaces}
-                isSearching={isSearching}
-                resultCount={books?.length ?? 0}
-              />
+              <div className="sticky top-3 z-20">
+                <BookFilters
+                  filters={filters}
+                  onChange={setFilters}
+                  sort={sort}
+                  onSortChange={setSort}
+                  topics={topics}
+                  purchasePlaces={purchasePlaces}
+                  isSearching={isSearching}
+                  resultCount={books?.length ?? 0}
+                />
+              </div>
 
               {/* Book Grid */}
               {books && books.length > 0 ? (
@@ -250,7 +257,17 @@ export function Admin() {
                     />
                   ))}
                 </div>
-              ) : (
+              ) : hasAnyBooks && hasActiveFilters ? (
+                <div className="surface-card p-8 text-center">
+                  <h2 className="text-xl font-semibold text-primary-900">검색 결과가 없습니다</h2>
+                  <p className="mt-2 text-sm text-primary-700">
+                    검색어를 줄이거나 필터를 초기화해 다시 확인해보세요.
+                  </p>
+                  <button type="button" onClick={() => setFilters({})} className="btn-secondary mt-4">
+                    조건 전체 해제
+                  </button>
+                </div>
+              ) : !hasAnyBooks ? (
                 <div className="surface-card p-12 text-center">
                   <h2 className="text-xl font-semibold text-primary-900">관리할 도서가 없습니다</h2>
                   <p className="mt-2 text-sm text-primary-700">
@@ -276,7 +293,7 @@ export function Admin() {
                     </FileUpload>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           ) : (
             <StatisticsCharts />

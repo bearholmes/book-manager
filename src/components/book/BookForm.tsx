@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { bookSchema, type BookFormData } from '@/utils/validation';
@@ -18,8 +16,6 @@ interface BookFormProps {
  * Vue 버전의 NewItem/SidePopNew/SidePopEdit 포팅
  */
 export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormProps) {
-  const [showOptionalFields, setShowOptionalFields] = useState(true);
-
   const {
     register,
     handleSubmit,
@@ -52,12 +48,7 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <section className="surface-muted space-y-4 p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold text-primary-900">도서 기본 정보</h3>
-          <span className="rounded-full bg-primary-100 px-2.5 py-1 text-xs font-semibold text-primary-700">
-            필수 중심
-          </span>
-        </div>
+        <h3 className="text-base font-semibold text-primary-900">도서 기본 정보</h3>
         <div className="space-y-4">
           <div>
             <label
@@ -142,53 +133,35 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label
-              htmlFor="condition"
+              htmlFor="purchase_price"
               className="mb-1.5 block text-sm font-semibold text-primary-700"
             >
-              상태
+              구매 가격
             </label>
-            <select {...register('condition')} id="condition" className="select-base">
-              <option value="">선택안함</option>
-              {BOOK_CONDITIONS.map((cond) => (
-                <option key={cond} value={cond}>
-                  {cond}
+            <input
+              {...register('purchase_price', { valueAsNumber: true })}
+              type="number"
+              id="purchase_price"
+              min="0"
+              step="0.01"
+              className="field-base"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="currency"
+              className="mb-1.5 block text-sm font-semibold text-primary-700"
+            >
+              통화
+            </label>
+            <select {...register('currency')} id="currency" className="select-base">
+              {CURRENCIES.map((curr) => (
+                <option key={curr} value={curr}>
+                  {curr}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <label
-                htmlFor="purchase_price"
-                className="mb-1.5 block text-sm font-semibold text-primary-700"
-              >
-                구매 가격
-              </label>
-              <input
-                {...register('purchase_price', { valueAsNumber: true })}
-                type="number"
-                id="purchase_price"
-                min="0"
-                step="0.01"
-                className="field-base"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="currency"
-                className="mb-1.5 block text-sm font-semibold text-primary-700"
-              >
-                통화
-              </label>
-              <select {...register('currency')} id="currency" className="select-base">
-                {CURRENCIES.map((curr) => (
-                  <option key={curr} value={curr}>
-                    {curr}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
         </div>
 
@@ -224,80 +197,77 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
             />
           </div>
         </div>
+
+        <div>
+          <label htmlFor="condition" className="mb-1.5 block text-sm font-semibold text-primary-700">
+            상태
+          </label>
+          <select {...register('condition')} id="condition" className="select-base">
+            <option value="">선택안함</option>
+            {BOOK_CONDITIONS.map((cond) => (
+              <option key={cond} value={cond}>
+                {cond}
+              </option>
+            ))}
+          </select>
+        </div>
       </section>
 
       <section className="surface-muted space-y-4 p-4">
-        <button
-          type="button"
-          className="btn-ghost w-full justify-between"
-          onClick={() => setShowOptionalFields((prev) => !prev)}
-          aria-expanded={showOptionalFields}
-          aria-controls="book-optional-fields"
-        >
-          <span>선택 항목</span>
-          {showOptionalFields ? (
-            <ChevronUp className="h-4 w-4" />
-          ) : (
-            <ChevronDown className="h-4 w-4" />
-          )}
-        </button>
+        <h3 className="text-base font-semibold text-primary-900">선택 항목</h3>
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="image_url"
+              className="mb-1.5 block text-sm font-semibold text-primary-700"
+            >
+              표지 이미지 URL
+            </label>
+            <input
+              {...register('image_url')}
+              type="url"
+              id="image_url"
+              className="field-base"
+              placeholder="https://..."
+            />
+            {errors.image_url && (
+              <p className="mt-1 text-sm text-red-600" role="alert">
+                {errors.image_url.message}
+              </p>
+            )}
+          </div>
 
-        <div
-          id="book-optional-fields"
-          className={`grid transition-all duration-200 ${showOptionalFields ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-        >
-          <div className="space-y-4 overflow-hidden">
-            <div>
-              <label
-                htmlFor="image_url"
-                className="mb-1.5 block text-sm font-semibold text-primary-700"
-              >
-                표지 이미지 URL
-              </label>
-              <input
-                {...register('image_url')}
-                type="url"
-                id="image_url"
-                className="field-base"
-                placeholder="https://..."
-              />
-              {errors.image_url && (
-                <p className="mt-1 text-sm text-red-600" role="alert">
-                  {errors.image_url.message}
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center rounded-xl border border-primary-100 bg-white px-3 py-2.5">
+          <div>
+            <label
+              htmlFor="duplicated"
+              className="mb-1.5 block text-sm font-semibold text-primary-700"
+            >
+              중복 구매
+            </label>
+            <div className="field-base flex items-center gap-2">
               <input
                 {...register('duplicated')}
                 type="checkbox"
                 id="duplicated"
                 className="h-4 w-4 rounded border-primary-300 text-primary-700 focus:ring-primary-500"
               />
-              <label
-                htmlFor="duplicated"
-                className="ml-2 block text-sm font-medium text-primary-800"
-              >
-                중복 구매
+              <label htmlFor="duplicated" className="text-sm font-medium text-primary-800">
+                이 도서를 중복 구매로 표시
               </label>
             </div>
+          </div>
 
-            <div>
-              <label
-                htmlFor="comment"
-                className="mb-1.5 block text-sm font-semibold text-primary-700"
-              >
-                메모
-              </label>
-              <textarea
-                {...register('comment')}
-                id="comment"
-                rows={3}
-                className="field-base"
-                placeholder="자유롭게 메모를 작성하세요"
-              />
-            </div>
+          <div>
+            <label htmlFor="comment" className="mb-1.5 block text-sm font-semibold text-primary-700">
+              메모
+            </label>
+            <textarea
+              {...register('comment')}
+              id="comment"
+              rows={3}
+              className="field-base"
+              placeholder="자유롭게 메모를 작성하세요"
+            />
           </div>
         </div>
       </section>

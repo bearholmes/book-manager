@@ -103,6 +103,15 @@ describe('BookCard', () => {
     expect(screen.queryByText(mockBook.topic!)).not.toBeInTheDocument();
   });
 
+  it('구매 정보 비노출 옵션일 때 구매가/구매일을 표시하지 않아야 함', () => {
+    const handleClick = vi.fn();
+    renderWithProviders(<BookCard book={mockBook} showPurchaseMeta={false} onClick={handleClick} />);
+
+    expect(screen.queryByText(/33,?000원/)).not.toBeInTheDocument();
+    expect(screen.queryByText('2024.01.15')).not.toBeInTheDocument();
+    expect(screen.getByRole('button').getAttribute('aria-label')).not.toContain('가격:');
+  });
+
   it('ARIA 레이블이 있어야 함', () => {
     const handleClick = vi.fn();
     renderWithProviders(<BookCard book={mockBook} onClick={handleClick} />);

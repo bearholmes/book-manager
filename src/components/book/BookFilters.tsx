@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Clock3, Search, SlidersHorizontal, X } from 'lucide-react';
 import clsx from 'clsx';
-import { STORAGE_KEYS } from '@/utils/constants';
-import type { BookFilters as BookFiltersType } from '@/types/book';
+import { BOOK_SORT_OPTIONS, STORAGE_KEYS } from '@/utils/constants';
+import type { BookFilters as BookFiltersType, BookSort } from '@/types/book';
 import { Spinner } from '@/components/ui/Spinner';
 
 const MAX_RECENT_SEARCHES = 3;
@@ -14,11 +14,18 @@ interface RecentSearchItem {
 interface BookFiltersProps {
   filters: BookFiltersType;
   onChange: (filters: BookFiltersType) => void;
+  sort?: BookSort;
+  onSortChange?: (sort: BookSort) => void;
+  showResultCount?: boolean;
   topics?: string[];
   purchasePlaces?: string[];
   isSearching?: boolean;
   resultCount?: number;
   className?: string;
+}
+
+function mergeAndSortOptions(current: string[], incoming: string[]) {
+  return [...new Set([...current, ...incoming])].sort((a, b) => a.localeCompare(b));
 }
 
 /**
@@ -28,6 +35,9 @@ interface BookFiltersProps {
 export function BookFilters({
   filters,
   onChange,
+  sort = { field: 'created_at', order: 'desc' },
+  onSortChange,
+  showResultCount = true,
   topics = [],
   purchasePlaces = [],
   isSearching = false,
@@ -87,21 +97,41 @@ export function BookFilters({
     }
     return window.localStorage.getItem(STORAGE_KEYS.MOBILE_FILTER_OPEN) === '1';
   });
+  const [availableTopics, setAvailableTopics] = useState<string[]>(() =>
+    mergeAndSortOptions([], topics),
+  );
+  const [availablePurchasePlaces, setAvailablePurchasePlaces] = useState<string[]>(() =>
+    mergeAndSortOptions([], purchasePlaces),
+  );
   const hasActiveFilters = !!(filters.topic || filters.purchase_place || filters.search);
-  const activeFilterCount = [filters.search, filters.topic, filters.purchase_place].filter(
-    Boolean,
-  ).length;
   const isMobileViewport =
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
     window.matchMedia('(max-width: 1023px)').matches;
-  const shouldShowNoResultsHint =
-    typeof resultCount === 'number' && hasActiveFilters && !isSearching && resultCount === 0;
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(STORAGE_KEYS.MOBILE_FILTER_OPEN, isMobileOpen ? '1' : '0');
   }, [isMobileOpen]);
+
+  useEffect(() => {
+    setAvailableTopics((prev) => {
+      const merged = mergeAndSortOptions(prev, topics);
+      if (merged.length === prev.length && merged.every((value, index) => value === prev[index])) {
+        return prev;
+      }
+      return merged;
+    });
+  }, [topics]);
+
+  useEffect(() => {
+    setAvailablePurchasePlaces((prev) => {
+      const merged = mergeAndSortOptions(prev, purchasePlaces);
+      if (merged.length === prev.length && merged.every((value, index) => value === prev[index])) {
+        return prev;
+      }
+      return merged;
+    });
+  }, [purchasePlaces]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -166,6 +196,12 @@ export function BookFilters({
     onChange({ ...filters, search: search || undefined });
   };
 
+  const handleSortChange = (value: string) => {
+    if (!onSortChange) return;
+    const [field, order] = value.split(':') as [BookSort['field'], BookSort['order']];
+    onSortChange({ field, order });
+  };
+
   const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       addRecentSearch(
@@ -198,33 +234,51 @@ export function BookFilters({
           <h2 className="text-base font-semibold text-primary-900">검색 필터</h2>
         </div>
         <div className="flex items-center gap-2">
+          {showResultCount && typeof resultCount === 'number' && (
+            <span className="text-sm font-semibold text-primary-700">총 {resultCount}권</span>
+          )}
+          {onSortChange && (
+            <div className="w-[170px] sm:w-[190px]">
+              <label htmlFor="book-sort" className="sr-only">
+                정렬
+              </label>
+              <select
+                id="book-sort"
+                value={`${sort.field}:${sort.order}`}
+                onChange={(e) => handleSortChange(e.target.value)}
+                className="select-base h-8 !py-1.5 text-xs sm:text-sm"
+              >
+                {BOOK_SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <button
+            type="button"
+            className="inline-flex h-8 items-center gap-1 rounded-lg border border-primary-200 bg-white px-2.5 text-xs font-semibold text-primary-700 lg:hidden"
+            onClick={() => setIsMobileOpen((prev) => !prev)}
+            aria-expanded={isMobileOpen}
+            aria-controls="book-filters-fields"
+          >
+            {isMobileOpen ? '접기' : '펼치기'}
+            {isMobileOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </button>
           {isSearching && (
             <span className="inline-flex items-center gap-1 rounded-full bg-accent-100 px-2.5 py-1 text-xs font-semibold text-accent-700">
               <Spinner size="sm" className="h-3 w-3 border-[1.5px]" />
               조회 중
             </span>
           )}
-          <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
-            {hasActiveFilters ? `활성 필터 ${activeFilterCount}개` : '필터 없음'}
-          </span>
         </div>
       </div>
-
-      <button
-        type="button"
-        className="btn-ghost w-full justify-between lg:hidden"
-        onClick={() => setIsMobileOpen((prev) => !prev)}
-        aria-expanded={isMobileOpen}
-        aria-controls="book-filters-fields"
-      >
-        <span>{isMobileOpen ? '필터 접기' : '필터 펼치기'}</span>
-        {isMobileOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-      </button>
 
       <div
         id="book-filters-fields"
         className={clsx(
-          'mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-0 lg:grid-cols-6',
+          'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6',
           isMobileOpen ? 'grid' : 'hidden lg:grid',
         )}
       >
@@ -272,9 +326,6 @@ export function BookFilters({
                     className="rounded-full border border-primary-200 bg-white px-2.5 py-1 text-xs font-medium text-primary-700 hover:border-primary-300 hover:bg-primary-50"
                   >
                     {item.term}
-                    {typeof item.count === 'number' && (
-                      <span className="ml-1 text-primary-500">{item.count}권</span>
-                    )}
                   </button>
                 ))}
               </div>
@@ -297,7 +348,7 @@ export function BookFilters({
             className="select-base"
           >
             <option value="">전체 주제</option>
-            {topics.map((topic) => (
+            {availableTopics.map((topic) => (
               <option key={topic} value={topic}>
                 {topic}
               </option>
@@ -320,7 +371,7 @@ export function BookFilters({
             className="select-base"
           >
             <option value="">전체 구매처</option>
-            {purchasePlaces.map((place) => (
+            {availablePurchasePlaces.map((place) => (
               <option key={place} value={place}>
                 {place}
               </option>
@@ -329,29 +380,23 @@ export function BookFilters({
         </div>
 
         {/* 초기화 버튼 */}
-        <div className="flex items-end lg:col-span-1">
+        <div className="flex items-end lg:col-span-1 lg:justify-end">
           <button
             type="button"
             onClick={handleClearFilters}
             disabled={!hasActiveFilters}
-            className="btn-ghost h-[42px] w-full"
+            className={clsx(
+              'inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-xl border px-3 text-sm font-semibold transition-colors lg:w-auto lg:min-w-[120px]',
+              hasActiveFilters
+                ? 'border-primary-200 bg-white text-primary-700 hover:border-primary-300 hover:bg-primary-50'
+                : 'border-primary-100 bg-white text-primary-400',
+            )}
           >
-            <X className="mr-2 h-4 w-4" />
+            <X className="h-4 w-4" />
             필터 초기화
           </button>
         </div>
       </div>
-
-      {shouldShowNoResultsHint && (
-        <div className="mt-4 rounded-xl border border-accent-200 bg-accent-50 px-4 py-3">
-          <p className="text-sm font-medium text-accent-800">
-            검색 결과가 없습니다. 검색어를 줄이거나 필터를 초기화해보세요.
-          </p>
-          <button type="button" onClick={handleClearFilters} className="btn-secondary mt-3 h-9">
-            조건 전체 해제
-          </button>
-        </div>
-      )}
     </section>
   );
 }
