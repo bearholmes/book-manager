@@ -99,10 +99,6 @@ src-react/
 # Supabase
 VITE_SUPABASE_URL=your-project-url
 VITE_SUPABASE_ANON_KEY=your-anon-key
-
-# App
-VITE_APP_NAME=방구석 도서관리
-VITE_APP_VERSION=2.0.0
 ```
 
 ---

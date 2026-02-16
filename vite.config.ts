@@ -1,10 +1,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import fs from 'fs';
 import path from 'path';
+
+const packageJson = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8'),
+) as { version: string };
+const repositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1];
+const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
+const isUserOrOrgPage = repositoryName?.endsWith('.github.io');
+const basePath =
+  isGitHubActions && repositoryName && !isUserOrOrgPage ? `/${repositoryName}/` : '/';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH ?? '/',
+  base: basePath,
+  define: {
+    __APP_VERSION__: JSON.stringify(packageJson.version),
+  },
   plugins: [react()],
   resolve: {
     alias: {
