@@ -16,7 +16,7 @@ if (!root) {
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
           <App />
