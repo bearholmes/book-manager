@@ -46,7 +46,7 @@ const rpc = BrowserView.defineRPC<DesktopRPC>({
   },
 });
 
-new BrowserWindow({
+const mainWindow = new BrowserWindow({
   title: '방구석 도서관리',
   url: 'views://main/index.html',
   frame: { width: 1360, height: 900 },
@@ -54,5 +54,6 @@ new BrowserWindow({
   navigationRules: JSON.stringify(['views://main/*']),
   rpc,
 });
+mainWindow.setTitle('');
 
 process.on('exit', () => library?.close());

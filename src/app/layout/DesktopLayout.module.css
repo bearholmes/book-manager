@@ -3,8 +3,17 @@
   padding: 8px 8px 8px 0;
 }
 .sidebar {
-  @apply fixed inset-y-0 left-0 flex flex-col bg-surface-muted px-4 py-10;
+  @apply fixed inset-y-0 left-0 flex flex-col bg-surface-muted px-4 py-4;
   width: var(--layout-sidebar-width);
+}
+.brand {
+  @apply mb-6 flex items-center gap-3 px-2 py-2 text-copy-emphasis;
+}
+.brand > svg {
+  color: rgb(var(--palette-accent-500));
+}
+.brand strong {
+  @apply block text-sm;
 }
 .sidebar nav {
   @apply flex flex-col gap-0.5;
@@ -53,6 +62,9 @@
   }
   .sidebar nav {
     @apply flex-row;
+  }
+  .brand {
+    @apply mb-0;
   }
   .sidebar nav a {
     @apply px-2 py-2;

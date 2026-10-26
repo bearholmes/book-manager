@@ -21,12 +21,12 @@ export function DataSettings(options: DataManagementOptions) {
   } = controller;
   return (
     <>
-      <SettingsSection title="백업">
+      <SettingsSection title="백업" description="도서를 비밀번호로 보호한 파일로 저장합니다.">
         <Button variant="secondary" disabled={pending} onClick={openExport}>
           내보내기
         </Button>
       </SettingsSection>
-      <SettingsSection title="복원">
+      <SettingsSection title="복원" description="백업 파일의 도서로 현재 서재를 교체합니다.">
         <input
           ref={fileInput}
           type="file"
@@ -44,7 +44,11 @@ export function DataSettings(options: DataManagementOptions) {
           파일 선택
         </Button>
       </SettingsSection>
-      <SettingsSection title="데이터 초기화" danger>
+      <SettingsSection
+        title="데이터 초기화"
+        description="도서 전체와 PIN 설정을 삭제합니다."
+        danger
+      >
         <Button variant="danger" disabled={pending} onClick={openReset}>
           초기화
         </Button>

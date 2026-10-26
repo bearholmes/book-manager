@@ -145,6 +145,12 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
     '20px',
   );
   const pinSection = page.getByRole('region', { name: 'PIN 잠금', exact: true });
+  const settingsHeader = await page.locator('main header').boundingBox();
+  const settingsRow = await pinSection.boundingBox();
+  expect(settingsHeader).not.toBeNull();
+  expect(settingsRow).not.toBeNull();
+  expect(Math.abs((settingsRow?.width ?? 0) - (settingsHeader?.width ?? 0))).toBeLessThan(1);
+  await expect(sidebar.getByText('방구석 도서관리', { exact: true })).toHaveCount(1);
   const sectionTitle = await pinSection.getByRole('heading', { name: 'PIN 잠금' }).boundingBox();
   const firstAction = await pinSection
     .getByRole('button', { name: '켜기', exact: true })
@@ -156,7 +162,7 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
     Math.abs(
       (firstAction?.y ?? 0) +
         (firstAction?.height ?? 0) / 2 -
-        ((sectionTitle?.y ?? 0) + (sectionTitle?.height ?? 0) / 2),
+        ((settingsRow?.y ?? 0) + (settingsRow?.height ?? 0) / 2),
     ),
   ).toBeLessThan(1);
   await expect(pinSection.locator('input')).toHaveCount(0);

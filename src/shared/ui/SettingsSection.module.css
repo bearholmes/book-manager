@@ -17,8 +17,7 @@
   color: rgb(var(--color-text-emphasis));
 }
 .introduction > p {
-  margin-top: 8px;
-  max-width: 42ch;
+  margin-top: 4px;
   color: rgb(var(--color-text-secondary));
 }
 .meta {

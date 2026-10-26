@@ -5,7 +5,6 @@ import { clearLibraryPreferences } from '@/shared/lib/storage';
 import { PageContent } from '@/shared/ui/PageContent';
 import { PageHeader } from '@/shared/ui/PageHeader';
 import { useQueryClient } from '@tanstack/react-query';
-import styles from './Settings.module.css';
 
 export function Settings() {
   const { state, refresh } = useLock();
@@ -19,10 +18,8 @@ export function Settings() {
   return (
     <PageContent>
       <PageHeader title="설정" />
-      <div className={styles.sections}>
-        <PinSettings />
-        <DataSettings lockEnabled={state.enabled} onDataChange={onDataChange} />
-      </div>
+      <PinSettings />
+      <DataSettings lockEnabled={state.enabled} onDataChange={onDataChange} />
     </PageContent>
   );
 }

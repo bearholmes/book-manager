@@ -52,7 +52,7 @@ export function PinSettings() {
 
   return (
     <>
-      <SettingsSection title="PIN 잠금">
+      <SettingsSection title="PIN 잠금" description="앱을 열 때 숫자 4자리 PIN으로 잠급니다.">
         <Button variant="secondary" onClick={() => setAction(state.enabled ? 'disable' : 'enable')}>
           {state.enabled ? '끄기' : '켜기'}
         </Button>
