@@ -33,5 +33,5 @@ export const Settings: Story = {
 };
 
 export const Statistics: Story = {
-  args: { title: '서재 통계' },
+  args: { title: '통계' },
 };

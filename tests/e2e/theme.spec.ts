@@ -2,7 +2,7 @@ import { expect, test } from './fixtures';
 
 test('tokens, native-sized controls, compact layout and reduced motion retain usable styles', async ({
   page,
-}) => {
+}, testInfo) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1360, height: 900 });
   let releaseList = () => {};
@@ -129,13 +129,13 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
   await expect(category).toHaveCSS('background-color', 'rgb(10, 20, 30)');
   await page.evaluate((name) => document.documentElement.style.removeProperty(name ?? ''), token);
   await page.getByRole('link', { name: '통계', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '서재 통계' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '통계', exact: true })).toBeVisible();
   await expect(page.locator('svg [fill="rgb(var(--color-chart-1))"]').first()).toHaveCSS(
     'fill',
     'rgb(87, 93, 103)',
   );
 
-  await expect(page.getByRole('heading', { name: '서재 통계', exact: true })).toHaveCSS(
+  await expect(page.getByRole('heading', { name: '통계', exact: true })).toHaveCSS(
     'line-height',
     '32px',
   );
@@ -146,14 +146,33 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
   );
   const pinSection = page.getByRole('region', { name: 'PIN 잠금', exact: true });
   const sectionTitle = await pinSection.getByRole('heading', { name: 'PIN 잠금' }).boundingBox();
-  const firstField = await pinSection.getByLabel('PIN 설정', { exact: true }).boundingBox();
+  const firstAction = await pinSection
+    .getByRole('button', { name: '켜기', exact: true })
+    .boundingBox();
   expect(sectionTitle).not.toBeNull();
-  expect(firstField).not.toBeNull();
-  expect(firstField?.x ?? 0).toBeGreaterThan((sectionTitle?.x ?? 0) + 200);
-  await page.setViewportSize({ width: 800, height: 800 });
-  const compactTitle = await pinSection.getByRole('heading', { name: 'PIN 잠금' }).boundingBox();
-  const compactField = await pinSection.getByLabel('PIN 설정', { exact: true }).boundingBox();
-  expect(Math.abs((compactTitle?.x ?? 0) - (compactField?.x ?? 100))).toBeLessThan(1);
+  expect(firstAction).not.toBeNull();
+  expect(firstAction?.x ?? 0).toBeGreaterThan((sectionTitle?.x ?? 0) + 200);
+  expect(
+    Math.abs(
+      (firstAction?.y ?? 0) +
+        (firstAction?.height ?? 0) / 2 -
+        ((sectionTitle?.y ?? 0) + (sectionTitle?.height ?? 0) / 2),
+    ),
+  ).toBeLessThan(1);
+  await expect(pinSection.locator('input')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '파일 선택', exact: true })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('settings-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 400, height: 800 });
+  await expect
+    .poll(async () => {
+      const action = await pinSection
+        .getByRole('button', { name: '켜기', exact: true })
+        .boundingBox();
+      return action ? action.x + action.width : Number.POSITIVE_INFINITY;
+    })
+    .toBeLessThanOrEqual(400);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(400);
+  await page.screenshot({ path: testInfo.outputPath('settings-compact.png'), fullPage: true });
   await page.setViewportSize({ width: 1360, height: 900 });
 
   await page.getByRole('link', { name: '나의 서재', exact: true }).click();

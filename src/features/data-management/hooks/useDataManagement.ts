@@ -12,6 +12,7 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
   const [confirmPassword, setConfirmPassword] = useState('');
   const [restorePassword, setRestorePassword] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [inputDialog, setInputDialog] = useState<'export' | 'restore' | null>(null);
   const [preview, setPreview] = useState<BackupPreview | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const [confirmation, setConfirmation] = useState('');
@@ -35,11 +36,29 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
 
   function closeDialog() {
     if (pending) return;
+    setInputDialog(null);
+    setPassword('');
+    setConfirmPassword('');
+    setRestorePassword('');
+    setFile(null);
     setPreview(null);
     setResetOpen(false);
     setConfirmation('');
     setPin('');
     setError('');
+  }
+
+  function openExport() {
+    setError('');
+    setMessage('');
+    setInputDialog('export');
+  }
+
+  function openRestore(selectedFile: File) {
+    setFile(selectedFile);
+    setError('');
+    setMessage('');
+    setInputDialog('restore');
   }
 
   async function finishDataChange() {
@@ -48,6 +67,7 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
     setResetOpen(false);
     setConfirmation('');
     setPin('');
+    setFile(null);
   }
 
   function exportBackup() {
@@ -59,7 +79,10 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
       const result = await desktop('backupExport', { password });
       setPassword('');
       setConfirmPassword('');
-      if (result.path) setMessage(`${result.count}권을 백업했습니다. 저장 위치: ${result.path}`);
+      if (result.path) {
+        setInputDialog(null);
+        setMessage(`${result.count}권을 백업했습니다. 저장 위치: ${result.path}`);
+      }
     });
   }
 
@@ -74,6 +97,7 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
       setRestorePassword('');
       setConfirmation('');
       setPin('');
+      setInputDialog(null);
       setPreview(result);
     });
   }
@@ -115,9 +139,10 @@ export function useDataManagement({ lockEnabled, onDataChange }: DataManagementO
     restorePassword,
     setRestorePassword,
     file,
-    setFile,
+    inputDialog,
+    openExport,
+    openRestore,
     preview,
-    setPreview,
     resetOpen,
     confirmation,
     setConfirmation,

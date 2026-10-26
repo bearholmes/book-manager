@@ -42,12 +42,23 @@ test('single-user SQLite desktop workflow', async ({ page }, testInfo) => {
   await expect(page.getByRole('button', { name: '수정한 도서', exact: true })).toBeVisible();
 
   await page.getByRole('link', { name: '통계', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '서재 통계' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '통계', exact: true })).toBeVisible();
   await page.getByRole('link', { name: '설정', exact: true }).click();
-  await page.getByLabel('PIN 설정', { exact: true }).fill('0123');
+  await page
+    .getByRole('region', { name: 'PIN 잠금', exact: true })
+    .getByRole('button', { name: '켜기', exact: true })
+    .click();
+  await page.getByLabel('PIN (숫자 4자리)', { exact: true }).fill('0123');
   await page.getByLabel('PIN 확인', { exact: true }).fill('0123');
-  await page.getByRole('button', { name: 'PIN 잠금 켜기' }).click();
-  await expect(page.getByText('사용 중', { exact: true })).toBeVisible();
+  await page
+    .getByRole('dialog', { name: 'PIN 설정', exact: true })
+    .getByRole('button', { name: '켜기', exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '끄기', exact: true }),
+  ).toBeVisible();
   await page.getByRole('button', { name: '서재 잠금' }).click();
   await expect(page.getByRole('heading', { name: '서재가 잠겨 있습니다' })).toBeVisible();
   await expect(page.getByRole('navigation')).toHaveCount(0);
@@ -59,9 +70,20 @@ test('single-user SQLite desktop workflow', async ({ page }, testInfo) => {
   await page.getByLabel('4자리 PIN').fill('0123');
   await page.getByRole('button', { name: '잠금 해제' }).click();
   await expect(page.getByRole('heading', { name: '설정', exact: true })).toBeVisible();
+  await page
+    .getByRole('region', { name: 'PIN 잠금', exact: true })
+    .getByRole('button', { name: '끄기', exact: true })
+    .click();
   await page.getByLabel('현재 PIN').fill('0123');
-  await page.getByRole('button', { name: '잠금 끄기' }).click();
-  await expect(page.getByText('사용 안 함', { exact: true })).toBeVisible();
+  await page
+    .getByRole('dialog', { name: 'PIN 잠금 끄기' })
+    .getByRole('button', { name: '끄기', exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '켜기', exact: true }),
+  ).toBeVisible();
   await page.getByRole('link', { name: '나의 서재', exact: true }).click();
   await expect(page.getByRole('button', { name: '수정한 도서', exact: true })).toBeVisible();
 
@@ -89,13 +111,31 @@ test('encrypted backup, overwrite restore and reset preserve their stated bounda
     page.getByRole('button', { name: '암호화 백업 원본 도서', exact: true }),
   ).toBeVisible();
   await page.getByRole('link', { name: '설정', exact: true }).click();
-  await page.getByLabel('PIN 설정', { exact: true }).fill('0123');
+  await page
+    .getByRole('region', { name: 'PIN 잠금', exact: true })
+    .getByRole('button', { name: '켜기', exact: true })
+    .click();
+  await page.getByLabel('PIN (숫자 4자리)', { exact: true }).fill('0123');
   await page.getByLabel('PIN 확인', { exact: true }).fill('0123');
-  await page.getByRole('button', { name: 'PIN 잠금 켜기' }).click();
-  await expect(page.getByText('사용 중', { exact: true })).toBeVisible();
-  await page.getByLabel('백업 비밀번호', { exact: true }).fill(password);
-  await page.getByLabel('백업 비밀번호 확인', { exact: true }).fill(password);
-  await page.getByRole('button', { name: '암호화 백업 내보내기' }).click();
+  await page
+    .getByRole('dialog', { name: 'PIN 설정', exact: true })
+    .getByRole('button', { name: '켜기', exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '끄기', exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole('region', { name: '백업', exact: true })
+    .getByRole('button', { name: '내보내기', exact: true })
+    .click();
+  await page.getByLabel('비밀번호 (12자 이상)', { exact: true }).fill(password);
+  await page.getByLabel('비밀번호 확인', { exact: true }).fill(password);
+  await page
+    .getByRole('dialog', { name: '백업 내보내기' })
+    .getByRole('button', { name: '내보내기', exact: true })
+    .click();
   const notice = page.getByText(/^1권을 백업했습니다/);
   await expect(notice).toBeVisible();
   const path = (await notice.textContent())?.split('저장 위치: ')[1];
@@ -110,24 +150,39 @@ test('encrypted backup, overwrite restore and reset preserve their stated bounda
     page.getByRole('button', { name: '복원 시 없어질 도서', exact: true }),
   ).toBeVisible();
   await page.getByRole('link', { name: '설정', exact: true }).click();
-  await page.getByLabel('백업 파일', { exact: true }).setInputFiles(path);
-  await page.getByLabel('백업 파일 비밀번호', { exact: true }).fill('wrong-backup-password');
-  await page.getByRole('button', { name: '백업 확인', exact: true }).click();
+  const fileChooser = page.waitForEvent('filechooser');
+  await page
+    .getByRole('region', { name: '복원', exact: true })
+    .getByRole('button', { name: '파일 선택', exact: true })
+    .click();
+  await (await fileChooser).setFiles(path);
+  await page.getByLabel('백업 비밀번호', { exact: true }).fill('wrong-backup-password');
+  await page
+    .getByRole('dialog', { name: '복원', exact: true })
+    .getByRole('button', { name: '다음', exact: true })
+    .click();
   await expect(page.getByRole('alert')).toContainText('손상');
-  await page.getByLabel('백업 파일 비밀번호', { exact: true }).fill(password);
-  await page.getByRole('button', { name: '백업 확인', exact: true }).click();
-  const restore = page.getByRole('dialog', { name: '백업 덮어쓰기 확인' });
+  await page.getByLabel('백업 비밀번호', { exact: true }).fill(password);
+  await page
+    .getByRole('dialog', { name: '복원', exact: true })
+    .getByRole('button', { name: '다음', exact: true })
+    .click();
+  const restore = page.getByRole('dialog', { name: '복원 확인' });
   await expect(restore).toContainText('현재 도서 2권');
   await expect(restore).toContainText('백업 도서 1권');
-  await expect(restore.getByRole('button', { name: '전체 덮어쓰기 복원' })).toBeDisabled();
+  await expect(restore.getByRole('button', { name: '복원', exact: true })).toBeDisabled();
   await restore.getByLabel('현재 PIN 확인').fill('9999');
   await restore.getByLabel('확인 문구: 복원').fill('복원');
-  await restore.getByRole('button', { name: '전체 덮어쓰기 복원' }).click();
+  await restore.getByRole('button', { name: '복원', exact: true }).click();
   await expect(restore.getByRole('alert')).toContainText('PIN이 일치하지 않습니다');
   await restore.getByLabel('현재 PIN 확인').fill('0123');
-  await restore.getByRole('button', { name: '전체 덮어쓰기 복원' }).click();
+  await restore.getByRole('button', { name: '복원', exact: true }).click();
   await expect(page.getByText('1권으로 서재를 복원했습니다.')).toBeVisible();
-  await expect(page.getByText('사용 중', { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '끄기', exact: true }),
+  ).toBeVisible();
   await page.getByRole('link', { name: '나의 서재', exact: true }).click();
   await expect(
     page.getByRole('button', { name: '암호화 백업 원본 도서', exact: true }),
@@ -139,21 +194,35 @@ test('encrypted backup, overwrite restore and reset preserve their stated bounda
   await page.setViewportSize({ width: 1360, height: 1000 });
   await page.screenshot({ path: testInfo.outputPath('encrypted-settings.png'), fullPage: true });
 
-  await page.getByRole('button', { name: '데이터 초기화', exact: true }).click();
   await page
-    .getByRole('dialog', { name: '데이터 초기화 확인' })
+    .getByRole('region', { name: '데이터 초기화', exact: true })
+    .getByRole('button', { name: '초기화', exact: true })
+    .click();
+  await page
+    .getByRole('dialog', { name: '데이터 초기화', exact: true })
     .getByRole('button', { name: '취소' })
     .click();
-  await page.getByRole('button', { name: '데이터 초기화', exact: true }).click();
-  const reset = page.getByRole('dialog', { name: '데이터 초기화 확인' });
-  await expect(reset.getByRole('button', { name: '초기화 실행' })).toBeDisabled();
+  await page
+    .getByRole('region', { name: '데이터 초기화', exact: true })
+    .getByRole('button', { name: '초기화', exact: true })
+    .click();
+  const reset = page.getByRole('dialog', { name: '데이터 초기화', exact: true });
+  await expect(reset.getByRole('button', { name: '초기화', exact: true })).toBeDisabled();
   await reset.getByLabel('현재 PIN 확인').fill('0123');
   await reset.getByLabel('확인 문구: 초기화').fill('초기화');
-  await reset.getByRole('button', { name: '초기화 실행' }).click();
+  await reset.getByRole('button', { name: '초기화', exact: true }).click();
   await expect(page.getByText('도서와 PIN 설정을 초기화했습니다.')).toBeVisible();
-  await expect(page.getByText('사용 안 함', { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '켜기', exact: true }),
+  ).toBeVisible();
   await page.reload();
-  await expect(page.getByText('사용 안 함', { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole('region', { name: 'PIN 잠금', exact: true })
+      .getByRole('button', { name: '켜기', exact: true }),
+  ).toBeVisible();
   await page.getByRole('link', { name: '나의 서재', exact: true }).click();
   await expect(page.getByText('등록된 도서가 없습니다')).toBeVisible();
   expect(existsSync(path)).toBe(true);

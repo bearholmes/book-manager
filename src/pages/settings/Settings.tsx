@@ -5,6 +5,7 @@ import { clearLibraryPreferences } from '@/shared/lib/storage';
 import { PageContent } from '@/shared/ui/PageContent';
 import { PageHeader } from '@/shared/ui/PageHeader';
 import { useQueryClient } from '@tanstack/react-query';
+import styles from './Settings.module.css';
 
 export function Settings() {
   const { state, refresh } = useLock();
@@ -16,10 +17,12 @@ export function Settings() {
     await refresh();
   }
   return (
-    <PageContent className="mx-auto max-w-6xl">
+    <PageContent>
       <PageHeader title="설정" />
-      <PinSettings />
-      <DataSettings lockEnabled={state.enabled} onDataChange={onDataChange} />
+      <div className={styles.sections}>
+        <PinSettings />
+        <DataSettings lockEnabled={state.enabled} onDataChange={onDataChange} />
+      </div>
     </PageContent>
   );
 }

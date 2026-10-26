@@ -5,7 +5,14 @@ export function PasswordField({
   label,
   value,
   onChange,
-}: { id: string; label: string; value: string; onChange: (value: string) => void }) {
+  disabled,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}) {
   return (
     <Field htmlFor={id} label={label}>
       <Input
@@ -15,6 +22,7 @@ export function PasswordField({
         maxLength={256}
         required
         autoComplete="off"
+        disabled={disabled}
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />

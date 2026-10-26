@@ -13,12 +13,6 @@ export function DesktopLayout() {
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <div className={styles.brand}>
-          <BookOpen size={23} aria-hidden="true" />
-          <div>
-            <strong>방구석 도서관리</strong>
-          </div>
-        </div>
         <nav aria-label="주 메뉴">
           <NavLink to={ROUTES.HOME} end>
             <BookOpen size={20} />

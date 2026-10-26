@@ -5,7 +5,7 @@ import { PageHeader } from '@/shared/ui/PageHeader';
 export function Statistics() {
   return (
     <PageContent>
-      <PageHeader title="서재 통계" />
+      <PageHeader title="통계" />
       <StatisticsCharts />
     </PageContent>
   );
