@@ -15,9 +15,9 @@ export default {
     },
     buildFolder: 'build/desktop',
     artifactFolder: 'build/releases',
-    mac: { bundleCEF: false },
-    win: { bundleCEF: false },
-    linux: { bundleCEF: false },
+    mac: { bundleCEF: false, icons: 'desktop/assets/app.iconset' },
+    win: { bundleCEF: false, icon: 'desktop/assets/app-icon.ico' },
+    linux: { bundleCEF: false, icon: 'desktop/assets/app-icon.png' },
   },
   runtime: { exitOnLastWindowClosed: true },
   scripts: {

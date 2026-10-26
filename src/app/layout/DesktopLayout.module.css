@@ -7,10 +7,10 @@
   width: var(--layout-sidebar-width);
 }
 .brand {
-  @apply mb-6 flex items-center gap-3 px-2 py-2 text-copy-emphasis;
+  @apply mb-6 flex items-center gap-2 px-2 py-2 text-copy-emphasis;
 }
-.brand > svg {
-  color: rgb(var(--palette-accent-500));
+.brand img {
+  flex-shrink: 0;
 }
 .brand strong {
   @apply block text-sm;

@@ -1,4 +1,6 @@
 import { useLock } from '@/features/lock';
+import libraryLogo from '@/shared/assets/branding/library-logo-32.png';
+import libraryLogoRetina from '@/shared/assets/branding/library-logo-64.png';
 import { ROUTES } from '@/shared/config/routes';
 import { useToast } from '@/shared/notifications/hooks/useToast';
 import { Button } from '@/shared/ui/Button';
@@ -14,7 +16,7 @@ export function DesktopLayout() {
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
-          <BookOpen size={23} aria-hidden="true" />
+          <img src={libraryLogo} srcSet={`${libraryLogoRetina} 2x`} width={28} height={28} alt="" />
           <strong>방구석 도서관리</strong>
         </div>
         <nav aria-label="주 메뉴">
