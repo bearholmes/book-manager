@@ -1,0 +1,9 @@
+.surface {
+  border-radius: var(--radius-panel);
+}
+.surface[data-tone="card"] {
+  @apply border border-line-subtle bg-surface;
+}
+.surface[data-tone="muted"] {
+  @apply border border-line-subtle/80 bg-surface-muted/90;
+}

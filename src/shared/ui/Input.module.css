@@ -1,0 +1,58 @@
+/* Keep control appearance above the forms plugin, independent of chunk order. */
+.field.field {
+  @apply block w-full border-line bg-surface text-copy placeholder:text-copy-muted;
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+  border-radius: var(--radius-control);
+  padding: var(--control-padding-y) var(--field-padding-x);
+  box-shadow: 0 1px 2px rgb(var(--palette-primary-950) / 0.04);
+  transition: border-color var(--motion-duration-fast), box-shadow var(--motion-duration-fast);
+}
+.field:hover:not(:disabled):not(:focus) {
+  border-color: rgb(var(--color-border-hover));
+}
+.field:focus {
+  border-color: rgb(var(--color-focus));
+  box-shadow: 0 0 0 1px rgb(var(--color-focus));
+  outline: none;
+}
+.field:disabled {
+  background: rgb(var(--color-surface-subtle));
+  opacity: 0.5;
+}
+.field[aria-invalid="true"] {
+  border-color: rgb(var(--color-danger));
+}
+.field[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 1px rgb(var(--color-danger));
+}
+.field[data-leading-icon="true"] {
+  padding-left: var(--field-padding-with-icon);
+}
+.field[data-size="compact"] {
+  height: var(--control-height-compact);
+  line-height: 20px;
+  padding-block: var(--control-padding-compact-y);
+}
+.field[type="file"] {
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.field::file-selector-button {
+  margin-right: 12px;
+  padding: 5px 11px;
+  border: 1px solid rgb(var(--color-border));
+  border-radius: var(--radius-control);
+  color: rgb(var(--color-text-emphasis));
+  background: rgb(var(--color-surface));
+  font: inherit;
+}
+.group.group {
+  @apply flex items-center gap-2;
+}
+
+select.field {
+  padding-right: 32px;
+}

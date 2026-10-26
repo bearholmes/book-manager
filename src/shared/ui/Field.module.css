@@ -1,0 +1,19 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+}
+.field > label {
+  font-weight: 500;
+  color: rgb(var(--color-text-emphasis));
+}
+.description {
+  color: rgb(var(--color-text-secondary));
+}
+.error {
+  color: rgb(var(--color-danger));
+}

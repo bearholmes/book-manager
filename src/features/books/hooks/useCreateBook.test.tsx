@@ -1,274 +1,33 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { desktop } from '@/shared/api/desktop';
+import { mockBook } from '@/test/mockData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useCreateBook } from './useCreateBook';
-import { supabase } from '@/lib/supabase';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import { useCreateBook } from './useCreateBook';
 
-// Supabase 모킹
-vi.mock('@/lib/supabase', () => ({
-  supabase: {
-    auth: {
-      getUser: vi.fn(),
-    },
-    from: vi.fn(),
-  },
-}));
-
-// Toast 모킹
-vi.mock('@/hooks/useToast', () => ({
-  useToast: () => ({
-    success: vi.fn(),
-    error: vi.fn(),
-  }),
+vi.mock('@/shared/api/desktop', () => ({ desktop: vi.fn() }));
+vi.mock('@/shared/notifications/hooks/useToast', () => ({
+  useToast: () => ({ success: vi.fn(), error: vi.fn() }),
 }));
 
 describe('useCreateBook', () => {
-  let queryClient: QueryClient;
-
-  const mockUser = {
-    id: 'test-user-id',
-    email: 'test@example.com',
-  };
-
-  const mockBookData = {
-    book_name: '클린 코드',
-    author: '로버트 C. 마틴',
-    publisher: '인사이트',
-    topic: '프로그래밍',
-  };
-
-  const mockCreatedBook = {
-    id: 'test-book-id',
-    user_id: mockUser.id,
-    ...mockBookData,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
+  it('계정 없이 로컬 도서를 등록하고 목록과 통계를 무효화한다', async () => {
+    vi.mocked(desktop).mockResolvedValue(mockBook);
+    const client = new QueryClient();
+    const invalidate = vi.spyOn(client, 'invalidateQueries');
+    const { result } = renderHook(() => useCreateBook(), {
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      ),
     });
-    vi.clearAllMocks();
-  });
-
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-
-  it('도서를 성공적으로 추가해야 함', async () => {
-    // Supabase auth 모킹
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: mockUser as any },
-      error: null,
+    await act(async () => {
+      await result.current.mutateAsync({ book_name: '클린 코드' });
     });
-
-    // Supabase insert 모킹
-    const insertMock = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({
-          data: mockCreatedBook,
-          error: null,
-        }),
-      }),
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert: insertMock,
-    } as any);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any);
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(supabase.auth.getUser).toHaveBeenCalledOnce();
-    expect(insertMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        ...mockBookData,
-        user_id: mockUser.id,
-      })
-    );
-  });
-
-  it('인증되지 않은 경우 에러를 발생시켜야 함', async () => {
-    // 인증되지 않은 상태 모킹
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: null as any },
-      error: null,
-    });
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any);
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.error).toEqual(
-      new Error('인증되지 않았습니다. 로그인 후 다시 시도해주세요.')
-    );
-  });
-
-  it('Supabase 에러 발생 시 처리해야 함', async () => {
-    const mockError = {
-      message: 'Database error',
-      code: '23505',
-      details: 'Duplicate key',
-      hint: '',
-    };
-
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: mockUser as any },
-      error: null,
-    });
-
-    const insertMock = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({
-          data: null,
-          error: mockError,
-        }),
-      }),
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert: insertMock,
-    } as any);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any);
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.error).toEqual(mockError);
-  });
-
-  it.skip('isPending 상태가 올바르게 변경되어야 함', async () => {
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: mockUser as any },
-      error: null,
-    });
-
-    const insertMock = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({
-          data: mockCreatedBook,
-          error: null,
-        }),
-      }),
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert: insertMock,
-    } as any);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    expect(result.current.isPending).toBe(false);
-
-    result.current.mutate(mockBookData as any);
-
-    // mutation이 진행 중일 때는 isPending이 true
-    expect(result.current.isPending).toBe(true);
-
-    await waitFor(() => {
-      expect(result.current.isPending).toBe(false);
-    });
-  });
-
-  it('user_id가 자동으로 추가되어야 함', async () => {
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: mockUser as any },
-      error: null,
-    });
-
-    const insertMock = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({
-          data: mockCreatedBook,
-          error: null,
-        }),
-      }),
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert: insertMock,
-    } as any);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any);
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    // user_id가 자동으로 추가되었는지 확인
-    expect(insertMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        user_id: mockUser.id,
-      })
-    );
-  });
-
-  it.skip('성공 시 onSuccess 콜백이 호출되어야 함', async () => {
-    const onSuccess = vi.fn();
-
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({
-      data: { user: mockUser as any },
-      error: null,
-    });
-
-    const insertMock = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({
-          data: mockCreatedBook,
-          error: null,
-        }),
-      }),
-    });
-
-    vi.mocked(supabase.from).mockReturnValue({
-      insert: insertMock,
-    } as any);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any, { onSuccess });
-
-    await waitFor(() => {
-      expect(onSuccess).toHaveBeenCalledOnce();
-    });
-
-    expect(onSuccess).toHaveBeenCalledWith(mockCreatedBook, mockBookData, undefined);
-  });
-
-  it.skip('에러 시 onError 콜백이 호출되어야 함', async () => {
-    const onError = vi.fn();
-    const mockError = new Error('Test error');
-
-    vi.mocked(supabase.auth.getUser).mockRejectedValue(mockError);
-
-    const { result } = renderHook(() => useCreateBook(), { wrapper });
-
-    result.current.mutate(mockBookData as any, { onError });
-
-    await waitFor(() => {
-      expect(onError).toHaveBeenCalledOnce();
-    });
-
-    expect(onError).toHaveBeenCalledWith(mockError, mockBookData, undefined);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(desktop).toHaveBeenCalledWith('create', { book_name: '클린 코드' });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['books'] });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['book-stats'] });
+    client.clear();
   });
 });

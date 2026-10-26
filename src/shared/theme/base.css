@@ -1,0 +1,19 @@
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full;
+    min-width: 320px;
+  }
+
+  body {
+    background: rgb(var(--color-canvas-start));
+    @apply font-sans text-copy antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-tight text-copy-heading;
+  }
+}

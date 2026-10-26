@@ -7,14 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".next",
-      "tailwind.config.js",
-      "postcss.config.js"
-    ]
+    "ignore": ["node_modules", "build", ".hutch", ".cottontail-tmp", ".local-data", "data"]
   },
   "formatter": {
     "enabled": true,
@@ -23,6 +16,7 @@
     "lineWidth": 100,
     "lineEnding": "lf"
   },
+  "json": { "parser": { "allowComments": true } },
   "linter": {
     "enabled": true,
     "rules": {

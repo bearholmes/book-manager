@@ -1,0 +1,9 @@
+.root {
+  @apply fixed inset-0;
+  z-index: var(--layer-overlay);
+}
+.backdrop {
+  @apply border-0 p-0;
+  background-color: rgb(var(--color-overlay) / 0.45);
+  backdrop-filter: blur(2px);
+}

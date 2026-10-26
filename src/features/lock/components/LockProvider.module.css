@@ -1,0 +1,12 @@
+.screen {
+  @apply flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center;
+}
+.screen h1 {
+  @apply text-2xl font-semibold;
+}
+.screen > p {
+  @apply max-w-md text-sm text-copy-muted;
+}
+.screen .pin.pin {
+  @apply text-center text-2xl tracking-[0.5em];
+}

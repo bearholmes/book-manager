@@ -1,0 +1,142 @@
+:root {
+  --palette-primary-50: 247 247 248;
+  --palette-primary-100: 237 238 240;
+  --palette-primary-200: 220 222 226;
+  --palette-primary-300: 192 195 201;
+  --palette-primary-400: 150 155 164;
+  --palette-primary-500: 111 117 126;
+  --palette-primary-600: 87 93 103;
+  --palette-primary-700: 63 67 74;
+  --palette-primary-800: 45 47 52;
+  --palette-primary-900: 34 36 40;
+  --palette-primary-950: 24 26 30;
+  --palette-accent-50: 255 244 239;
+  --palette-accent-100: 255 227 213;
+  --palette-accent-200: 255 202 176;
+  --palette-accent-300: 255 168 131;
+  --palette-accent-400: 255 132 88;
+  --palette-accent-500: 246 119 72;
+  --palette-accent-600: 223 92 45;
+  --palette-accent-700: 185 73 32;
+  --palette-accent-800: 143 49 28;
+  --palette-accent-900: 116 43 27;
+  --palette-paper-50: 253 249 244;
+  --palette-paper-100: 245 240 233;
+  --palette-paper-200: 233 224 212;
+  --palette-paper-300: 215 201 183;
+  --color-category-1: 229 237 246;
+  --color-category-2: 217 230 244;
+  --color-category-3: 233 239 223;
+  --color-category-4: 241 231 212;
+  --color-category-5: 245 225 207;
+  --color-category-6: 232 241 235;
+  --color-category-7: 230 235 226;
+  --color-category-8: 244 232 224;
+  --color-category-9: 219 232 236;
+  --color-category-10: 227 223 239;
+  --color-category-11: 242 235 221;
+  --color-category-12: 236 227 216;
+  --color-category-13: 246 227 213;
+  --color-category-14: 224 232 241;
+  --color-chart-1: var(--palette-primary-600);
+  --color-chart-2: var(--palette-primary-500);
+  --color-chart-3: 47 107 109;
+  --color-chart-4: 79 123 87;
+  --color-chart-5: 140 108 63;
+  --color-chart-6: 193 103 63;
+  --color-chart-7: 155 74 53;
+  --color-chart-8: 90 110 138;
+  --color-chart-9: 122 143 95;
+  --color-chart-10: 168 93 77;
+  --palette-white: 253 253 253;
+  --palette-danger-500: 239 68 68;
+  --palette-danger-600: 220 38 38;
+  --palette-danger-700: 185 28 28;
+  --palette-danger-800: 153 27 27;
+
+  /* Semantic colors are RGB channels so Tailwind opacity modifiers remain usable. */
+  --color-surface: var(--palette-white);
+  --color-surface-muted: var(--palette-paper-50);
+  --color-surface-subtle: var(--palette-primary-50);
+  --color-surface-selected: var(--palette-accent-50);
+  --color-text: var(--palette-primary-700);
+  --color-text-heading: var(--palette-primary-700);
+  --color-text-emphasis: var(--palette-primary-800);
+  --color-text-secondary: var(--palette-primary-600);
+  --color-text-muted: var(--palette-primary-500);
+  --color-text-subtle: var(--palette-primary-500);
+  --color-text-faint: var(--palette-primary-400);
+  --color-text-on-solid: var(--palette-white);
+  --color-border: var(--palette-primary-200);
+  --color-border-subtle: var(--palette-primary-100);
+  --color-border-hover: var(--palette-primary-300);
+  --color-action: var(--palette-primary-800);
+  --color-action-hover: var(--palette-primary-900);
+  --color-focus: var(--palette-primary-500);
+  --color-danger: var(--palette-danger-700);
+  --color-danger-hover: var(--palette-danger-800);
+  --color-danger-text: var(--palette-danger-600);
+  --color-danger-indicator: var(--palette-danger-500);
+  --color-overlay: var(--palette-primary-950);
+  --color-toast: var(--palette-primary-900);
+  --color-chart-grid: var(--palette-paper-300);
+  --color-canvas-start: var(--palette-paper-50);
+
+  --font-body: "MaruBuri", "Noto Serif KR", serif;
+  --font-heading: var(--font-body);
+  --type-page-size: 1.25rem;
+  --type-page-leading: 2rem;
+  --type-ui-size: 0.875rem;
+  --type-ui-leading: 1.5rem;
+  --space-section: 2rem;
+  --space-fields: 1.5rem;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.625rem;
+  --radius-tooltip: 0.875rem;
+  --radius-small: 0.5rem;
+  --control-padding-x: 0.6875rem;
+  --control-padding-y: 0.3125rem;
+  --control-padding-icon: 0.5rem;
+  --control-padding-compact-x: 0.6875rem;
+  --control-padding-compact-y: 0.3125rem;
+  --control-height-compact: 2rem;
+  --field-padding-x: 0.6875rem;
+  --field-padding-with-icon: 2rem;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --layout-sidebar-width: 16rem;
+  --layout-page-inline: 2.5rem;
+  --layout-page-block: 2.5rem;
+  --layer-footer: 30;
+  --layer-overlay: 50;
+  --layer-toast: 60;
+  --shadow-panel: 0 18px 36px -24px rgb(var(--palette-primary-900) / 0.48);
+  --shadow-soft: 0 1px 2px rgb(var(--palette-primary-900) / 0.04);
+  --motion-duration-fast: 150ms;
+  --motion-duration-hover: 200ms;
+  --motion-duration-enter: 220ms;
+  --motion-duration-slide: 260ms;
+  --motion-duration-transform: 300ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-enter: reading-desk-fade-up var(--motion-duration-enter) ease-out;
+  --animation-slide: reading-desk-slide-right var(--motion-duration-slide) ease-out;
+}
+
+/* Window breakpoints control the shell; book grid thresholds use container width. */
+@media (min-width: 1280px) {
+  :root {
+    --layout-page-inline: 2.5rem;
+  }
+}
+@media (max-width: 900px) {
+  :root {
+    --layout-sidebar-width: 11rem;
+    --layout-page-inline: 1.25rem;
+  }
+}
+@media (max-width: 640px) {
+  :root {
+    --layout-page-inline: 1rem;
+    --layout-page-block: 1.25rem;
+  }
+}

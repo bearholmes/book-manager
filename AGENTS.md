@@ -1,27 +1,46 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-Core app code lives in `src/`.
-- `src/components/`: reusable UI and domain components (`book/`, `ui/`, `common/`)
-- `src/features/`: feature-first hooks and logic (`auth`, `books`)
-- `src/pages/`: route-level screens (`Home`, `Login`, `Signup`, `Admin`)
-- `src/lib/`, `src/store/`, `src/utils/`, `src/types/`: shared infrastructure
-- `src/test/`: test setup, fixtures, and helpers
-- `src/stories/`: Storybook stories
+This is a single-package Electrobun app; see `docs/architecture.md` for the monorepo decision and dependency rules.
+- `contracts/`: runtime-independent book and desktop command types
+- `src/app/`: entry point, providers, routes, desktop layout, global styles
+- `src/pages/`: route composition and page-local hooks/components
+- `src/features/`: self-contained `books`, `lock`, and `data-management` modules with public `index.ts` APIs
+- `src/shared/`: reusable UI, notifications (components/hooks/store), generic hooks, API adapter, config, theme tokens, and utilities
+- `src/test/`: test setup, synthetic fixtures, and helpers
+- Tests and Storybook stories are colocated with their modules; Storybook introduction lives in `docs/storybook/`
+- `desktop/application/`: command queue, validation/routing, library initialization
+- `desktop/library/`, `desktop/backup/`, `desktop/security/`, `desktop/storage/`: native domain and persistence modules
+- `desktop/platform/`: Electrobun menu/export adapters; `desktop/index.ts` and `desktop/dev-server.ts` compose the app
+- `tests/e2e/`: end-to-end tests and isolated process fixtures
+- `tooling/config/`: Vite, Vitest, Playwright, and Tailwind configuration
+- `tooling/scripts/`: development, architecture, and packaged-runtime helpers
+- `tooling/storybook/`: component playground configuration
+- `build/`: generated renderer/desktop packages, releases, Storybook, and reports (ignored)
 
-End-to-end tests are in `e2e/`, Supabase SQL is in `supabase/schema.sql`, and one-off migration utilities are in `scripts/`.
+Keep dependencies flowing `app -> pages -> features -> shared`, with `contracts` available to both runtimes.
+Features do not import other features. Pages compose them through public entry points.
+Renderer code never imports `desktop/`; desktop code never imports `src/`.
+Use relative imports inside a feature and `@/` or `@contracts/` across renderer module boundaries.
+Put feature-specific hooks, state, helpers, and assets inside their owning module; avoid global catch-all folders.
+Create asset directories only when there are actual files to store.
 
 ## Build, Test, and Development Commands
-Use `pnpm` (Node `>=20`, pnpm `>=8`).
-- `pnpm dev`: run Vite dev server on `http://localhost:3000`
+Use `pnpm` (Node `>=26.12.1 <27`, pnpm `>=8`). Run `nvm use` to select the pinned Node version.
+- `pnpm dev`: run Vite and the local data bridge on `http://127.0.0.1:3000`
 - `pnpm build`: type-check then production build
-- `pnpm preview`: serve the built app locally
 - `pnpm lint` / `pnpm lint:fix`: Biome checks and autofixes
 - `pnpm format`: format code with Biome
 - `pnpm type-check`: run TypeScript checks only
+- `pnpm check:architecture`: verify module boundaries, import resolution, and absence of cycles
 - `pnpm test`, `pnpm test:run`, `pnpm test:coverage`: Vitest workflows
 - `pnpm test:e2e`: Playwright E2E suite
+- `pnpm test:desktop`: Bun storage, encryption, backup, and PIN tests
+- `pnpm desktop:build` / `pnpm desktop:release`: development/stable desktop builds
 - `pnpm storybook`: local component playground
+
+Pass occasional test options directly: `pnpm test --ui`, `pnpm test:e2e --ui`, or `pnpm test:e2e --debug`.
+Select a scenario with `pnpm test:e2e tests/e2e/workflow.spec.ts --headed`; avoid duplicate scripts for flags or individual files.
 
 ## Coding Style & Naming Conventions
 TypeScript + React with 2-space indentation, single quotes, semicolons, trailing commas, and 100-char line width (Biome).
@@ -30,12 +49,18 @@ TypeScript + React with 2-space indentation, single quotes, semicolons, trailing
 - Tests: colocated as `*.test.ts` or `*.test.tsx`
 - Prefer `@/` alias for imports from `src/`
 
-Run `pnpm lint` and `pnpm type-check` before opening a PR.
+Use `src/shared/theme/tokens.css` as the design token source; see `docs/design-system.md`.
+Keep component/page CSS in adjacent `*.module.css` files. Reuse Button/Input/Surface and their size/variant APIs rather than global style classes or `!important` overrides.
+Preserve the book grid's JS/container measurements when editing layout. Respect reduced motion in both CSS and JS-driven animation.
+
+Run `pnpm lint`, `pnpm type-check`, and `pnpm check:architecture` before opening a PR.
 
 ## Testing Guidelines
 Unit/integration tests use Vitest + Testing Library (`jsdom` environment, `src/test/setup.ts`). Coverage reports are generated via V8 (`text`, `json`, `html`).
 
-E2E uses Playwright in `e2e/*.spec.ts` with automatic dev server startup. Keep scenarios user-focused (auth, filtering, list flows) and add regression tests for bug fixes.
+E2E uses Playwright in `tests/e2e/*.spec.ts` with automatic dev server startup and isolated temporary data. Keep scenarios user-focused (books, PIN locking, backup/restore/reset) and add regression tests for bug fixes.
+
+Keep test code and synthetic fixtures in Git. Exclude generated reports, screenshots, local libraries, imported/exported data, credentials, and local agent settings with `.gitignore`.
 
 ## Commit & Pull Request Guidelines
 Recent history favors concise, prefix-based commits (for example: `feat: ...`, `fix: ...`, `refactor: ...`, `docs: ...`, `chore: ...`). Keep each commit scoped to one change.

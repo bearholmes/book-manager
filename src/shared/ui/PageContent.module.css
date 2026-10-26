@@ -1,0 +1,4 @@
+.content {
+  container-type: inline-size;
+  padding: var(--layout-page-block) var(--layout-page-inline);
+}

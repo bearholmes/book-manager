@@ -26,9 +26,10 @@
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@contracts/*": ["./contracts/*"],
+      "@/*": ["./src/*"],
+      "electrobun/view": ["./.hutch/devkit/api/browser/index.ts"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "contracts"]
 }

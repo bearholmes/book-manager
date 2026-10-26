@@ -1,0 +1,18 @@
+.spinner {
+  @apply block animate-spin rounded-full border-line border-t-action;
+  width: var(--spinner-size, 2rem);
+  height: var(--spinner-size, 2rem);
+  border-width: var(--spinner-width, 3px);
+}
+.small {
+  --spinner-size: 1rem;
+  --spinner-width: 2px;
+}
+.large {
+  --spinner-size: 3rem;
+  --spinner-width: 4px;
+}
+.inline {
+  --spinner-size: 0.75rem;
+  --spinner-width: 1.5px;
+}

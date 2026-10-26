@@ -1,0 +1,8 @@
+@import "../../shared/theme/fonts.css";
+@import "../../shared/theme/tokens.css";
+@import "../../shared/theme/base.css";
+@import "../../shared/theme/motion.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

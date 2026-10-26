@@ -1,19 +1,51 @@
-node_modules
-*.log*
-.nuxt
-.nitro
-.cache
-.output
-.env
-.idea
-dist
-storybook-static
+# Dependencies and generated builds
+node_modules/
+.pnpm-store/
+/build/
+.hutch/
+.cottontail-tmp/
+.cache/
+.vite/
+*.tsbuildinfo
 package-lock.json
 
-# 테스트 관련
-coverage
-playwright-report
-test-results
-.nyc_output
-/.env
-/output/playwright/
+# Test output (test source and synthetic fixtures stay tracked)
+.nyc_output/
+*.log
+*.log.*
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.key
+*.pem
+*.p12
+*.pfx
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local libraries, imports, exports, and backups
+.local-data/
+/data/
+/backups/
+/exports/
+/demoData.json
+/books-*.json
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.vault
+*.vault.*
+*.rdbackup
+
+# Local agent settings and design notes
+/.claude/
+/.codex/
+/.impeccable.md

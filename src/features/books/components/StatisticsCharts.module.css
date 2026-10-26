@@ -1,0 +1,25 @@
+.charts {
+  display: grid;
+  gap: var(--space-section);
+  --chart-height: 18.75rem;
+}
+.section {
+  border-top: 1px solid rgb(var(--color-border-subtle));
+  padding-top: 32px;
+}
+.table {
+  table-layout: fixed;
+}
+.table th {
+  position: sticky;
+  top: 0;
+  background: rgb(var(--color-surface));
+}
+.tableScroll {
+  height: var(--chart-height);
+  overflow-y: auto;
+}
+.plot {
+  @apply min-w-[560px] px-1 sm:min-w-0 sm:px-0;
+  height: var(--chart-height);
+}

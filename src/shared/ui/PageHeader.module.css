@@ -1,0 +1,40 @@
+.header {
+  margin-bottom: var(--space-section);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+.title h1 {
+  font-size: var(--type-page-size);
+  line-height: var(--type-page-leading);
+  font-weight: 600;
+  color: rgb(var(--color-text-heading));
+}
+.meta,
+.subtitle {
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+  color: rgb(var(--color-text-secondary));
+}
+.meta {
+  font-variant-numeric: tabular-nums;
+}
+.subtitle {
+  margin-top: 8px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}

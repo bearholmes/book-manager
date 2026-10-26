@@ -1,0 +1,4 @@
+.panel {
+  @apply relative w-screen max-w-lg transform transition ease-in-out duration-300;
+  animation: var(--animation-slide);
+}

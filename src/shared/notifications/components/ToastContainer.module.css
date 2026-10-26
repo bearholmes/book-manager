@@ -1,0 +1,4 @@
+.container {
+  @apply pointer-events-none fixed inset-x-0 bottom-16 px-4;
+  z-index: var(--layer-toast);
+}

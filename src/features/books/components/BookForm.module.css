@@ -1,0 +1,45 @@
+.form {
+  display: grid;
+  gap: var(--space-section);
+}
+.section {
+  min-width: 0;
+}
+.section legend {
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+  font-weight: 600;
+  color: rgb(var(--color-text-emphasis));
+}
+.fields {
+  display: grid;
+  gap: var(--space-fields);
+  margin-top: 24px;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.checkbox.checkbox {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.checkbox label {
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid rgb(var(--color-border-subtle));
+  padding-top: 24px;
+}
+@media (max-width: 480px) {
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

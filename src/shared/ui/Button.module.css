@@ -1,0 +1,55 @@
+.button {
+  @apply relative inline-flex items-center justify-center gap-2 border font-semibold transition-colors;
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
+  border-radius: var(--radius-control);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  white-space: nowrap;
+}
+.button:focus-visible {
+  outline: var(--focus-width) solid rgb(var(--color-focus));
+  outline-offset: var(--focus-offset);
+}
+.button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.button[data-variant="primary"] {
+  @apply border-transparent bg-action text-on-solid;
+  box-shadow: inset 0 1px rgb(var(--palette-white) / 0.12), 0 1px 2px
+    rgb(var(--color-action) / 0.12);
+}
+.button[data-variant="primary"]:hover:not(:disabled) {
+  @apply bg-action-hover;
+}
+.button[data-variant="secondary"] {
+  @apply border-line bg-surface text-copy-emphasis shadow-soft;
+}
+.button[data-variant="secondary"]:hover:not(:disabled) {
+  @apply bg-surface-subtle;
+}
+.button[data-variant="ghost"] {
+  @apply border-transparent bg-transparent text-copy-emphasis;
+}
+.button[data-variant="ghost"]:hover:not(:disabled) {
+  @apply bg-surface-subtle;
+}
+.button[data-variant="danger"] {
+  @apply border-transparent bg-danger text-on-solid;
+}
+.button[data-variant="danger"]:hover:not(:disabled) {
+  @apply bg-danger-hover;
+}
+.button:active:not(:disabled) {
+  filter: brightness(0.94);
+}
+.button[data-size="icon"] {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+.button[data-size="compact"] {
+  height: var(--control-height-compact);
+  line-height: 20px;
+  padding: var(--control-padding-compact-y) var(--control-padding-compact-x);
+}

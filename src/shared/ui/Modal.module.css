@@ -1,0 +1,11 @@
+.panel {
+  @apply relative w-full transform overflow-hidden border border-line-subtle/80 bg-surface/95 text-left shadow-panel transition-all sm:my-8;
+  border-radius: var(--radius-panel);
+  animation: var(--animation-enter);
+}
+.header {
+  @apply flex items-center justify-between border-b border-line-subtle/90 px-6 py-4;
+}
+.close {
+  @apply rounded-lg p-1 text-copy-faint hover:bg-surface-subtle hover:text-copy-secondary focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2;
+}
