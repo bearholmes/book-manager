@@ -17,20 +17,19 @@ export function DesktopLayout() {
           <BookOpen size={23} aria-hidden="true" />
           <div>
             <strong>방구석 도서관리</strong>
-            <span>Reading Desk</span>
           </div>
         </div>
         <nav aria-label="주 메뉴">
           <NavLink to={ROUTES.HOME} end>
-            <BookOpen size={18} />
+            <BookOpen size={20} />
             나의 서재
           </NavLink>
           <NavLink to={ROUTES.STATS}>
-            <ChartNoAxesCombined size={18} />
+            <ChartNoAxesCombined size={20} />
             통계
           </NavLink>
           <NavLink to={ROUTES.SETTINGS}>
-            <Settings2 size={18} />
+            <Settings2 size={20} />
             설정
           </NavLink>
         </nav>

@@ -42,7 +42,7 @@ Electrobun이 내부 빌드 도구로 관리하는 Bun 1.4.0 캐시는 유지되
 ```sh
 node --version
 pnpm exec bun --version
-"build/desktop/dev-macos-arm64/Reading Desk-dev.app/Contents/MacOS/bun" --version
+"build/desktop/dev-macos-arm64/방구석 도서관리-dev.app/Contents/MacOS/bun" --version
 ```
 
 Vitest 4와 Node 25+의 Web Storage 충돌을 피하려고 테스트 워커에만 `--no-webstorage`를 적용합니다.

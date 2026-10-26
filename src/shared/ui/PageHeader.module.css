@@ -38,3 +38,16 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.introduction {
+  min-width: 0;
+}
+.row[data-with-tools] {
+  align-items: flex-end;
+}
+.row[data-with-tools] .introduction {
+  flex: 1 1 640px;
+}
+.tools {
+  margin-top: 16px;
+}

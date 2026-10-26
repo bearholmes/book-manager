@@ -1,4 +1,7 @@
 .content {
   container-type: inline-size;
   padding: var(--layout-page-block) var(--layout-page-inline);
+  box-sizing: content-box;
+  max-width: 72rem;
+  margin-inline: auto;
 }

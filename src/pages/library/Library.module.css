@@ -1,12 +1,3 @@
-.toolbar {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.filters {
-  flex: 1;
-}
 .views {
   display: flex;
   flex-shrink: 0;
@@ -40,15 +31,4 @@
 }
 .empty h2 {
   font-size: 16px;
-}
-@media (max-width: 640px) {
-  .toolbar {
-    flex-wrap: wrap;
-  }
-  .filters {
-    flex-basis: 100%;
-  }
-  .views {
-    margin-left: auto;
-  }
 }

@@ -1,11 +1,30 @@
 .panel {
-  @apply relative w-full transform overflow-hidden border border-line-subtle/80 bg-surface/95 text-left shadow-panel transition-all sm:my-8;
-  border-radius: var(--radius-panel);
+  @apply relative w-full transform overflow-hidden border border-line-subtle/80 bg-surface text-left shadow-panel transition-all sm:my-8;
+  border-radius: 16px;
   animation: var(--animation-enter);
 }
 .header {
-  @apply flex items-center justify-between border-b border-line-subtle/90 px-6 py-4;
+  @apply flex items-center justify-between gap-4 px-8 pt-8 pb-0;
 }
 .close {
   @apply rounded-lg p-1 text-copy-faint hover:bg-surface-subtle hover:text-copy-secondary focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2;
+}
+
+.content {
+  padding: 24px 32px 32px;
+}
+@media (max-width: 640px) {
+  .header {
+    padding: 24px 24px 0;
+  }
+  .content {
+    padding: 24px;
+  }
+}
+
+.title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }

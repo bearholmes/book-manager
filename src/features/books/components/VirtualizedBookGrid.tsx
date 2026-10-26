@@ -102,7 +102,7 @@ export function VirtualizedBookGrid({
             key={row.key}
             data-index={row.index}
             ref={rowVirtualizer.measureElement}
-            className="absolute left-0 top-0 grid w-full gap-4 pb-4"
+            className="absolute left-0 top-0 grid w-full gap-x-6 gap-y-10 pb-10"
             style={{
               transform: `translateY(${row.start - scrollMargin}px)`,
               gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,

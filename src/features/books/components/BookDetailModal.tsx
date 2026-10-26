@@ -1,10 +1,10 @@
 import { formatCurrency, formatDate, formatISBN } from '@/shared/lib/format';
 import { Button } from '@/shared/ui/Button';
 import { Modal } from '@/shared/ui/Modal';
-import { Surface } from '@/shared/ui/Surface';
 import type { Book } from '@contracts/book';
-import { Calendar, DollarSign, MapPin, Package, Tag, User } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import styles from './BookDetailModal.module.css';
 
 interface BookDetailModalProps {
   book: Book | null;
@@ -15,226 +15,90 @@ interface BookDetailModalProps {
   onDelete?: (book: Book) => void;
 }
 
-/**
- * 도서 상세 모달 컴포넌트
- */
-export function BookDetailModal({
-  book,
-  isOpen,
-  onClose,
-  topicColor,
-  onEdit,
-  onDelete,
-}: BookDetailModalProps) {
-  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+function Details({ items }: { items: Array<[string, string | null | undefined]> }) {
+  return (
+    <dl className={styles.details}>
+      {items
+        .filter(([, value]) => value)
+        .map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+    </dl>
+  );
+}
 
+export function BookDetailModal({ book, isOpen, onClose, onEdit, onDelete }: BookDetailModalProps) {
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   if (!book) return null;
 
-  const summaryItems = useMemo(
-    () =>
-      [
-        book.author ? { label: '저자', value: book.author, icon: User } : null,
-        book.publisher ? { label: '출판사', value: book.publisher, icon: Package } : null,
-        book.topic
-          ? {
-              label: '주제',
-              value: book.topic,
-              icon: Tag,
-              color: topicColor || 'rgb(var(--color-category-2))',
-            }
-          : null,
-      ].filter(Boolean) as Array<{
-        label: string;
-        value: string;
-        icon: typeof User;
-        color?: string;
-      }>,
-    [book.author, book.publisher, book.topic, topicColor],
-  );
-
-  const purchaseItems = useMemo(
-    () =>
-      [
-        book.purchase_price !== null
-          ? {
-              label: '구매 가격',
-              value: `${formatCurrency(book.purchase_price)} ${book.currency || 'KRW'}`,
-              icon: DollarSign,
-            }
-          : null,
-        book.purchase_date
-          ? { label: '구매일', value: formatDate(book.purchase_date), icon: Calendar }
-          : null,
-        book.purchase_place ? { label: '구매처', value: book.purchase_place, icon: MapPin } : null,
-        book.condition ? { label: '상태', value: book.condition, icon: Package } : null,
-      ].filter(Boolean) as Array<{ label: string; value: string; icon: typeof Package }>,
-    [book.condition, book.currency, book.purchase_date, book.purchase_place, book.purchase_price],
-  );
-
-  const extraItems = useMemo(
-    () =>
-      [
-        book.isbn13 ? { label: 'ISBN-13', value: formatISBN(book.isbn13), mono: true } : null,
-        book.publication_date
-          ? { label: '출판일', value: formatDate(book.publication_date) }
-          : null,
-        book.comment ? { label: '메모', value: book.comment, multiline: true } : null,
-      ].filter(Boolean) as Array<{
-        label: string;
-        value: string;
-        mono?: boolean;
-        multiline?: boolean;
-      }>,
-    [book.comment, book.isbn13, book.publication_date],
-  );
+  const purchaseItems: Array<[string, string | null | undefined]> = [
+    [
+      '구매 가격',
+      book.purchase_price !== null
+        ? `${formatCurrency(book.purchase_price)} ${book.currency || 'KRW'}`
+        : null,
+    ],
+    ['구매일', book.purchase_date ? formatDate(book.purchase_date) : null],
+    ['구매처', book.purchase_place],
+    ['상태', book.condition],
+  ];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <div className="space-y-6 text-copy-heading">
-        {/* 이미지 및 기본 정보 */}
-        <div className="flex flex-col gap-6 md:flex-row">
-          {/* 표지 이미지 */}
-          <div className="w-full md:w-56">
-            <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl border border-line-subtle bg-surface-subtle/70">
-              {book.image_url && book.image_url !== failedImageUrl ? (
-                <img
-                  src={book.image_url}
-                  alt={book.book_name}
-                  className="h-full w-full object-cover"
-                  onError={() => setFailedImageUrl(book.image_url)}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-primary-300">
-                  <svg
-                    aria-hidden="true"
-                    className="h-20 w-20"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 기본 정보 */}
-          <div className="flex-1 space-y-4">
-            <div>
-              <h2 className="text-3xl font-semibold leading-tight text-copy-heading">
-                {book.book_name}
-              </h2>
-              {book.duplicated && (
-                <span className="mt-3 inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-1 text-xs font-semibold text-danger-hover">
-                  중복구매
-                </span>
-              )}
-            </div>
-
-            {summaryItems.length > 0 && (
-              <div className="grid gap-3 sm:grid-cols-2">
-                {summaryItems.map((item) => (
-                  <Surface
-                    tone="muted"
-                    key={`${item.label}-${item.value}`}
-                    className="flex items-start gap-2 p-3"
-                  >
-                    <item.icon className="mt-0.5 h-4 w-4 flex-shrink-0 text-copy-subtle" />
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-copy-subtle">
-                        {item.label}
-                      </p>
-                      {item.label === '주제' ? (
-                        <span
-                          className="mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold"
-                          style={{
-                            backgroundColor: item.color,
-                            color: 'rgb(var(--color-text-heading))',
-                          }}
-                        >
-                          {item.value}
-                        </span>
-                      ) : (
-                        <p className="mt-1 text-sm text-copy-heading">{item.value}</p>
-                      )}
-                    </div>
-                  </Surface>
-                ))}
-              </div>
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl" title={book.book_name}>
+      <div className={styles.content}>
+        <div className={styles.overview}>
+          <div className={styles.cover}>
+            {book.image_url && book.image_url !== failedImageUrl ? (
+              <img
+                src={book.image_url}
+                alt={book.book_name}
+                onError={() => setFailedImageUrl(book.image_url)}
+              />
+            ) : (
+              <BookOpen size={32} aria-label="표지 없음" />
             )}
           </div>
+          <div className={styles.bibliography}>
+            <Details
+              items={[
+                ['저자', book.author],
+                ['출판사', book.publisher],
+                ['주제', book.topic],
+                ['ISBN-13', book.isbn13 ? formatISBN(book.isbn13) : null],
+                ['출판일', book.publication_date ? formatDate(book.publication_date) : null],
+              ]}
+            />
+            {book.duplicated && <span className={styles.duplicate}>중복구매</span>}
+          </div>
         </div>
-
-        {/* 구매 정보 */}
-        <div className="border-t border-line-subtle pt-6">
-          <h3 className="mb-4 text-xl font-semibold text-copy-heading">구매 정보</h3>
-          {purchaseItems.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {purchaseItems.map((item) => (
-                <Surface
-                  tone="muted"
-                  key={`${item.label}-${item.value}`}
-                  className="flex items-start gap-2 p-3"
-                >
-                  <item.icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-copy-subtle" />
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-copy-subtle">
-                      {item.label}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-copy-heading">{item.value}</p>
-                  </div>
-                </Surface>
-              ))}
-            </div>
+        <section className={styles.section} aria-label="구매 정보">
+          <h3>구매 정보</h3>
+          {purchaseItems.some(([, value]) => value) ? (
+            <Details items={purchaseItems} />
           ) : (
-            <p className="text-sm text-copy-muted">등록된 구매 정보가 없습니다.</p>
+            <p className={styles.muted}>등록된 구매 정보가 없습니다.</p>
           )}
-        </div>
-
-        {/* 추가 정보 */}
-        {extraItems.length > 0 && (
-          <div className="border-t border-line-subtle pt-6">
-            <div className="space-y-3">
-              {extraItems.map((item) => (
-                <Surface tone="muted" key={`${item.label}-${item.value}`} className="p-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-copy-subtle">
-                    {item.label}
-                  </p>
-                  <p
-                    className={`mt-1 text-sm text-copy-heading ${item.mono ? 'font-mono' : ''} ${item.multiline ? 'whitespace-pre-wrap' : ''}`}
-                  >
-                    {item.value}
-                  </p>
-                </Surface>
-              ))}
-            </div>
-          </div>
+        </section>
+        {book.comment && (
+          <section className={styles.section} aria-label="메모">
+            <h3>메모</h3>
+            <p className={styles.memo}>{book.comment}</p>
+          </section>
         )}
-
-        {/* 액션 버튼 */}
-        <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line-subtle pt-4">
-          <div className="flex gap-2">
-            {onDelete && (
-              <Button variant="danger" type="button" onClick={() => onDelete(book)}>
-                삭제
-              </Button>
-            )}
-          </div>
-          <div className="flex gap-2">
-            {onEdit && (
-              <Button type="button" onClick={() => onEdit(book)}>
-                수정
-              </Button>
-            )}
-            <Button variant="ghost" type="button" onClick={onClose}>
+        <div className={styles.actions}>
+          {onDelete && (
+            <Button variant="ghost" className={styles.delete} onClick={() => onDelete(book)}>
+              삭제
+            </Button>
+          )}
+          <div>
+            <Button variant="secondary" onClick={onClose}>
               닫기
             </Button>
+            {onEdit && <Button onClick={() => onEdit(book)}>수정</Button>}
           </div>
         </div>
       </div>

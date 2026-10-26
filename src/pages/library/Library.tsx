@@ -63,47 +63,48 @@ export function Library() {
       <PageHeader
         title="나의 서재"
         meta={filtered ? `${resultCount} / ${totalBooksCount ?? 0}권` : `${totalBooksCount ?? 0}권`}
+        tools={
+          <BookFilters
+            filters={filters}
+            onChange={setFilters}
+            sort={sort}
+            onSortChange={setSort}
+            topics={topics}
+            purchasePlaces={purchasePlaces}
+            isSearching={isSearching}
+          />
+        }
         actions={
-          <Button type="button" onClick={() => setShowAddPanel(true)}>
-            <Plus size={16} aria-hidden="true" />
-            도서 추가
-          </Button>
+          <>
+            <fieldset className={styles.views} aria-label="보기 방식">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={styles.view}
+                aria-label="목록 보기"
+                aria-pressed={view === 'list'}
+                onClick={() => setView('list')}
+              >
+                <List size={16} aria-hidden="true" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={styles.view}
+                aria-label="표지 보기"
+                aria-pressed={view === 'grid'}
+                onClick={() => setView('grid')}
+              >
+                <LayoutGrid size={16} aria-hidden="true" />
+              </Button>
+            </fieldset>
+            <Button type="button" onClick={() => setShowAddPanel(true)}>
+              <Plus size={16} aria-hidden="true" />
+              도서 추가
+            </Button>
+          </>
         }
       />
-      <div className={styles.toolbar}>
-        <BookFilters
-          filters={filters}
-          onChange={setFilters}
-          sort={sort}
-          onSortChange={setSort}
-          topics={topics}
-          purchasePlaces={purchasePlaces}
-          isSearching={isSearching}
-          className={styles.filters}
-        />
-        <fieldset className={styles.views} aria-label="보기 방식">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={styles.view}
-            aria-label="목록 보기"
-            aria-pressed={view === 'list'}
-            onClick={() => setView('list')}
-          >
-            <List size={16} aria-hidden="true" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={styles.view}
-            aria-label="표지 보기"
-            aria-pressed={view === 'grid'}
-            onClick={() => setView('grid')}
-          >
-            <LayoutGrid size={16} aria-hidden="true" />
-          </Button>
-        </fieldset>
-      </div>
       {isLoading ? (
         <div className={styles.loading}>
           <Spinner />

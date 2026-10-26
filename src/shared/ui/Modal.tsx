@@ -77,7 +77,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
           {/* Header */}
           {title && (
             <div className={styles.header}>
-              <h3 className="text-xl font-semibold text-copy-heading" id={titleId}>
+              <h3 className={styles.title} id={titleId}>
                 {title}
               </h3>
               <button type="button" onClick={onClose} className={styles.close}>
@@ -88,7 +88,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
           )}
 
           {/* Content */}
-          <div className="px-6 py-4">{children}</div>
+          <div className={styles.content}>{children}</div>
         </div>
       </div>
     </div>,

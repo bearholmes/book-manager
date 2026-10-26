@@ -80,7 +80,7 @@ export const BookCard = memo(function BookCard({
           <img
             src={book.image_url}
             alt={book.book_name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-90"
             onError={() => setFailedImageUrl(book.image_url)}
           />
         ) : (
@@ -104,7 +104,7 @@ export const BookCard = memo(function BookCard({
       </div>
 
       {/* 정보 */}
-      <div className="flex min-h-[8rem] flex-col gap-1.5 pt-3">
+      <div className="flex min-h-[8rem] flex-col gap-1 pt-4">
         {/* 도서명 */}
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-copy-heading">
           {book.book_name}
@@ -120,7 +120,7 @@ export const BookCard = memo(function BookCard({
           >
             {book.topic && (
               <span
-                className="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
+                className="inline-block rounded px-2 py-0.5 text-xs font-medium"
                 style={{
                   backgroundColor: topicColor || 'rgb(var(--color-category-2))',
                   color: 'rgb(var(--color-text-heading))',

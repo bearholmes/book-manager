@@ -1,8 +1,8 @@
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(110px, 140px) minmax(110px, 140px) 170px 36px;
+  grid-template-columns: minmax(180px, 1fr) 128px 128px 140px 36px;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
   min-width: 0;
 }
 .toolbar > div {
@@ -31,7 +31,7 @@
   height: 36px;
   padding: 0;
 }
-@media (max-width: 1100px) {
+@container (max-width: 48rem) {
   .toolbar {
     grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) 36px;
   }

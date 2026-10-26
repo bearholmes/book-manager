@@ -15,23 +15,20 @@
 .brand strong {
   @apply block text-sm;
 }
-.brand span {
-  @apply mt-1 block text-xs text-copy-subtle;
-}
 .sidebar nav {
-  @apply flex flex-col gap-1;
+  @apply flex flex-col gap-0.5;
 }
 .sidebar nav a {
-  @apply relative flex items-center gap-3 rounded-lg p-2 text-sm font-medium text-copy-muted transition-colors hover:bg-surface-selected;
+  @apply relative flex items-center gap-3 rounded-lg p-2 text-sm font-medium text-copy transition-colors hover:bg-surface-selected;
 }
 .sidebar nav a[aria-current="page"] {
-  @apply bg-surface-selected text-copy;
+  @apply text-copy-emphasis;
 }
 .sidebar nav a[aria-current="page"]::before {
   content: "";
   position: absolute;
-  left: -12px;
-  width: 3px;
+  left: -16px;
+  width: 2px;
   height: 20px;
   border-radius: 2px;
   background: rgb(var(--palette-accent-500));
@@ -65,9 +62,6 @@
   }
   .brand {
     @apply mb-0;
-  }
-  .brand span {
-    display: none;
   }
   .sidebar nav {
     @apply flex-row;

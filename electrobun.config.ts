@@ -2,7 +2,7 @@ import type { ElectrobunConfig } from 'electrobun';
 
 export default {
   app: {
-    name: 'Reading Desk',
+    name: '방구석 도서관리',
     identifier: 'app.readingdesk.books',
     version: '3.0.0',
   },
