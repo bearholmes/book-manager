@@ -1,0 +1,8 @@
+.footer {
+  margin-top: 16px;
+}
+.licenseLink {
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

@@ -7,7 +7,8 @@
   "description": "방구석 도서관리 - Electrobun + SQLite 데스크탑 앱",
   "scripts": {
     "dev": "node tooling/scripts/dev.mjs",
-    "build": "pnpm check:architecture && pnpm type-check && vite build --config tooling/config/vite.config.ts",
+    "build": "pnpm licenses:generate && pnpm check:architecture && pnpm type-check && vite build --config tooling/config/vite.config.ts",
+    "licenses:generate": "node tooling/scripts/generate-open-source-notices.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
