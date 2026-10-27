@@ -1,13 +1,30 @@
 # 개발 가이드
 
-[문서 목록](README.md) · [프로젝트 시작하기](../README.md#시작하기)
+[문서 목록](README.md) · [제품 소개](../README.md)
 
 ## 환경
 
-- Node.js: `.nvmrc`에 고정된 버전. 프로젝트에서 `nvm use`를 실행합니다.
+- Node.js: `.nvmrc`에 고정된 버전. nvm을 사용한다면 `nvm use`로 선택합니다.
 - pnpm: `package.json`의 `packageManager` 버전.
 - Bun: 프로젝트 의존성으로 설치됩니다.
-- 현재 검증 플랫폼: macOS Apple Silicon.
+
+## 빌드 대상과 검증 환경
+
+- 빌드 대상: macOS, Windows, Linux. 각 운영체제에서 해당 환경용 앱을 빌드합니다.
+- 로컬 검증 환경: macOS Apple Silicon. Windows·Linux 실행 검증은 별도로 필요합니다.
+
+## 소스에서 빌드하고 실행하기
+
+Node.js와 pnpm을 준비한 뒤 다음 명령을 실행합니다. 최초 준비 시 데스크탑 런타임을 다운로드합니다.
+
+```sh
+git clone https://github.com/bearholmes/book-manager.git
+cd book-manager
+pnpm install
+pnpm desktop:prepare
+pnpm desktop:build
+pnpm desktop:start
+```
 
 ## 개발과 빌드
 
