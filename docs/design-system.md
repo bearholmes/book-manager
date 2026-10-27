@@ -114,14 +114,12 @@ Recharts처럼 JS로 움직이는 차트는 `useReducedMotion`으로 OS 설정 �
 ## 검증
 
 ```sh
-pnpm lint
-pnpm check:architecture
-pnpm type-check
-pnpm test:run
+pnpm check
+pnpm test --run
 pnpm test:desktop
 pnpm test:e2e
-pnpm build-storybook
-pnpm desktop:build
+pnpm exec storybook build --config-dir tooling/storybook --output-dir build/storybook
+pnpm build
 ```
 
 기존 CRUD·검색·PIN·백업/복원/초기화 시나리오에 스타일 E2E를 추가했다.

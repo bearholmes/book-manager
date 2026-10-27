@@ -13,6 +13,20 @@
 .content {
   padding: 24px 32px 32px;
 }
+.panel[data-scrollable] {
+  display: flex;
+  flex-direction: column;
+  max-height: min(80dvh, 48rem);
+}
+.panel[data-scrollable] .header {
+  flex-shrink: 0;
+  padding-bottom: 24px;
+}
+.panel[data-scrollable] .content {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
 @media (max-width: 640px) {
   .header {
     padding: 24px 24px 0;

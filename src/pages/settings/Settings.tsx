@@ -1,5 +1,6 @@
 import { clearBookQueries } from '@/features/books';
 import { DataSettings } from '@/features/data-management';
+import { OpenSourceLicensesModal } from '@/features/licenses';
 import { PinSettings, useLock } from '@/features/lock';
 import { clearLibraryPreferences } from '@/shared/lib/storage';
 import { Button } from '@/shared/ui/Button';
@@ -8,7 +9,6 @@ import { PageHeader } from '@/shared/ui/PageHeader';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import styles from './Settings.module.css';
-import { OpenSourcePanel } from './components/OpenSourcePanel';
 
 export function Settings() {
   const { state, refresh } = useLock();
@@ -36,7 +36,7 @@ export function Settings() {
           오픈소스 저작권 정보
         </Button>
       </footer>
-      <OpenSourcePanel isOpen={showLicenses} onClose={() => setShowLicenses(false)} />
+      <OpenSourceLicensesModal isOpen={showLicenses} onClose={() => setShowLicenses(false)} />
     </PageContent>
   );
 }

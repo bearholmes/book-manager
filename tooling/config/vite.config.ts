@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react-swc';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
+import { openSourceNotices } from '../packaging/licenses';
 import tailwindConfig from './tailwind.config.js';
 
 const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
@@ -22,7 +23,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
-  plugins: [react()],
+  plugins: [react(), openSourceNotices(projectRoot)],
   css: {
     postcss: { plugins: [tailwindcss(tailwindConfig), autoprefixer()] },
   },

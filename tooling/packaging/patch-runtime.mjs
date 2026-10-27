@@ -9,7 +9,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 // Electrobun 2.0.4 pins Bun 1.4.0 internally and rejects a per-project Bun version.
 // Replace the app-owned runtime through official hooks, before release signing/packaging.
@@ -43,6 +43,26 @@ function findFiles(directory, name, depth = 0) {
 }
 
 const root = wrapper ?? buildDirectory;
+if (!wrapper) {
+  const entries = findFiles(root, 'index.html').filter((path) =>
+    /[\\/]views[\\/]main[\\/]index\.html$/.test(path),
+  );
+  if (!entries.length) throw new Error('Packaged renderer was not found.');
+  function verifyRenderer(sourceDirectory, targetDirectory) {
+    for (const entry of readdirSync(sourceDirectory, { withFileTypes: true })) {
+      const sourcePath = join(sourceDirectory, entry.name);
+      const targetPath = join(targetDirectory, entry.name);
+      if (entry.isDirectory()) verifyRenderer(sourcePath, targetPath);
+      else if (
+        !existsSync(targetPath) ||
+        !readFileSync(sourcePath).equals(readFileSync(targetPath))
+      )
+        throw new Error(`Packaged renderer does not match the build: ${entry.name}`);
+    }
+  }
+  for (const entry of entries) verifyRenderer(resolve('build/renderer'), dirname(entry));
+  console.log('[renderer] Verified packaged files match build/renderer.');
+}
 const runtimes = findFiles(root, process.platform === 'win32' ? 'bun.exe' : 'bun');
 if (runtimes.length === 0 && !wrapper)
   throw new Error('Packaged Bun runtime was not found. Refusing to produce an unpatched app.');

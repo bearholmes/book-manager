@@ -38,6 +38,10 @@ src/
       components/             백업 폼, 복원/초기화 확인창
       hooks/                  비밀번호·미리보기·처리 상태와 명령 실행
       index.ts
+    licenses/
+      components/             저작권 모달과 라이선스 원문
+      model/                  라이선스 표시 타입
+      index.ts
   shared/
     api/                      화면의 유일한 Electrobun/개발 브리지 연결
     ui/                       도서와 무관한 공용 UI
@@ -62,7 +66,9 @@ desktop/
   tests/                      데이터 보존·암호화·백업 통합 테스트
 tooling/
   config/                     Vite, Vitest, Playwright, Tailwind 설정
-  scripts/                    개발 서버, 빌드 런타임 보완, 구조 검사
+  packaging/                  네이티브 빌드, 번들 라이선스 생성, 런타임 검증
+  checks/                     구조 검사
+  dev/                        선택적 브라우저 개발 서버
   storybook/                  Storybook 실행 설정
   tsconfig.json               개발 설정과 E2E 코드의 타입 검사
 docs/storybook/              컴포넌트 문서의 진입 페이지
@@ -79,8 +85,7 @@ build/                       모든 생성물 (Git 제외)
 예를 들어 도서 쿼리는 `features/books/hooks`, 서재 화면의 선택·편집 상태는 `pages/library/hooks`,
 토스트 상태는 `shared/notifications/store`에 둔다. 여러 기능이 사용하는 범용 코드만 `shared`로 올린다.
 
-현재 로컬 이미지·폰트 파일이 없어서 빈 `assets/` 폴더는 만들지 않았다. 실제 자산을 추가할 때는
-공용 자산은 `src/shared/assets/`, 기능 전용 자산은 해당 기능의 `assets/`에 둔다.
+공용 로고·글꼴은 `src/shared/assets/`, 기능 전용 자산은 해당 기능의 `assets/`에 둔다.
 개인 표지/도서 데이터와 백업은 소스 자산이 아니며 Git에서 제외한다.
 
 테스트와 Storybook 스토리는 검증하는 모듈 옆에 둔다. 여러 모듈을 함께 검증하는 테스트만
@@ -97,7 +102,7 @@ build/                       모든 생성물 (Git 제외)
 PostCSS 플러그인은 Vite 설정 안에서 구성하므로 별도 `postcss.config.js`는 두지 않는다.
 이전 `tsconfig.node.json`은 제거했고 설정·E2E의 타입은 `tooling/tsconfig.json`으로 검사한다.
 E2E는 Vite만 공용으로 띄우고 각 fixture가 전용 백엔드를 관리하므로 공용 백엔드를 띄우던
-`e2e-server.mjs`도 제거했다. 보조 스크립트는 실제로 쓰는 세 파일만 유지한다.
+`e2e-server.mjs`도 제거했다. 보조 도구는 `tooling` 아래에서 빌드·검사·개발 책임별로 관리한다.
 
 생성물은 모두 `build/` 아래에 둔다. 루트에 별도 `dist`, `artifacts`, `storybook-static`,
 `playwright-report`, `test-results`, `output` 폴더를 만들지 않는다.
@@ -153,18 +158,16 @@ flowchart TD
 ## 검사
 
 ```sh
-pnpm lint
-pnpm type-check
-pnpm check:architecture
-pnpm test:run
+pnpm check
+pnpm test --run
 pnpm test:desktop
 pnpm test:e2e
-pnpm desktop:build
-pnpm build-storybook
+pnpm build
+pnpm exec storybook build --config-dir tooling/storybook --output-dir build/storybook
 ```
 
-`pnpm build`는 `check:architecture`를 먼저 실행해 구조 위반이 있으면 빌드를 중단한다.
-`check:architecture`는 TypeScript AST와 tsconfig의 경로 해석을 사용한다.
+`pnpm build`는 `pnpm check`를 먼저 실행해 코드·타입·구조 위반이 있으면 빌드를 중단한다.
+`tooling/checks/architecture.mjs`는 TypeScript AST와 tsconfig의 경로 해석을 사용한다.
 로컬 import/export, 문자열 리터럴 dynamic import, import type, require, vi.mock의 경로를 검사하고,
 계층 역참조·기능 내부 직접 참조·실행 환경 혼합·테스트 코드 유입·순환 참조를 실패 처리한다.
 문자열을 실행 중 조합하는 import나 외부 라이브러리 내부 의존 관계까지 분석하는 도구는 아니다.

@@ -21,7 +21,7 @@ export default {
   },
   runtime: { exitOnLastWindowClosed: true },
   scripts: {
-    postBuild: './tooling/scripts/patch-bun-runtime.mjs',
-    postWrap: './tooling/scripts/patch-bun-runtime.mjs',
+    postBuild: './tooling/packaging/patch-runtime.mjs',
+    postWrap: './tooling/packaging/patch-runtime.mjs',
   },
 } satisfies ElectrobunConfig;

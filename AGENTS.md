@@ -5,7 +5,7 @@ This is a single-package Electrobun app; see `docs/architecture.md` for the mono
 - `contracts/`: runtime-independent book and desktop command types
 - `src/app/`: entry point, providers, routes, desktop layout, global styles
 - `src/pages/`: route composition and page-local hooks/components
-- `src/features/`: self-contained `books`, `lock`, and `data-management` modules with public `index.ts` APIs
+- `src/features/`: self-contained `books`, `lock`, `data-management`, and `licenses` modules with public `index.ts` APIs
 - `src/shared/`: reusable UI, notifications (components/hooks/store), generic hooks, API adapter, config, theme tokens, and utilities
 - `src/test/`: test setup, synthetic fixtures, and helpers
 - Tests and Storybook stories are colocated with their modules; Storybook introduction lives in `docs/storybook/`
@@ -14,7 +14,7 @@ This is a single-package Electrobun app; see `docs/architecture.md` for the mono
 - `desktop/platform/`: Electrobun menu/export adapters; `desktop/index.ts` and `desktop/dev-server.ts` compose the app
 - `tests/e2e/`: end-to-end tests and isolated process fixtures
 - `tooling/config/`: Vite, Vitest, Playwright, and Tailwind configuration
-- `tooling/scripts/`: development, architecture, and packaged-runtime helpers
+- `tooling/packaging/`, `tooling/checks/`, `tooling/dev/`: native builds and notices, architecture checks, optional browser development
 - `tooling/storybook/`: component playground configuration
 - `build/`: generated renderer/desktop packages, releases, Storybook, and reports (ignored)
 
@@ -27,20 +27,21 @@ Create asset directories only when there are actual files to store.
 
 ## Build, Test, and Development Commands
 Use `pnpm` (Node `>=26.12.1 <27`, pnpm `>=8`). Run `nvm use` to select the pinned Node version.
-- `pnpm dev`: run Vite and the local data bridge on `http://127.0.0.1:3000`
-- `pnpm build`: type-check then production build
-- `pnpm lint` / `pnpm lint:fix`: Biome checks and autofixes
+- `pnpm dev`: build and launch the native Electrobun app
+- `pnpm build`: check code, build the renderer and licenses, then package the native development app
+- `pnpm build --env=stable`: build a stable native app and release artifacts
+- `pnpm check`: Biome, TypeScript, module boundaries, import resolution and cycle checks
 - `pnpm format`: format code with Biome
-- `pnpm type-check`: run TypeScript checks only
-- `pnpm check:architecture`: verify module boundaries, import resolution, and absence of cycles
-- `pnpm test`, `pnpm test:run`, `pnpm test:coverage`: Vitest workflows
+- `pnpm test`: Vitest; use `--run`, `--coverage`, or `--ui` as needed
 - `pnpm test:e2e`: Playwright E2E suite
 - `pnpm test:desktop`: Bun storage, encryption, backup, and PIN tests
-- `pnpm desktop:build` / `pnpm desktop:release`: development/stable desktop builds
 - `pnpm storybook`: local component playground
 
-Pass occasional test options directly: `pnpm test --ui`, `pnpm test:e2e --ui`, or `pnpm test:e2e --debug`.
-Select a scenario with `pnpm test:e2e tests/e2e/workflow.spec.ts --headed`; avoid duplicate scripts for flags or individual files.
+Initial desktop setup: `pnpm exec electrobun prepare`.
+Optional browser development: `pnpm exec node tooling/dev/browser.mjs`.
+Do not report browser-only verification as native app verification.
+Native build completion includes checking that the packaged renderer matches the generated renderer.
+Pass flags and scenario paths to existing commands instead of adding aliases for them.
 
 ## Coding Style & Naming Conventions
 TypeScript + React with 2-space indentation, single quotes, semicolons, trailing commas, and 100-char line width (Biome).
@@ -53,7 +54,7 @@ Use `src/shared/theme/tokens.css` as the design token source; see `docs/design-s
 Keep component/page CSS in adjacent `*.module.css` files. Reuse Button/Input/Surface and their size/variant APIs rather than global style classes or `!important` overrides.
 Preserve the book grid's JS/container measurements when editing layout. Respect reduced motion in both CSS and JS-driven animation.
 
-Run `pnpm lint`, `pnpm type-check`, and `pnpm check:architecture` before opening a PR.
+Run `pnpm check` before opening a PR.
 
 ## Testing Guidelines
 Unit/integration tests use Vitest + Testing Library (`jsdom` environment, `src/test/setup.ts`). Coverage reports are generated via V8 (`text`, `json`, `html`).
@@ -68,5 +69,5 @@ Recent history favors concise, prefix-based commits (for example: `feat: ...`, `
 PRs should include:
 - clear summary and rationale
 - linked issue/task when applicable
-- test evidence (`pnpm test:run`, `pnpm test:e2e` as needed)
+- test evidence (`pnpm test --run`, `pnpm test:e2e` as needed)
 - screenshots or Storybook notes for UI changes

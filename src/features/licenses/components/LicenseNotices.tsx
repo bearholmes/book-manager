@@ -1,14 +1,14 @@
-import notices from '../data/open-source-notices.json';
-import styles from './OpenSourceNotices.module.css';
+import type { LicenseGroup } from '../model/types';
+import styles from './LicenseNotices.module.css';
 
-export default function OpenSourceNotices() {
+export default function LicenseNotices({ groups }: { groups: LicenseGroup[] }) {
   return (
     <div className={styles.content}>
       <p className={styles.introduction}>
         이 앱에서 사용하는 글꼴과 오픈소스의 저작권 및 라이선스 안내입니다. 항목을 펼치면 원문을
         읽을 수 있습니다.
       </p>
-      {notices.map((group) => (
+      {groups.map((group) => (
         <section key={group.title} className={styles.group} aria-label={group.title}>
           <h3>{group.title}</h3>
           {group.items.map((item) => (

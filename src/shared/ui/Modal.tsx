@@ -19,6 +19,9 @@ interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   /** 추가 CSS 클래스 */
   className?: string;
+  /** 작은 화면에서도 가운데 정렬 */
+  centered?: boolean;
+  scrollable?: boolean;
 }
 
 const sizeClasses = {
@@ -44,7 +47,16 @@ const sizeClasses = {
  * </Modal>
  * ```
  */
-export function Modal({ isOpen, onClose, title, children, size = 'md', className }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = 'md',
+  className,
+  centered = false,
+  scrollable = false,
+}: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useOverlay(isOpen, modalRef, onClose);
@@ -72,8 +84,16 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
       />
 
       {/* Modal */}
-      <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div className={clsx(styles.panel, sizeClasses[size], className)}>
+      <div
+        className={clsx(
+          'flex min-h-full justify-center p-4 text-center sm:p-0',
+          centered ? 'items-center' : 'items-end sm:items-center',
+        )}
+      >
+        <div
+          className={clsx(styles.panel, sizeClasses[size], className)}
+          data-scrollable={scrollable || undefined}
+        >
           {/* Header */}
           {title && (
             <div className={styles.header}>

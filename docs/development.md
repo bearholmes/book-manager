@@ -1,80 +1,61 @@
 # 개발 가이드
 
-[문서 목록](README.md) · [제품 소개](../README.md)
+[문서 목록](README.md)
 
 ## 환경
 
-- Node.js: `.nvmrc`에 고정된 버전. nvm을 사용한다면 `nvm use`로 선택합니다.
-- pnpm: `package.json`의 `packageManager` 버전.
-- Bun: 프로젝트 의존성으로 설치됩니다.
+Node.js는 `.nvmrc`, pnpm은 `package.json`의 `packageManager` 버전을 사용합니다.
+빌드 대상은 macOS·Windows·Linux이며 각 운영체제에서 해당 앱을 빌드합니다.
+현재 로컬 네이티브 검증 환경은 macOS Apple Silicon입니다.
 
-## 빌드 대상과 검증 환경
-
-- 빌드 대상: macOS, Windows, Linux. 각 운영체제에서 해당 환경용 앱을 빌드합니다.
-- 로컬 검증 환경: macOS Apple Silicon. Windows·Linux 실행 검증은 별도로 필요합니다.
-
-## 소스에서 빌드하고 실행하기
-
-Node.js와 pnpm을 준비한 뒤 다음 명령을 실행합니다. 최초 준비 시 데스크탑 런타임을 다운로드합니다.
+## 소스에서 실행
 
 ```sh
 git clone https://github.com/bearholmes/book-manager.git
 cd book-manager
 pnpm install
-pnpm desktop:prepare
-pnpm desktop:build
-pnpm desktop:start
+pnpm exec electrobun prepare
+pnpm dev
 ```
 
-## 개발과 빌드
+`pnpm dev`는 실제 데스크톱 앱을 빌드한 뒤 실행합니다. 앱 실행 중에는 빌드 잠금이 유지되므로,
+다시 빌드하기 전에 실행 중인 앱을 종료합니다.
+
+## 명령
 
 | 명령 | 용도 |
 | --- | --- |
-| `pnpm dev` | 브라우저 개발 서버 (`http://127.0.0.1:3000`) |
-| `pnpm storybook` | 컴포넌트 미리보기 (`http://localhost:6006`) |
-| `pnpm build` | 라이선스 갱신·구조 검사·타입 검사 후 렌더러 빌드 |
-| `pnpm desktop:build` | 개발용 데스크탑 앱 빌드 |
-| `pnpm desktop:start` | 빌드한 데스크탑 앱 실행 |
-| `pnpm desktop:release` | stable 앱과 배포 파일 생성 |
+| `pnpm dev` | 네이티브 앱 빌드 및 실행 |
+| `pnpm build` | 코드 검사, 렌더러 빌드, 네이티브 개발 앱 패키징 |
+| `pnpm build --env=stable` | stable 앱과 배포 파일 생성 |
+| `pnpm check` | 린트·타입·모듈 경계·순환 참조 검사 |
+| `pnpm format` | 코드 형식 정리 |
+| `pnpm test --run` | 프런트엔드 테스트 1회 실행 |
+| `pnpm test --coverage` | 프런트엔드 커버리지 확인 |
+| `pnpm test:desktop` | 저장소·암호화·백업·PIN 테스트 |
+| `pnpm test:e2e` | 브라우저 사용자 흐름 테스트 |
+| `pnpm storybook` | 컴포넌트 미리보기 |
 
-데스크탑 앱은 `build/desktop/`, 배포 파일은 `build/releases/`에 생성됩니다.
-서명·공증·자동 업데이트는 현재 구성되어 있지 않습니다.
+앱은 `build/desktop/`, 배포 파일은 `build/releases/`에 생성됩니다.
+빌드 훅은 패키징된 렌더러가 `build/renderer`와 동일한지, Bun 버전이 고정 버전과 일치하는지 검사합니다.
 
-브라우저 개발 데이터는 `.local-data/`에 저장됩니다. 개발 서버는 화면용 3000번 포트와
-로컬 데이터 연결용 3101번 포트를 사용합니다. 포트가 겹치면 다음처럼 지정합니다.
+## 테스트와 보조 도구
 
-```sh
-BOOK_MANAGER_DEV_PORT=4320 BOOK_MANAGER_API_PORT=4321 pnpm dev
-```
+E2E 최초 실행 전 `pnpm exec playwright install chromium`으로 브라우저를 설치합니다.
+시나리오 지정이나 디버깅은 `pnpm test:e2e tests/e2e/workflow.spec.ts --debug`처럼 옵션을 사용합니다.
+브라우저 검사 외에 실제 네이티브 앱의 실행과 변경 화면을 확인합니다.
 
-## 검사
+브라우저 개발이 필요한 경우 `pnpm exec node tooling/dev/browser.mjs`를 실행합니다.
+화면은 `http://127.0.0.1:3000`, 개발 데이터는 `.local-data/`를 사용합니다.
+Storybook 정적 빌드는 `pnpm exec storybook build --config-dir tooling/storybook --output-dir build/storybook`으로 실행합니다.
 
-```sh
-pnpm lint
-pnpm type-check
-pnpm check:architecture
-pnpm test:run
-pnpm test:desktop
-pnpm test:e2e
-```
+## 구조와 유지보수
 
-E2E를 처음 실행하기 전에는 `pnpm exec playwright install chromium`으로 브라우저를 설치합니다.
-E2E는 테스트마다 임시 서재를 만들고 종료할 때 정리합니다.
-`pnpm test:e2e --debug`처럼 기존 명령에 옵션을 붙여 실행할 수 있습니다.
+- `src/features/licenses/`: 저작권 모달과 라이선스 표시 UI
+- `tooling/packaging/`: 네이티브 빌드, 실제 번들 모듈의 저작권 수집, 런타임 검증
+- `tooling/checks/`: 모듈 경계 검사
+- `tooling/dev/`: 선택적으로 실행하는 브라우저 개발 도구
 
-## 변경 제출
-
-1. [모듈 경계](architecture.md)와 [디자인 시스템](design-system.md)을 확인합니다.
-2. 변경 범위에 맞는 검사를 실행합니다. PR 전에는 린트·타입·구조 검사를 통과해야 합니다.
-3. PR에 변경 이유와 확인 결과를 적습니다. UI 변경에는 화면이나 Storybook 확인 내용을 첨부합니다.
-
-커밋 메시지는 `feat:`, `fix:`, `refactor:`, `docs:`, `chore:` 접두사를 사용합니다.
-생성물, 개인 도서 데이터, 백업 파일, 인증 정보는 커밋하지 않습니다.
-
-## 런타임과 라이선스 유지보수
-
-패키징된 Bun 버전은 [런타임 빌드 훅](../tooling/scripts/patch-bun-runtime.mjs)에서 확인합니다.
-Bun을 갱신할 때는 패키지 버전과 이 훅, `desktop/assets/licenses/`의 해당 버전 안내를 함께 갱신합니다.
-
-`pnpm licenses:generate`는 설치된 의존성과 원문 파일에서 저작권 패널의 자료를 생성합니다.
-`pnpm build`에도 이 단계가 포함됩니다. 의존성을 변경하면 생성된 안내 자료도 함께 검토합니다.
+저작권 정보는 빌드 결과에 남은 모듈에서 생성합니다. 설치 목록이나 타입 패키지를 일괄 포함하지 않습니다.
+Bun 버전 변경 시 `package.json`, `tooling/packaging/patch-runtime.mjs`, 해당 버전의 라이선스 안내를 함께 갱신합니다.
+PR에는 변경 이유와 `pnpm check` 및 관련 테스트 결과를 적습니다.

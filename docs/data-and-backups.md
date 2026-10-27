@@ -56,7 +56,7 @@ PIN 잠금 중에는 표지 읽기도 차단하고 화면의 이미지 캐시와
 기존 파일은 보존하고, 새 저장소에서 앱을 시작해 백업을 복원할 수 있습니다.
 
 ```sh
-BOOK_MANAGER_DATA_DIR=/절대/새로운/빈폴더 pnpm desktop:start
+BOOK_MANAGER_DATA_DIR=/절대/새로운/빈폴더 pnpm dev
 ```
 
 이 환경 변수는 개발 앱을 실제 서재와 분리해 실행할 때도 사용할 수 있습니다.
