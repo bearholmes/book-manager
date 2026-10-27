@@ -65,7 +65,7 @@ export const BookCard = memo(function BookCard({
       className={clsx(
         'group relative rounded-lg',
         onClick &&
-          'cursor-pointer focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2',
+          'cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2',
         className,
       )}
       onClick={onClick}

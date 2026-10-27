@@ -77,7 +77,7 @@ export function SidePanel({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="rounded-lg p-1 text-copy-subtle hover:bg-surface-selected hover:text-copy-heading focus:outline-none focus:ring-2 focus:ring-focus"
+                      className="rounded-lg p-1 text-copy-subtle hover:bg-surface-selected hover:text-copy-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                     >
                       <span className="sr-only">패널 닫기</span>
                       <X className="h-6 w-6" />

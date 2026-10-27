@@ -27,7 +27,7 @@ export function ToastItem({ toast }: ToastItemProps) {
         </p>
         <button
           type="button"
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-on-solid/65 transition-colors hover:bg-surface/10 hover:text-on-solid focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-0"
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-on-solid/65 transition-colors hover:bg-surface/10 hover:text-on-solid focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-0"
           onClick={() => removeToast(toast.id)}
         >
           <span className="sr-only">닫기</span>
