@@ -41,9 +41,10 @@ export const bookSchema = z.object({
   purchase_date: optionalDate,
   purchase_place: z.string().optional().or(z.literal('')),
   topic: z.string().optional().or(z.literal('')),
-  image_url: z.string().url('올바른 URL 형식이 아닙니다').optional().or(z.literal('')),
   duplicated: z.boolean().default(false),
   comment: z.string().optional().or(z.literal('')),
 });
 
-export type BookFormData = z.infer<typeof bookSchema>;
+export type BookFormData = z.infer<typeof bookSchema> & {
+  cover?: import('@contracts/cover').CoverUpload | null;
+};

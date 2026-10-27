@@ -1,3 +1,5 @@
+import type { CoverUpload } from './cover';
+
 export interface Book {
   id: string;
   book_name: string;
@@ -13,15 +15,20 @@ export interface Book {
   purchase_date: string | null;
   purchase_place: string | null;
   topic: string | null;
+  /** Preserved only for older libraries/backups; never fetched or accepted by the editor. */
   image_url: string | null;
+  cover_id: string | null;
   duplicated: boolean;
   comment: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export type BookInsert = Pick<Book, 'book_name'> & Partial<Omit<Book, 'book_name'>>;
-export type BookUpdate = Partial<Omit<Book, 'id' | 'created_at' | 'updated_at'>>;
+export type BookInsert = Pick<Book, 'book_name'> &
+  Partial<Omit<Book, 'book_name' | 'cover_id' | 'image_url'>> & { cover?: CoverUpload | null };
+export type BookUpdate = Partial<
+  Omit<Book, 'id' | 'created_at' | 'updated_at' | 'cover_id' | 'image_url'>
+> & { cover?: CoverUpload | null };
 
 export type BookCondition = '신품' | '중고';
 

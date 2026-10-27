@@ -54,7 +54,7 @@ desktop/
   index.ts                    네이티브 실행 구성, RPC와 창 수명
   dev-server.ts               브라우저 개발 전용 루프백 브리지
   application/                요청 직렬화·검증·분배, 저장소 초기화
-  library/                    도서 저장 스키마 검증, 조회·변경 SQL
+  library/                    도서 저장 스키마 검증, 조회·변경 SQL, 암호화 표지 파일 관리
   backup/                     비밀번호 암호화 백업, 미리보기·복원 수명
   security/                   PIN 검증/지연, OS 키 저장소, AES-GCM
   storage/                    SQLite 연결·스키마·트랜잭션, 암호화 저장, 파일/프로세스 잠금

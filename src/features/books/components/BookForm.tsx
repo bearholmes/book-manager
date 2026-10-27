@@ -2,11 +2,14 @@ import { Button } from '@/shared/ui/Button';
 import { Field } from '@/shared/ui/Field';
 import { FieldGroup, Input, Select, Textarea } from '@/shared/ui/Input';
 import type { Book } from '@contracts/book';
+import type { CoverUpload } from '@contracts/cover';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BOOK_CONDITIONS, CURRENCIES } from '../model/constants';
 import { type BookFormData, bookSchema } from '../model/form-schema';
 import styles from './BookForm.module.css';
+import { CoverAttachment } from './CoverAttachment';
 
 interface BookFormProps {
   book?: Book;
@@ -19,6 +22,8 @@ interface BookFormProps {
  * 도서 추가/수정 폼 컴포넌트
  */
 export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormProps) {
+  const [cover, setCover] = useState<CoverUpload | null>();
+  const [processingCover, setProcessingCover] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,7 +45,6 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
           purchase_date: book.purchase_date ?? '',
           purchase_place: book.purchase_place ?? '',
           topic: book.topic ?? '',
-          image_url: book.image_url ?? '',
           duplicated: book.duplicated ?? false,
           comment: book.comment ?? '',
         }
@@ -51,7 +55,14 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
   });
 
   return (
-    <form noValidate onSubmit={handleSubmit((data) => onSubmit(data))} className={styles.form}>
+    <form
+      noValidate
+      onSubmit={handleSubmit((data) => {
+        if (!isSubmitting && !processingCover)
+          onSubmit({ ...data, ...(cover !== undefined ? { cover } : {}) });
+      })}
+      className={styles.form}
+    >
       <fieldset className={styles.section}>
         <legend>도서 기본 정보</legend>
         <div className={styles.fields}>
@@ -76,6 +87,13 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
               placeholder="도서명을 입력하세요"
             />
           </Field>
+          <CoverAttachment
+            coverId={book?.cover_id}
+            hasLegacyUrl={!!book?.image_url}
+            disabled={isSubmitting}
+            onChange={setCover}
+            onProcessingChange={setProcessingCover}
+          />
           <div className={styles.pair}>
             <Field htmlFor="isbn13" label="ISBN-13">
               <Input {...register('isbn13')} id="isbn13" placeholder="9788972214304" />
@@ -156,16 +174,6 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
       <fieldset className={styles.section}>
         <legend>선택 항목</legend>
         <div className={styles.fields}>
-          <Field htmlFor="image_url" label="표지 이미지 URL" error={errors.image_url?.message}>
-            <Input
-              {...register('image_url')}
-              type="url"
-              id="image_url"
-              placeholder="https://..."
-              aria-invalid={!!errors.image_url}
-              aria-describedby={errors.image_url ? 'image_url-error' : undefined}
-            />
-          </Field>
           <FieldGroup className={styles.checkbox}>
             <input
               {...register('duplicated')}
@@ -189,7 +197,7 @@ export function BookForm({ book, onSubmit, onCancel, isSubmitting }: BookFormPro
         <Button variant="ghost" type="button" onClick={onCancel} disabled={isSubmitting}>
           취소
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || processingCover}>
           {isSubmitting ? '저장 중...' : book ? '수정' : '추가'}
         </Button>
       </div>

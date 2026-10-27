@@ -40,11 +40,11 @@ export function DataConfirmationDialog({
               <strong>{preview.count}권</strong>
             </p>
             <p>백업 시각: {new Date(preview.createdAt).toLocaleString()}</p>
-            <p>현재 도서를 백업 내용으로 교체합니다.</p>
+            <p>현재 도서와 표지를 백업 내용으로 교체합니다.</p>
           </div>
         )}
         {resetOpen && (
-          <p className="text-sm">도서 전체와 PIN 설정을 삭제합니다. 되돌릴 수 없습니다.</p>
+          <p className="text-sm">도서·표지·PIN 설정을 모두 삭제합니다. 되돌릴 수 없습니다.</p>
         )}
         {lockEnabled && (
           <div>

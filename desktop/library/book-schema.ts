@@ -38,6 +38,12 @@ export const storedBookSchema = z.object({
   purchase_date: nullableDate,
   purchase_place: nullableText,
   topic: nullableText,
+  cover_id: z
+    .string()
+    .regex(/^[a-f0-9]{64}$/)
+    .nullable()
+    .optional()
+    .default(null),
   image_url: z
     .string()
     .url()

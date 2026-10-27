@@ -6,9 +6,17 @@ import { join } from 'node:path';
 import { test as base, expect } from '@playwright/test';
 
 /** Each test (including retries) gets its own process, key, library and export directory. */
-export const test = base.extend({
-  page: async ({ page }, use) => {
+export const test = base.extend<{ libraryDirectory: string }>({
+  // biome-ignore lint/correctness/noEmptyPattern: Playwright requires destructured fixture arguments.
+  libraryDirectory: async ({}, use) => {
     const directory = await mkdtemp(join(tmpdir(), 'reading-desk-scenario-'));
+    try {
+      await use(directory);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  },
+  page: async ({ page, libraryDirectory: directory }, use) => {
     const token = randomBytes(32).toString('hex');
     const backend = spawn(join(process.cwd(), 'node_modules/.bin/bun'), ['desktop/dev-server.ts'], {
       env: {
@@ -66,7 +74,6 @@ export const test = base.extend({
         const timeout = setTimeout(() => backend.kill('SIGKILL'), 5000);
         await exited;
         clearTimeout(timeout);
-        await rm(directory, { recursive: true, force: true });
       }
     }
   },

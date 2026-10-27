@@ -52,7 +52,8 @@ export class EncryptedStore {
           ['books', 'id'],
           ['settings', 'key'],
         ]) {
-          const sql = `SELECT * FROM ${table} ORDER BY ${order}`;
+          const columns = legacy.query<{ name: string }, []>(`PRAGMA table_info(${table})`).all();
+          const sql = `SELECT ${columns.map(({ name }) => name).join(',')} FROM ${table} ORDER BY ${order}`;
           if (
             JSON.stringify(legacy.query(sql).all()) !== JSON.stringify(this.db.query(sql).all())
           ) {
@@ -85,6 +86,14 @@ export class EncryptedStore {
     } finally {
       plaintext.fill(0);
     }
+  }
+
+  encrypt(bytes: Uint8Array, context: string) {
+    return encrypt(bytes, this.key, context);
+  }
+
+  decrypt(bytes: Buffer, context: string) {
+    return decrypt(bytes, this.key, context);
   }
 
   mutate<T>(operation: () => T): T {

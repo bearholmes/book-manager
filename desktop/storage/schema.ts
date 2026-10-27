@@ -2,7 +2,7 @@ import type { Database } from 'bun:sqlite';
 
 export function initializeSchema(db: Database) {
   const version = db.query<{ user_version: number }, []>('PRAGMA user_version').get();
-  if ((version?.user_version ?? 0) > 1)
+  if ((version?.user_version ?? 0) > 2)
     throw new Error('새 버전 앱에서 만든 데이터베이스입니다. 앱을 업데이트해주세요.');
   db.transaction(() => {
     db.exec(`
@@ -19,7 +19,11 @@ export function initializeSchema(db: Database) {
         CREATE INDEX IF NOT EXISTS books_topic ON books(topic);
         CREATE INDEX IF NOT EXISTS books_isbn ON books(isbn13);
         CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
-        PRAGMA user_version = 1;
       `);
+    if ((version?.user_version ?? 0) < 2) {
+      db.exec('ALTER TABLE books ADD COLUMN cover_id TEXT;');
+    }
+    db.exec('CREATE INDEX IF NOT EXISTS books_cover ON books(cover_id);');
+    db.exec('PRAGMA user_version = 2;');
   })();
 }

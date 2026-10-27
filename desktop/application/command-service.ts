@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CommandRequest, CommandResult } from '../../contracts/desktop';
 import { BackupService, type ExportWriter } from '../backup/backup-service';
+import { coverIdSchema } from '../library/cover-store';
 import type { LibraryDatabase } from '../library/repository';
 import { PinLock, pinSchema } from '../security/pin-lock';
 import { idSchema, listSchema, objectSchema } from './command-schemas';
@@ -67,9 +68,11 @@ export class DesktopService {
       case 'list':
         return this.library.list(listSchema.parse(payload));
       case 'create':
+        this.assertLocalCoverInput(payload);
         return this.library.create(payload);
       case 'update': {
         const { id, updates } = idSchema.extend({ updates: z.record(z.unknown()) }).parse(payload);
+        this.assertLocalCoverInput(updates);
         return this.library.update(id, updates);
       }
       case 'delete':
@@ -78,6 +81,8 @@ export class DesktopService {
       case 'stats':
         objectSchema.parse(payload);
         return this.library.stats();
+      case 'coverRead':
+        return this.library.readCover(z.object({ id: coverIdSchema }).parse(payload).id);
       case 'backupExport':
         return this.backups.export(payload);
       case 'backupInspect':
@@ -97,5 +102,11 @@ export class DesktopService {
       default:
         throw new Error('지원하지 않는 요청입니다.');
     }
+  }
+
+  private assertLocalCoverInput(payload: unknown) {
+    const fields = z.record(z.unknown()).parse(payload);
+    if ('cover_id' in fields || 'image_url' in fields)
+      throw new Error('표지 이미지는 파일을 첨부해주세요.');
   }
 }

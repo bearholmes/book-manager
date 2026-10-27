@@ -1,4 +1,5 @@
 import type { Book, BookFilters, BookInsert, BookSort, BookUpdate } from './book';
+import type { CoverUpload } from './cover';
 
 export interface LockState {
   enabled: boolean;
@@ -41,6 +42,7 @@ export interface Commands {
   update: { params: { id: string; updates: BookUpdate }; result: Book };
   delete: { params: { id: string }; result: null };
   stats: { params: Record<string, never>; result: LibraryStats };
+  coverRead: { params: { id: string }; result: CoverUpload };
   backupExport: { params: { password: string }; result: { path: string | null; count: number } };
   backupInspect: { params: { archive: string; password: string }; result: BackupPreview };
   backupRestore: {

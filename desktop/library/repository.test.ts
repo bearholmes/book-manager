@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DesktopService } from '../application/command-service';
+import { webpCover } from '../tests/cover-fixture';
 import { LibraryDatabase } from './repository';
 
 const directories: string[] = [];
@@ -58,7 +59,7 @@ describe('SQLite library', () => {
       book_name: '다른 책',
       topic: '개발',
       purchase_date: '2024-01-01',
-      image_url: 'https://example.com/book.jpg',
+      cover: webpCover,
     });
     expect(library.list({ filters: { search: "O'Reilly 100%_" } }).books).toEqual([first]);
     expect(library.list({ filters: { search: '9781234567890' } }).totalCount).toBe(1);
@@ -143,6 +144,7 @@ describe('optional PIN lock', () => {
       'backupInspect',
       'backupRestore',
       'reset',
+      'coverRead',
     ] as const) {
       expect(await restarted.execute({ command, payload: {} })).toMatchObject({
         ok: false,

@@ -2,6 +2,7 @@ import { formatCurrency, formatDate } from '@/shared/lib/format';
 import type { Book } from '@contracts/book';
 import clsx from 'clsx';
 import { memo, useState } from 'react';
+import { useCoverImage } from '../hooks/useCoverImage';
 
 interface BookCardProps {
   /** 도서 정보 */
@@ -42,6 +43,7 @@ export const BookCard = memo(function BookCard({
   className,
 }: BookCardProps) {
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const coverUrl = useCoverImage(book.cover_id);
 
   // 키보드 이벤트 핸들러 (Enter/Space)
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -75,13 +77,13 @@ export const BookCard = memo(function BookCard({
       aria-label={onClick ? ariaLabel : undefined}
     >
       {/* 이미지 */}
-      <div className="aspect-[4/5] w-full overflow-hidden rounded-lg bg-surface-subtle/60">
-        {book.image_url && book.image_url !== failedImageUrl ? (
+      <div className="mx-auto aspect-[4/5] w-full max-w-[320px] overflow-hidden rounded-lg bg-surface-subtle/60">
+        {coverUrl && coverUrl !== failedImageUrl ? (
           <img
-            src={book.image_url}
+            src={coverUrl}
             alt={book.book_name}
             className="h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-90"
-            onError={() => setFailedImageUrl(book.image_url)}
+            onError={() => setFailedImageUrl(coverUrl)}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-primary-300">

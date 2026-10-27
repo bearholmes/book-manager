@@ -78,22 +78,10 @@ describe('BookForm', () => {
       });
     });
 
-    it('올바르지 않은 URL 형식이면 에러 메시지를 표시해야 함', async () => {
-      const user = userEvent.setup({ delay: null });
+    it('URL 대신 표지 파일 첨부를 제공한다', () => {
       renderWithProviders(<BookForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
-
-      const bookNameInput = screen.getByLabelText(/도서명/);
-      await user.type(bookNameInput, '테스트');
-
-      const imageUrlInput = screen.getByLabelText(/표지 이미지 URL/);
-      await user.type(imageUrlInput, 'invalid-url');
-
-      const submitButton = screen.getByRole('button', { name: /추가/ });
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(screen.getByText(/올바른 URL 형식이 아닙니다/)).toBeInTheDocument();
-      });
+      expect(screen.getByLabelText('표지 이미지')).toHaveAttribute('type', 'file');
+      expect(screen.queryByLabelText(/표지 이미지 URL/)).toBeNull();
     });
 
     it('음수 가격은 허용하지 않아야 함', async () => {
@@ -235,7 +223,6 @@ describe('BookForm', () => {
       await user.selectOptions(screen.getByLabelText(/통화/), 'KRW');
       await user.type(screen.getByLabelText(/구매일/), '2024-01-15');
       await user.type(screen.getByLabelText(/구매처/), '교보문고');
-      await user.type(screen.getByLabelText(/표지 이미지 URL/), 'https://example.com/image.jpg');
       await user.click(screen.getByLabelText(/중복 구매/));
       await user.type(screen.getByLabelText(/메모/), '좋은책');
 
@@ -255,7 +242,6 @@ describe('BookForm', () => {
             currency: 'KRW',
             purchase_date: '2024-01-15',
             purchase_place: '교보문고',
-            image_url: 'https://example.com/image.jpg',
             duplicated: true,
             comment: '좋은책',
           }),

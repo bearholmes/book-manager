@@ -4,15 +4,17 @@ import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { BookCard } from './BookCard';
 
+vi.mock('../hooks/useCoverImage', () => ({
+  useCoverImage: (id: string | null) => (id ? `blob:${id}` : undefined),
+}));
+
 describe('BookCard', () => {
-  it('실패한 표지 URL을 수정하면 같은 카드에서 새 이미지를 시도한다', () => {
-    const view = renderWithProviders(<BookCard book={mockBook} />);
+  it('표지 파일을 교체하면 같은 카드에서 새 이미지를 시도한다', () => {
+    const view = renderWithProviders(<BookCard book={{ ...mockBook, cover_id: 'first' }} />);
     fireEvent.error(screen.getByRole('img'));
     expect(screen.queryByRole('img')).toBeNull();
-    view.rerender(
-      <BookCard book={{ ...mockBook, image_url: 'https://example.com/corrected.jpg' }} />,
-    );
-    expect(screen.getByRole('img')).toHaveAttribute('src', 'https://example.com/corrected.jpg');
+    view.rerender(<BookCard book={{ ...mockBook, cover_id: 'corrected' }} />);
+    expect(screen.getByRole('img')).toHaveAttribute('src', 'blob:corrected');
   });
   it('도서 정보를 렌더링해야 함', () => {
     renderWithProviders(<BookCard book={mockBook} />);
@@ -23,11 +25,18 @@ describe('BookCard', () => {
   });
 
   it('이미지를 렌더링해야 함', () => {
-    renderWithProviders(<BookCard book={mockBook} />);
+    renderWithProviders(<BookCard book={{ ...mockBook, cover_id: 'local' }} />);
 
     const img = screen.getByAltText(mockBook.book_name);
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', mockBook.image_url);
+    expect(img).toHaveAttribute('src', 'blob:local');
+  });
+
+  it('이전 URL은 외부 요청으로 불러오지 않는다', () => {
+    renderWithProviders(
+      <BookCard book={{ ...mockBook, image_url: 'https://example.com/legacy.jpg' }} />,
+    );
+    expect(screen.queryByRole('img')).toBeNull();
   });
 
   it('이미지가 없을 때 대체 아이콘을 표시해야 함', () => {

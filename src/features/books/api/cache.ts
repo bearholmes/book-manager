@@ -14,4 +14,5 @@ export async function invalidateBookQueries(queryClient: QueryClient) {
 export function clearBookQueries(queryClient: QueryClient) {
   queryClient.removeQueries({ queryKey: QUERY_KEYS.BOOKS });
   queryClient.removeQueries({ queryKey: QUERY_KEYS.BOOK_STATS });
+  queryClient.removeQueries({ queryKey: QUERY_KEYS.COVERS });
 }

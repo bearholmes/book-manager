@@ -1,15 +1,21 @@
 import type { Database } from 'bun:sqlite';
+import { dirname, join } from 'node:path';
+import { z } from 'zod';
 import type { Book, BookFilters, BookSort } from '../../contracts/book';
+import type { BackupCover } from '../../contracts/cover';
 import type { BookPage, LibraryStats } from '../../contracts/desktop';
 import { EncryptedStore } from '../storage/encrypted-store';
 import { storedBookSchema } from './book-schema';
+import { CoverStore, coverUploadSchema, decodeCover } from './cover-store';
 
 type StoredRow = Omit<Book, 'duplicated'> & { duplicated: number };
 const toBook = (row: StoredRow): Book => ({ ...row, duplicated: row.duplicated === 1 });
+const coverInputSchema = z.object({ cover: coverUploadSchema.nullable().optional() });
 
 /** Library queries and mutations; encryption and connection lifetime belong to EncryptedStore. */
 export class LibraryDatabase {
   private readonly store: EncryptedStore;
+  private readonly covers: CoverStore;
 
   constructor(
     readonly path: string,
@@ -18,6 +24,11 @@ export class LibraryDatabase {
     guard?: Database,
   ) {
     this.store = new EncryptedStore(path, key, legacyPath, guard);
+    this.covers = new CoverStore(
+      path === ':memory:' ? undefined : join(dirname(path), 'covers'),
+      this.store,
+    );
+    this.collectCovers();
   }
 
   get revision() {
@@ -27,7 +38,36 @@ export class LibraryDatabase {
     return this.store.db;
   }
   private mutate<T>(operation: () => T): T {
-    return this.store.mutate(operation);
+    try {
+      return this.store.mutate(operation);
+    } finally {
+      if (!this.db.inTransaction) this.collectCovers();
+    }
+  }
+
+  private coverIds() {
+    return new Set(
+      this.db
+        .query<{ cover_id: string }, []>(
+          'SELECT DISTINCT cover_id FROM books WHERE cover_id IS NOT NULL',
+        )
+        .all()
+        .map(({ cover_id }) => cover_id),
+    );
+  }
+
+  private collectCovers() {
+    this.covers.collect(this.coverIds());
+  }
+
+  readCover(id: string) {
+    if (!this.db.query('SELECT 1 FROM books WHERE cover_id = ? LIMIT 1').get(id))
+      throw new Error('표지 이미지를 찾을 수 없습니다.');
+    return this.covers.read(id);
+  }
+
+  backupCovers(): BackupCover[] {
+    return [...this.coverIds()].map((id) => ({ id, ...this.covers.read(id) }));
   }
 
   getSetting(key: string) {
@@ -50,8 +90,13 @@ export class LibraryDatabase {
     this.mutate(() => this.db.query('DELETE FROM settings WHERE key = ?').run(key));
   }
 
-  replaceBooks(books: Book[]) {
+  replaceBooks(books: Book[], covers: BackupCover[] = []) {
     this.mutate(() => {
+      for (const cover of covers) {
+        if (decodeCover({ data: cover.data, mimeType: cover.mimeType }).id !== cover.id)
+          throw new Error('백업 표지 이미지가 손상되었습니다.');
+        this.covers.write({ data: cover.data, mimeType: cover.mimeType });
+      }
       this.db.query('DELETE FROM books').run();
       for (const book of books) this.create(book);
     });
@@ -113,6 +158,12 @@ export class LibraryDatabase {
   create(input: unknown): Book {
     return this.mutate(() => {
       const parsed = storedBookSchema.parse(input);
+      const { cover } = coverInputSchema.parse(input);
+      if (cover) {
+        parsed.cover_id = this.covers.write(cover);
+        parsed.image_url = null;
+      }
+      if (parsed.cover_id) this.covers.read(parsed.cover_id);
       const now = new Date().toISOString();
       const book: Book = {
         ...parsed,
@@ -140,6 +191,12 @@ export class LibraryDatabase {
         .omit({ id: true, created_at: true, updated_at: true })
         .partial()
         .parse(input);
+      const { cover } = coverInputSchema.parse(input);
+      if (cover !== undefined) {
+        updates.cover_id = cover ? this.covers.write(cover) : null;
+        updates.image_url = null;
+      }
+      if (updates.cover_id) this.covers.read(updates.cover_id);
       const book: Book = { ...toBook(existing), ...updates, updated_at: new Date().toISOString() };
       const { id: _id, ...fields } = book;
       this.db
@@ -168,7 +225,7 @@ export class LibraryDatabase {
       missingImages:
         this.db
           .query<{ count: number }, []>(
-            "SELECT count(*) AS count FROM books WHERE image_url IS NULL OR image_url = ''",
+            'SELECT count(*) AS count FROM books WHERE cover_id IS NULL',
           )
           .get()?.count ?? 0,
       topics: this.db
@@ -190,6 +247,7 @@ export class LibraryDatabase {
   }
 
   close() {
+    this.covers.close();
     this.store.close();
   }
 }

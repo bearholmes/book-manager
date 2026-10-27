@@ -4,6 +4,7 @@ import { Modal } from '@/shared/ui/Modal';
 import type { Book } from '@contracts/book';
 import { BookOpen } from 'lucide-react';
 import { useState } from 'react';
+import { useCoverImage } from '../hooks/useCoverImage';
 import styles from './BookDetailModal.module.css';
 
 interface BookDetailModalProps {
@@ -32,6 +33,7 @@ function Details({ items }: { items: Array<[string, string | null | undefined]> 
 
 export function BookDetailModal({ book, isOpen, onClose, onEdit, onDelete }: BookDetailModalProps) {
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const coverUrl = useCoverImage(isOpen ? book?.cover_id : null);
   if (!book) return null;
 
   const purchaseItems: Array<[string, string | null | undefined]> = [
@@ -51,11 +53,11 @@ export function BookDetailModal({ book, isOpen, onClose, onEdit, onDelete }: Boo
       <div className={styles.content}>
         <div className={styles.overview}>
           <div className={styles.cover}>
-            {book.image_url && book.image_url !== failedImageUrl ? (
+            {coverUrl && coverUrl !== failedImageUrl ? (
               <img
-                src={book.image_url}
+                src={coverUrl}
                 alt={book.book_name}
-                onError={() => setFailedImageUrl(book.image_url)}
+                onError={() => setFailedImageUrl(coverUrl)}
               />
             ) : (
               <BookOpen size={32} aria-label="표지 없음" />
