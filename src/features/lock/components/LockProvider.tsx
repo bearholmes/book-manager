@@ -114,7 +114,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
               className={styles.pin}
             />
             {error && (
-              <p role="alert" className="text-sm text-danger">
+              <p role="alert" className="text-sm text-danger-text">
                 {error}
               </p>
             )}

@@ -45,7 +45,7 @@
   object-fit: contain;
 }
 .error {
-  color: rgb(var(--color-danger));
+  color: rgb(var(--color-danger-text));
 }
 .settings {
   display: grid;
@@ -76,7 +76,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: white;
+  background: rgb(var(--color-text-on-solid));
 }
 .switch[aria-checked="true"] span {
   transform: translateX(18px);

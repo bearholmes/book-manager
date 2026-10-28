@@ -192,3 +192,47 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
     .click();
   await expect(page.getByText('등록된 도서가 없습니다')).toBeVisible();
 });
+
+test('theme selection persists and follows the system only when selected', async ({
+  page,
+}, testInfo) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.getByRole('link', { name: '설정', exact: true }).click();
+  const theme = page.getByRole('combobox', { name: '테마', exact: true });
+  await expect(theme).toHaveValue('system');
+  await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
+  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(34, 36, 40)');
+  await expect(theme).toHaveCSS('color', 'rgb(220, 222, 226)');
+  await page.screenshot({ path: testInfo.outputPath('settings-dark.png'), fullPage: true });
+
+  await theme.selectOption('light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(253, 253, 253)');
+  await page.reload();
+  await expect(theme).toHaveValue('light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+
+  await page.emulateMedia({ colorScheme: 'light' });
+  await theme.selectOption('dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.reload();
+  await expect(theme).toHaveValue('dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await theme.selectOption('system');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+
+  await page.getByRole('link', { name: '나의 서재', exact: true }).click();
+  await page.getByRole('button', { name: '도서 추가', exact: true }).first().click();
+  await expect(page.getByLabel('도서명')).toHaveCSS('background-color', 'rgb(34, 36, 40)');
+  await page.screenshot({ path: testInfo.outputPath('book-form-dark.png'), fullPage: true });
+  await page.getByRole('button', { name: '패널 닫기', exact: true }).click();
+  await page.getByRole('link', { name: '통계', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '통계', exact: true })).toHaveCSS(
+    'color',
+    'rgb(237, 238, 240)',
+  );
+});

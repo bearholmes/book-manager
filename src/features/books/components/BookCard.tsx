@@ -133,7 +133,7 @@ export const BookCard = memo(function BookCard({
             )}
 
             {book.duplicated && (
-              <span className="inline-block rounded-full border border-red-200 bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-danger-hover">
+              <span className="inline-block rounded-full border border-line bg-surface-subtle px-2.5 py-0.5 text-xs font-semibold text-danger-text">
                 중복구매
               </span>
             )}

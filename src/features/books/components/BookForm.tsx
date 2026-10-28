@@ -103,7 +103,7 @@ export function BookForm({
             label={
               <>
                 도서명{' '}
-                <span aria-hidden="true" className="text-danger">
+                <span aria-hidden="true" className="text-danger-text">
                   *
                 </span>
               </>

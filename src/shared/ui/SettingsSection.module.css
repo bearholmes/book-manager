@@ -27,7 +27,7 @@
   color: rgb(var(--color-text-secondary));
 }
 .danger {
-  color: rgb(var(--color-danger));
+  color: rgb(var(--color-danger-text));
 }
 .body {
   min-width: 0;

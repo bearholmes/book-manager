@@ -5,6 +5,9 @@ import { AppErrorBoundary } from './AppErrorBoundary';
 import { AppProviders } from './providers';
 import '@/app/styles/globals.css';
 import { STORAGE_KEYS } from '@/shared/lib/storage';
+import { initializeTheme } from '@/shared/theme/theme';
+
+initializeTheme();
 
 // Retire the previous plaintext search cache, including when the app starts locked.
 window.localStorage.removeItem(STORAGE_KEYS.SEARCH_HISTORY);

@@ -57,7 +57,7 @@ export function DataSettings(options: DataManagementOptions) {
         </Button>
       </SettingsSection>
       {!preview && !resetOpen && !inputDialog && error && (
-        <p role="alert" className="mt-4 text-sm text-danger">
+        <p role="alert" className="mt-4 text-sm text-danger-text">
           {error}
         </p>
       )}

@@ -15,5 +15,5 @@
   color: rgb(var(--color-text-secondary));
 }
 .error {
-  color: rgb(var(--color-danger));
+  color: rgb(var(--color-danger-text));
 }

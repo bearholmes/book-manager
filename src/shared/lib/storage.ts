@@ -6,5 +6,7 @@ export const STORAGE_KEYS = {
 } as const;
 
 export function clearLibraryPreferences() {
-  for (const key of Object.values(STORAGE_KEYS)) window.localStorage.removeItem(key);
+  for (const key of Object.values(STORAGE_KEYS)) {
+    if (key !== STORAGE_KEYS.THEME) window.localStorage.removeItem(key);
+  }
 }

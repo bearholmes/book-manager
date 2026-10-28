@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --palette-primary-50: 247 247 248;
   --palette-primary-100: 237 238 240;
   --palette-primary-200: 220 222 226;
@@ -139,4 +140,59 @@
     --layout-page-inline: 1rem;
     --layout-page-block: 1.25rem;
   }
+}
+
+/* Resolved by the saved preference and the system color-scheme listener. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-surface: 34 36 40;
+  --color-surface-muted: 24 26 30;
+  --color-surface-subtle: 43 46 52;
+  --color-surface-selected: 65 46 39;
+  --color-text: 220 222 226;
+  --color-text-heading: 237 238 240;
+  --color-text-emphasis: 245 240 233;
+  --color-text-secondary: 192 195 201;
+  --color-text-muted: 166 172 182;
+  --color-text-subtle: 166 172 182;
+  --color-text-faint: 150 155 164;
+  --color-border: 87 93 103;
+  --color-border-subtle: 63 67 74;
+  --color-border-hover: 111 117 126;
+  --color-action: 78 89 110;
+  --color-action-hover: 91 105 129;
+  --color-focus: 255 168 131;
+  --color-danger: 185 28 28;
+  --color-danger-hover: 153 27 27;
+  --color-danger-text: 252 165 165;
+  --color-danger-indicator: 248 113 113;
+  --color-toast: 63 67 74;
+  --color-chart-grid: 63 67 74;
+  --color-canvas-start: 24 26 30;
+  --color-category-1: 45 57 73;
+  --color-category-2: 40 58 79;
+  --color-category-3: 48 60 42;
+  --color-category-4: 68 57 39;
+  --color-category-5: 73 51 36;
+  --color-category-6: 38 60 49;
+  --color-category-7: 46 57 43;
+  --color-category-8: 70 51 43;
+  --color-category-9: 35 59 65;
+  --color-category-10: 55 47 71;
+  --color-category-11: 65 59 43;
+  --color-category-12: 62 53 43;
+  --color-category-13: 74 49 36;
+  --color-category-14: 42 55 73;
+  --color-chart-1: 192 195 201;
+  --color-chart-2: 150 155 164;
+  --color-chart-3: 100 170 172;
+  --color-chart-4: 121 175 130;
+  --color-chart-5: 193 158 109;
+  --color-chart-6: 232 155 111;
+  --color-chart-7: 211 127 107;
+  --color-chart-8: 143 165 196;
+  --color-chart-9: 169 189 140;
+  --color-chart-10: 215 146 130;
+  --shadow-panel: 0 18px 36px -24px rgb(10 12 16 / 0.8);
+  --shadow-soft: 0 1px 2px rgb(10 12 16 / 0.2);
 }
