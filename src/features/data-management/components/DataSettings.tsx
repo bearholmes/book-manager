@@ -1,6 +1,6 @@
+import { useRef } from 'react';
 import { Button } from '@/shared/ui/Button';
 import { SettingsSection } from '@/shared/ui/SettingsSection';
-import { useRef } from 'react';
 import { type DataManagementOptions, useDataManagement } from '../hooks/useDataManagement';
 import { DataConfirmationDialog } from './DataConfirmationDialog';
 import { DataInputDialog } from './DataInputDialog';

@@ -1,11 +1,11 @@
+import type { Book } from '@contracts/book';
+import { normalizeIsbn } from '@contracts/isbn';
+import { useEffect, useRef, useState } from 'react';
 import { BookLookup } from '@/features/book-lookup';
 import { BookForm, type BookFormData } from '@/features/books';
 import { desktop } from '@/shared/api/desktop';
 import { useConfirmSnackbar } from '@/shared/notifications/hooks/useConfirmSnackbar';
 import { useToast } from '@/shared/notifications/hooks/useToast';
-import type { Book } from '@contracts/book';
-import { normalizeIsbn } from '@contracts/isbn';
-import { useEffect, useRef, useState } from 'react';
 
 export function BookEditor({
   book,

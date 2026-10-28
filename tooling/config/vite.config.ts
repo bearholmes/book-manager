@@ -1,12 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import react from '@vitejs/plugin-react-swc';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import { openSourceNotices } from '../packaging/licenses';
-import tailwindConfig from './tailwind.config.js';
+import { openSourceNotices } from '../packaging/licenses.ts';
 
 const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -23,10 +21,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
-  plugins: [react(), openSourceNotices(projectRoot)],
-  css: {
-    postcss: { plugins: [tailwindcss(tailwindConfig), autoprefixer()] },
-  },
+  plugins: [react(), tailwindcss(), openSourceNotices(projectRoot)],
   resolve: {
     alias: {
       '@': path.join(projectRoot, 'src'),
@@ -45,11 +40,12 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'query-vendor': ['@tanstack/react-query', 'jotai'],
-          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'utils-vendor': ['date-fns', 'clsx'],
+        manualChunks(id) {
+          if (!id.includes('/node_modules/')) return;
+          if (/\/(react|react-dom|react-router|react-router-dom)\//.test(id)) return 'react-vendor';
+          if (/\/(@tanstack|jotai)\//.test(id)) return 'query-vendor';
+          if (/\/(react-hook-form|@hookform|zod)\//.test(id)) return 'form-vendor';
+          if (/\/(date-fns|clsx)\//.test(id)) return 'utils-vendor';
         },
       },
     },

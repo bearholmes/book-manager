@@ -1,9 +1,9 @@
-import { desktop } from '@/shared/api/desktop';
-import { Button } from '@/shared/ui/Button';
-import { Select } from '@/shared/ui/Input';
 import type { BookHelperContext, LookupJob } from '@contracts/book-lookup';
 import { normalizeIsbn } from '@contracts/isbn';
 import { useEffect, useRef, useState } from 'react';
+import { desktop } from '@/shared/api/desktop';
+import { Button } from '@/shared/ui/Button';
+import { Select } from '@/shared/ui/Input';
 import styles from './BookLookup.module.css';
 import { BookSuggestion } from './BookSuggestion';
 
@@ -139,6 +139,7 @@ export function BookLookup({
                 onChange={(e) => setCandidate(Number(e.target.value))}
               >
                 {job.result.candidates.map((c, i) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: A completed result has a fixed candidate order, including potentially identical titles.
                   <option key={`${i}-${c.title}`} value={i}>
                     {c.title} · {c.publisher}
                   </option>

@@ -1,8 +1,8 @@
+import type { BookUpdate } from '@contracts/book';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { desktop } from '@/shared/api/desktop';
 import { getErrorMessage } from '@/shared/lib/errors';
 import { useToast } from '@/shared/notifications/hooks/useToast';
-import type { BookUpdate } from '@contracts/book';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invalidateBookQueries } from '../api/cache';
 
 export function useUpdateBook() {

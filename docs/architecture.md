@@ -99,7 +99,7 @@ build/                       모든 생성물 (Git 제외)
 `tsconfig.json`과 `biome.json`은 편집기/검사 진입점이며, `hutch.config.ts`와 `electrobun.config.ts`는
 프레임워크의 버전 선택과 앱 설정에 사용한다.
 
-PostCSS 플러그인은 Vite 설정 안에서 구성하므로 별도 `postcss.config.js`는 두지 않는다.
+Tailwind 4는 Vite 플러그인으로 처리한다. 별도 PostCSS·Autoprefixer 설정은 두지 않는다.
 이전 `tsconfig.node.json`은 제거했고 설정·E2E의 타입은 `tooling/tsconfig.json`으로 검사한다.
 E2E는 Vite만 공용으로 띄우고 각 fixture가 전용 백엔드를 관리하므로 공용 백엔드를 띄우던
 `e2e-server.mjs`도 제거했다. 보조 도구는 `tooling` 아래에서 빌드·검사·개발 책임별로 관리한다.

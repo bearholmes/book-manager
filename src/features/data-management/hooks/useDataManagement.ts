@@ -1,6 +1,6 @@
-import { desktop } from '@/shared/api/desktop';
 import type { BackupPreview } from '@contracts/desktop';
 import { useState } from 'react';
+import { desktop } from '@/shared/api/desktop';
 
 export interface DataManagementOptions {
   lockEnabled: boolean;

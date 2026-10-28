@@ -203,6 +203,12 @@ export class LibraryDatabase {
       const updates = storedBookSchema
         .omit({ id: true, created_at: true, updated_at: true })
         .partial()
+        // Zod 4 applies defaults inside optional fields; partial edits must preserve stored values.
+        .extend({
+          currency: storedBookSchema.shape.currency.removeDefault().optional(),
+          cover_id: storedBookSchema.shape.cover_id.removeDefault().optional(),
+          duplicated: storedBookSchema.shape.duplicated.removeDefault().optional(),
+        })
         .parse(input);
       const { cover } = coverInputSchema.parse(input);
       if (cover !== undefined) {

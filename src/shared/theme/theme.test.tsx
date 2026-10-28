@@ -1,6 +1,6 @@
-import { STORAGE_KEYS, clearLibraryPreferences } from '@/shared/lib/storage';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
+import { clearLibraryPreferences, STORAGE_KEYS } from '@/shared/lib/storage';
 import { initializeTheme, useTheme } from './theme';
 
 let dispose: (() => void) | undefined;

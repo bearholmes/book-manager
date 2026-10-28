@@ -1,3 +1,5 @@
+@reference "../../app/styles/globals.css";
+
 .surface {
   border-radius: var(--radius-panel);
 }

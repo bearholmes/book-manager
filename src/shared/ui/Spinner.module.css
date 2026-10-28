@@ -1,3 +1,5 @@
+@reference "../../app/styles/globals.css";
+
 .spinner {
   @apply block animate-spin rounded-full border-line border-t-action;
   width: var(--spinner-size, 2rem);

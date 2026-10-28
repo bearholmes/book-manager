@@ -1,8 +1,8 @@
-import { renderWithProviders } from '@/test/test-utils';
 import type { BookFilters as BookFiltersType } from '@contracts/book';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { renderWithProviders } from '@/test/test-utils';
 import { BookFilters } from './BookFilters';
 
 describe('BookFilters', () => {

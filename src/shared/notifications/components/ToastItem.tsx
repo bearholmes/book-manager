@@ -1,6 +1,6 @@
-import { type Toast, removeToastAtom } from '@/shared/notifications/store/toastStore';
 import { useSetAtom } from 'jotai';
 import { X } from 'lucide-react';
+import { removeToastAtom, type Toast } from '@/shared/notifications/store/toastStore';
 import styles from './ToastItem.module.css';
 
 interface ToastItemProps {

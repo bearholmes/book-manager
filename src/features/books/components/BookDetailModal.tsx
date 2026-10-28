@@ -1,9 +1,9 @@
-import { formatCurrency, formatDate, formatISBN } from '@/shared/lib/format';
-import { Button } from '@/shared/ui/Button';
-import { Modal } from '@/shared/ui/Modal';
 import type { Book } from '@contracts/book';
 import { BookOpen } from 'lucide-react';
 import { useState } from 'react';
+import { formatCurrency, formatDate, formatISBN } from '@/shared/lib/format';
+import { Button } from '@/shared/ui/Button';
+import { Modal } from '@/shared/ui/Modal';
 import { useCoverImage } from '../hooks/useCoverImage';
 import styles from './BookDetailModal.module.css';
 

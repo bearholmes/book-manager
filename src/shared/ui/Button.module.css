@@ -1,3 +1,5 @@
+@reference "../../app/styles/globals.css";
+
 .button {
   @apply relative inline-flex items-center justify-center gap-2 border font-semibold transition-colors;
   font-size: var(--type-ui-size);
@@ -16,8 +18,9 @@
 }
 .button[data-variant="primary"] {
   @apply border-transparent bg-action text-on-solid;
-  box-shadow: inset 0 1px rgb(var(--palette-white) / 0.12), 0 1px 2px
-    rgb(var(--color-action) / 0.12);
+  box-shadow:
+    inset 0 1px rgb(var(--palette-white) / 0.12),
+    0 1px 2px rgb(var(--color-action) / 0.12);
 }
 .button[data-variant="primary"]:hover:not(:disabled) {
   @apply bg-action-hover;

@@ -1,9 +1,9 @@
-import { desktop } from '@/shared/api/desktop';
-import { ToastContainer } from '@/shared/notifications/components/ToastContainer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'jotai';
 import { beforeEach, expect, it, vi } from 'vitest';
+import { desktop } from '@/shared/api/desktop';
+import { ToastContainer } from '@/shared/notifications/components/ToastContainer';
 import { BookEditor } from './BookEditor';
 
 vi.mock('@/shared/api/desktop', () => ({ desktop: vi.fn() }));

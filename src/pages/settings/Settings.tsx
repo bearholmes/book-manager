@@ -1,3 +1,5 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { CodexSettings } from '@/features/book-lookup';
 import { clearBookQueries } from '@/features/books';
 import { DataSettings } from '@/features/data-management';
@@ -10,8 +12,6 @@ import { Select } from '@/shared/ui/Input';
 import { PageContent } from '@/shared/ui/PageContent';
 import { PageHeader } from '@/shared/ui/PageHeader';
 import { SettingsSection } from '@/shared/ui/SettingsSection';
-import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import styles from './Settings.module.css';
 
 export function Settings() {

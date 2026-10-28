@@ -1,9 +1,9 @@
-import { desktop } from '@/shared/api/desktop';
-import { createTestQueryClient, renderWithProviders } from '@/test/test-utils';
 import type { LibraryStats } from '@contracts/desktop';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { desktop } from '@/shared/api/desktop';
+import { createTestQueryClient, renderWithProviders } from '@/test/test-utils';
 import { QUERY_KEYS } from '../api/query-keys';
 import { StatisticsCharts } from './StatisticsCharts';
 

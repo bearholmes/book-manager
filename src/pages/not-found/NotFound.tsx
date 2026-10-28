@@ -1,5 +1,5 @@
-import { ROUTES } from '@/shared/config/routes';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '@/shared/config/routes';
 
 /**
  * NotFound 컴포넌트를 렌더링합니다.

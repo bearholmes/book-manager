@@ -1,6 +1,3 @@
-import { Button } from '@/shared/ui/Button';
-import { Field } from '@/shared/ui/Field';
-import { FieldGroup, Input, Select, Textarea } from '@/shared/ui/Input';
 import type { Book } from '@contracts/book';
 import type { BibliographicFields, BookHelperContext } from '@contracts/book-lookup';
 import type { CoverUpload } from '@contracts/cover';
@@ -8,8 +5,11 @@ import { normalizeIsbn } from '@contracts/isbn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type ReactNode, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Button } from '@/shared/ui/Button';
+import { Field } from '@/shared/ui/Field';
+import { FieldGroup, Input, Select, Textarea } from '@/shared/ui/Input';
 import { BOOK_CONDITIONS, CURRENCIES } from '../model/constants';
-import { type BookFormData, bookSchema } from '../model/form-schema';
+import { type BookFormData, type BookFormInput, bookSchema } from '../model/form-schema';
 import styles from './BookForm.module.css';
 import { CoverAttachment } from './CoverAttachment';
 
@@ -46,7 +46,7 @@ export function BookForm({
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookFormData>({
+  } = useForm<BookFormInput, undefined, BookFormData>({
     resolver: zodResolver(bookSchema),
     defaultValues: book
       ? {

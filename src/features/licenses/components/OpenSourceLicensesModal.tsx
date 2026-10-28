@@ -1,6 +1,6 @@
+import { lazy, Suspense } from 'react';
 import { Modal } from '@/shared/ui/Modal';
 import { Spinner } from '@/shared/ui/Spinner';
-import { Suspense, lazy } from 'react';
 import type { LicenseGroup } from '../model/types';
 
 const LicenseNotices = lazy(async () => {

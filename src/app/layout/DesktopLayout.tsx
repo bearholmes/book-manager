@@ -1,11 +1,11 @@
+import { BookOpen, ChartNoAxesCombined, LockKeyhole, Settings2 } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { useLock } from '@/features/lock';
 import libraryLogo from '@/shared/assets/branding/library-logo-32.png';
 import libraryLogoRetina from '@/shared/assets/branding/library-logo-64.png';
 import { ROUTES } from '@/shared/config/routes';
 import { useToast } from '@/shared/notifications/hooks/useToast';
 import { Button } from '@/shared/ui/Button';
-import { BookOpen, ChartNoAxesCombined, LockKeyhole, Settings2 } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
 import { AppRoutes } from '../routes';
 import styles from './DesktopLayout.module.css';
 

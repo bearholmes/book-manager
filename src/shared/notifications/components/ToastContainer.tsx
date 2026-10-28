@@ -1,7 +1,7 @@
-import { toastsAtom } from '@/shared/notifications/store/toastStore';
-import { useOverlayHost } from '@/shared/ui/useOverlay';
 import { useAtomValue } from 'jotai';
 import { createPortal } from 'react-dom';
+import { toastsAtom } from '@/shared/notifications/store/toastStore';
+import { useOverlayHost } from '@/shared/ui/useOverlay';
 import styles from './ToastContainer.module.css';
 import { ToastItem } from './ToastItem';
 

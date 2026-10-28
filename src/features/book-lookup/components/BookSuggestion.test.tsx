@@ -1,6 +1,6 @@
-import { renderWithProviders, screen, userEvent, waitFor } from '@/test/test-utils';
 import type { BookHelperContext, LookupCandidate } from '@contracts/book-lookup';
 import { describe, expect, it, vi } from 'vitest';
+import { renderWithProviders, screen, userEvent, waitFor } from '@/test/test-utils';
 import { BookSuggestion } from './BookSuggestion';
 
 const candidate: LookupCandidate = {

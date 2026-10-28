@@ -1,9 +1,9 @@
+import { Route, Routes } from 'react-router-dom';
 import { Library } from '@/pages/library/Library';
 import { NotFound } from '@/pages/not-found/NotFound';
 import { Settings } from '@/pages/settings/Settings';
 import { Statistics } from '@/pages/statistics/Statistics';
 import { ROUTES } from '@/shared/config/routes';
-import { Route, Routes } from 'react-router-dom';
 
 export function AppRoutes() {
   return (

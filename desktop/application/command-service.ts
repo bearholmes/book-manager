@@ -121,7 +121,9 @@ export class DesktopService {
         this.assertLocalCoverInput(payload);
         return this.library.create(payload);
       case 'update': {
-        const { id, updates } = idSchema.extend({ updates: z.record(z.unknown()) }).parse(payload);
+        const { id, updates } = idSchema
+          .extend({ updates: z.record(z.string(), z.unknown()) })
+          .parse(payload);
         this.assertLocalCoverInput(updates);
         return this.library.update(id, updates);
       }
@@ -157,7 +159,7 @@ export class DesktopService {
   }
 
   private assertLocalCoverInput(payload: unknown) {
-    const fields = z.record(z.unknown()).parse(payload);
+    const fields = z.record(z.string(), z.unknown()).parse(payload);
     if ('cover_id' in fields || 'image_url' in fields)
       throw new Error('표지 이미지는 파일을 첨부해주세요.');
   }

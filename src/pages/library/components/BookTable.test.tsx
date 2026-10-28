@@ -1,6 +1,6 @@
-import { mockBook } from '@/test/mockData';
 import { render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
+import { mockBook } from '@/test/mockData';
 import { BookTable } from './BookTable';
 
 it('keeps legacy invalid dates from crashing the library', () => {

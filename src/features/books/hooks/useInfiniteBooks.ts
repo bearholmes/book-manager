@@ -1,8 +1,8 @@
-import { QUERY_KEYS } from '@/features/books/api/query-keys';
-import { desktop } from '@/shared/api/desktop';
 import type { BookFilters, BookSort } from '@contracts/book';
 import type { BookPage } from '@contracts/desktop';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/features/books/api/query-keys';
+import { desktop } from '@/shared/api/desktop';
 
 export function useInfiniteBooks(
   options: { filters?: BookFilters; sort?: BookSort; pageSize?: number; enabled?: boolean } = {},

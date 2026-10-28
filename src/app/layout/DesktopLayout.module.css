@@ -1,3 +1,5 @@
+@reference "../styles/globals.css";
+
 .shell {
   min-height: 100vh;
   padding: 8px 8px 8px 0;
@@ -45,7 +47,9 @@
   margin-left: var(--layout-sidebar-width);
   min-height: calc(100vh - 16px);
   border-radius: 8px;
-  box-shadow: 0 0 0 1px rgb(var(--color-border-subtle)), var(--shadow-soft);
+  box-shadow:
+    0 0 0 1px rgb(var(--color-border-subtle)),
+    var(--shadow-soft);
   background: rgb(var(--color-surface));
 }
 @media (max-width: 900px) {

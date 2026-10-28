@@ -1,13 +1,17 @@
+import type { Book } from '@contracts/book';
 import { formatDate } from '@/shared/lib/format';
 import { Table } from '@/shared/ui/Table';
-import type { Book } from '@contracts/book';
 import styles from './BookTable.module.css';
 
 export function BookTable({
   books,
   onSelect,
   emptyMessage = '등록된 도서가 없습니다',
-}: { books: Book[]; onSelect: (book: Book) => void; emptyMessage?: string }) {
+}: {
+  books: Book[];
+  onSelect: (book: Book) => void;
+  emptyMessage?: string;
+}) {
   return (
     <div className={styles.wrapper}>
       <Table className={styles.table}>

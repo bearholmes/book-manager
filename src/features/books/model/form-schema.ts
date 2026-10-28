@@ -45,6 +45,8 @@ export const bookSchema = z.object({
   comment: z.string().optional().or(z.literal('')),
 });
 
+export type BookFormInput = z.input<typeof bookSchema>;
+
 export type BookFormData = z.infer<typeof bookSchema> & {
   cover?: import('@contracts/cover').CoverUpload | null;
 };

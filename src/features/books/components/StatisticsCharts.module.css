@@ -1,3 +1,5 @@
+@reference "../../../app/styles/globals.css";
+
 .charts {
   display: grid;
   gap: var(--space-section);

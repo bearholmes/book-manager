@@ -1,7 +1,3 @@
-import { desktop } from '@/shared/api/desktop';
-import { optimizeCover } from '@/shared/lib/optimizeCover';
-import { Button } from '@/shared/ui/Button';
-import { Select } from '@/shared/ui/Input';
 import type {
   BibliographicFields,
   BookHelperContext,
@@ -10,6 +6,10 @@ import type {
 import type { CoverUpload } from '@contracts/cover';
 import { normalizeIsbn } from '@contracts/isbn';
 import { useEffect, useRef, useState } from 'react';
+import { desktop } from '@/shared/api/desktop';
+import { optimizeCover } from '@/shared/lib/optimizeCover';
+import { Button } from '@/shared/ui/Button';
+import { Select } from '@/shared/ui/Input';
 import styles from './BookLookup.module.css';
 
 const labels = {

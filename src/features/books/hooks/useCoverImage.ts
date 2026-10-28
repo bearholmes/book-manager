@@ -1,6 +1,6 @@
-import { desktop } from '@/shared/api/desktop';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { desktop } from '@/shared/api/desktop';
 import { QUERY_KEYS } from '../api/query-keys';
 
 export function useCoverImage(id: string | null | undefined) {

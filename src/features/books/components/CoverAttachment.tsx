@@ -1,9 +1,9 @@
-import { Button } from '@/shared/ui/Button';
-import { Field } from '@/shared/ui/Field';
-import { Surface } from '@/shared/ui/Surface';
 import type { CoverUpload } from '@contracts/cover';
 import { Image as ImageIcon, ImagePlus, Trash2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
+import { Button } from '@/shared/ui/Button';
+import { Field } from '@/shared/ui/Field';
+import { Surface } from '@/shared/ui/Surface';
 import { useCoverImage } from '../hooks/useCoverImage';
 import { type OptimizedCover, optimizeCover } from '../model/optimizeCover';
 import styles from './CoverAttachment.module.css';

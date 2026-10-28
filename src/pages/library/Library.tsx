@@ -1,3 +1,4 @@
+import { LayoutGrid, List, Plus } from 'lucide-react';
 import { BookDetailModal, BookFilters, VirtualizedBookGrid } from '@/features/books';
 import { Button } from '@/shared/ui/Button';
 import { Modal } from '@/shared/ui/Modal';
@@ -5,11 +6,10 @@ import { PageContent } from '@/shared/ui/PageContent';
 import { PageHeader } from '@/shared/ui/PageHeader';
 import { SidePanel } from '@/shared/ui/SidePanel';
 import { Spinner } from '@/shared/ui/Spinner';
-import { LayoutGrid, List, Plus } from 'lucide-react';
-import styles from './Library.module.css';
 import { BookEditor } from './components/BookEditor';
 import { BookTable } from './components/BookTable';
 import { useLibraryWorkspace } from './hooks/useLibraryWorkspace';
+import styles from './Library.module.css';
 
 export function Library() {
   const {

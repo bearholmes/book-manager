@@ -1,5 +1,5 @@
-import { type Toast, addToastAtom, removeToastAtom } from '@/shared/notifications/store/toastStore';
 import { useSetAtom } from 'jotai';
+import { addToastAtom, removeToastAtom, type Toast } from '@/shared/notifications/store/toastStore';
 
 /**
  * Toast 알림을 관리하는 훅

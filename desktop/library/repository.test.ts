@@ -88,6 +88,30 @@ describe('SQLite library', () => {
     expect(library.stats().total).toBe(1);
   });
 
+  test('partial edits preserve defaults already stored on the book', () => {
+    const { library } = setup();
+    const book = library.create({
+      book_name: '부분 수정 보존',
+      currency: 'USD',
+      duplicated: true,
+      cover: webpCover,
+    });
+    expect(book.cover_id).not.toBeNull();
+    expect(library.update(book.id, { comment: '메모만 수정' })).toMatchObject({
+      currency: 'USD',
+      duplicated: true,
+      cover_id: book.cover_id,
+      comment: '메모만 수정',
+    });
+    expect(
+      library.update(book.id, { currency: 'KRW', duplicated: false, cover: null }),
+    ).toMatchObject({
+      currency: 'KRW',
+      duplicated: false,
+      cover_id: null,
+    });
+  });
+
   test('persists all fields across process-style reopen', () => {
     const { library, path, key } = setup();
     const book = library.create({

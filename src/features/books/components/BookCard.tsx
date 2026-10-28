@@ -1,7 +1,7 @@
-import { formatCurrency, formatDate } from '@/shared/lib/format';
 import type { Book } from '@contracts/book';
 import clsx from 'clsx';
 import { memo, useState } from 'react';
+import { formatCurrency, formatDate } from '@/shared/lib/format';
 import { useCoverImage } from '../hooks/useCoverImage';
 
 interface BookCardProps {
@@ -63,6 +63,7 @@ export const BookCard = memo(function BookCard({
   }`;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions lint/a11y/useAriaPropsSupportedByRole: Interactive cards receive a button role, keyboard handlers and an accessible name only when onClick exists.
     <div
       className={clsx(
         'group relative rounded-lg',

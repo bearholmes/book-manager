@@ -1,3 +1,6 @@
+import type { Book, BookFilters as BookFiltersType, BookSort } from '@contracts/book';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { BookFormData } from '@/features/books';
 import {
   useBookStatsByPlace,
   useBookStatsByTopic,
@@ -8,10 +11,7 @@ import {
   useTopicColors,
   useUpdateBook,
 } from '@/features/books';
-import type { BookFormData } from '@/features/books';
 import { useDebounce } from '@/shared/hooks/useDebounce';
-import type { Book, BookFilters as BookFiltersType, BookSort } from '@contracts/book';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function useLibraryWorkspace() {
   const [view, setView] = useState<'list' | 'grid'>('list');

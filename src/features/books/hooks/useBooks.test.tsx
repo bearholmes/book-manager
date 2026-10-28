@@ -1,9 +1,9 @@
-import { desktop } from '@/shared/api/desktop';
-import { mockBooks } from '@/test/mockData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { desktop } from '@/shared/api/desktop';
+import { mockBooks } from '@/test/mockData';
 import { useBooks } from './useBooks';
 
 vi.mock('@/shared/api/desktop', () => ({ desktop: vi.fn() }));

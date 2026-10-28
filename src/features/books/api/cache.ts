@@ -1,5 +1,5 @@
-import { QUERY_KEYS } from '@/features/books/api/query-keys';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/features/books/api/query-keys';
 
 /** 도서 관련 캐시를 한 번에 무효화합니다. */
 export async function invalidateBookQueries(queryClient: QueryClient) {

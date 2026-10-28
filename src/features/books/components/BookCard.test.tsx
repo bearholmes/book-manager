@@ -1,7 +1,7 @@
-import { mockBook } from '@/test/mockData';
-import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { mockBook } from '@/test/mockData';
+import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { BookCard } from './BookCard';
 
 vi.mock('../hooks/useCoverImage', () => ({

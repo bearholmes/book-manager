@@ -1,7 +1,7 @@
-import { QUERY_KEYS } from '@/features/books/api/query-keys';
-import { desktop } from '@/shared/api/desktop';
 import type { LibraryStats } from '@contracts/desktop';
 import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/features/books/api/query-keys';
+import { desktop } from '@/shared/api/desktop';
 
 export type BookStatsByTopic = LibraryStats['topics'][number];
 export type BookStatsByPlace = LibraryStats['places'][number];

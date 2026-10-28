@@ -1,1 +1,1 @@
-export { optimizeCover, type OptimizedCover } from '@/shared/lib/optimizeCover';
+export { type OptimizedCover, optimizeCover } from '@/shared/lib/optimizeCover';

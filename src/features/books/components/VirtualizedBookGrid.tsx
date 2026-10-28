@@ -1,7 +1,7 @@
-import { Spinner } from '@/shared/ui/Spinner';
 import type { Book } from '@contracts/book';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Spinner } from '@/shared/ui/Spinner';
 import { BookCard } from './BookCard';
 
 interface VirtualizedBookGridProps {

@@ -22,7 +22,7 @@ const preview: Preview = {
     (Story) =>
       createElement(
         MemoryRouter,
-        { future: { v7_startTransition: true, v7_relativeSplatPath: true } },
+        null,
         createElement(
           JotaiProvider,
           null,

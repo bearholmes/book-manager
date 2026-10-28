@@ -1,3 +1,5 @@
+@reference "../../app/styles/globals.css";
+
 .panel {
   @apply relative w-full transform overflow-hidden border border-line-subtle/80 bg-surface text-left shadow-panel transition-all sm:my-8;
   border-radius: 16px;

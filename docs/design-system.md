@@ -168,3 +168,10 @@ E2E는 시나리오와 재시도마다 별도 프로세스·키·임시 저장�
 `shared/theme/theme.ts`가 React 렌더링 전에 `html[data-theme]`을 설정하고 시스템 변경을 구독한다.
 `tokens.css`의 다크 의미 토큰은 배경·글자·테두리·포커스·위험 안내·주제·차트 색상을 함께 바꾸며,
 `color-scheme`으로 기본 폼 컨트롤과 스크롤바도 맞춘다.
+
+### Tailwind 4 빌드
+
+Tailwind는 `@tailwindcss/vite`로 처리한다. 전역 진입점은 `@import "tailwindcss"`와
+기존 JS 설정을 연결하며, `@apply`를 사용하는 CSS Modules는 `@reference`로 전역 테마를 참조한다.
+기본 스타일인 `base.css`는 전역 진입점으로 다시 참조하지 않아 순환을 피한다.
+가로세로 비율은 기본 `aspect-*` 유틸리티를 사용하고 별도 플러그인은 설치하지 않는다.

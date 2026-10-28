@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.3/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,7 +7,17 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", "build", ".hutch", ".cottontail-tmp", ".local-data", "data"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/build",
+      "!**/.hutch",
+      "!**/.cottontail-tmp",
+      "!**/.local-data",
+      "!**/data",
+      "!**/*.md",
+      "!**/*.yaml"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -16,11 +26,15 @@
     "lineWidth": 100,
     "lineEnding": "lf"
   },
-  "json": { "parser": { "allowComments": true } },
+  "json": {
+    "parser": {
+      "allowComments": true
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "useExhaustiveDependencies": "warn"
       },
@@ -37,7 +51,28 @@
       "arrowParentheses": "always"
     }
   },
-  "organizeImports": {
-    "enabled": true
-  }
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/*.test.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noComponentHookFactories": "off"
+          }
+        }
+      }
+    }
+  ]
 }

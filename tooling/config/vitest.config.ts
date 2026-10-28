@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
-import appConfig from './vite.config';
+import appConfig from './vite.config.ts';
 
 const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -11,7 +11,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    // Node 25+ Web Storage shadows jsdom's isolated browser storage in Vitest 4.
+    // Node 25+ Web Storage shadows jsdom's isolated browser storage in Vitest.
     execArgv: ['--no-webstorage'],
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],

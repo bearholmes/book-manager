@@ -16,7 +16,15 @@ function getAbsolutePath(value: string): string {
 const config: StorybookConfig = {
   stories: ['../../docs/storybook/*.mdx', '../../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 
-  addons: [getAbsolutePath('@storybook/addon-links'), getAbsolutePath('@storybook/addon-docs')],
+  addons: [getAbsolutePath('@storybook/addon-docs')],
+
+  // App notices describe the shipped renderer, not Storybook's development runtime.
+  async viteFinal(config) {
+    config.plugins = (await Promise.all(config.plugins ?? [])).filter(
+      (plugin) => !plugin || Array.isArray(plugin) || plugin.name !== 'open-source-notices',
+    );
+    return config;
+  },
 
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),

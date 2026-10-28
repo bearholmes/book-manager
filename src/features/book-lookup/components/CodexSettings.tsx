@@ -1,10 +1,10 @@
+import type { CodexAvailability, CodexSettings as Settings } from '@contracts/book-lookup';
+import { useEffect, useRef, useState } from 'react';
 import { desktop } from '@/shared/api/desktop';
 import { Button } from '@/shared/ui/Button';
 import { Field } from '@/shared/ui/Field';
 import { Select } from '@/shared/ui/Input';
 import { SettingsSection } from '@/shared/ui/SettingsSection';
-import type { CodexAvailability, CodexSettings as Settings } from '@contracts/book-lookup';
-import { useEffect, useRef, useState } from 'react';
 import styles from './BookLookup.module.css';
 
 export function CodexSettings() {

@@ -1,11 +1,11 @@
-import { desktop } from '@/shared/api/desktop';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
 import type { LockState } from '@contracts/desktop';
 import { useQueryClient } from '@tanstack/react-query';
 import { LockKeyhole } from 'lucide-react';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { desktop } from '@/shared/api/desktop';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import styles from './LockProvider.module.css';
 
 const LockContext = createContext<{

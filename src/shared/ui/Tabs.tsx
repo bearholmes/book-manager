@@ -1,5 +1,5 @@
-import { Surface } from '@/shared/ui/Surface';
 import clsx from 'clsx';
+import { Surface } from '@/shared/ui/Surface';
 
 interface Tab {
   id: string;

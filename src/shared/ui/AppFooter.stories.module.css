@@ -1,15 +1,14 @@
 .background {
   min-height: 180px;
-  background: radial-gradient(
-      circle at 92% 0%,
-      rgb(var(--palette-accent-500) / 0.1) 0,
-      transparent 28%
-    ), radial-gradient(circle at 8% 6%, rgb(var(--palette-primary-600) / 0.08) 0, transparent 40%),
+  background:
+    radial-gradient(circle at 92% 0%, rgb(var(--palette-accent-500) / 0.1) 0, transparent 28%),
+    radial-gradient(circle at 8% 6%, rgb(var(--palette-primary-600) / 0.08) 0, transparent 40%),
     repeating-linear-gradient(
       90deg,
       transparent 0,
       transparent 22px,
       rgb(var(--palette-primary-900) / 0.05) 22px,
       rgb(var(--palette-primary-900) / 0.05) 23px
-    ), linear-gradient(180deg, rgb(var(--color-canvas-start)) 0%, rgb(var(--color-canvas-end)) 100%);
+    ),
+    linear-gradient(180deg, rgb(var(--color-canvas-start)) 0%, rgb(var(--color-canvas-end)) 100%);
 }

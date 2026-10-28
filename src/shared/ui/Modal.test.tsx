@@ -1,6 +1,6 @@
-import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { Modal } from './Modal';
 
 describe('Modal', () => {

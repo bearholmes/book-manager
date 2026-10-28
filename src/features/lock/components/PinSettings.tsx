@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { desktop } from '@/shared/api/desktop';
 import { Button } from '@/shared/ui/Button';
 import { Field } from '@/shared/ui/Field';
 import { Input } from '@/shared/ui/Input';
 import { Modal } from '@/shared/ui/Modal';
 import { SettingsSection } from '@/shared/ui/SettingsSection';
-import { useState } from 'react';
 import { useLock } from './LockProvider';
 
 export function PinSettings() {

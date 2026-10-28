@@ -1,10 +1,10 @@
-import { Button } from '@/shared/ui/Button';
-import { Input, Select } from '@/shared/ui/Input';
-import { Spinner } from '@/shared/ui/Spinner';
 import type { BookFilters as BookFiltersType, BookSort } from '@contracts/book';
 import clsx from 'clsx';
 import { RotateCcw, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/shared/ui/Button';
+import { Input, Select } from '@/shared/ui/Input';
+import { Spinner } from '@/shared/ui/Spinner';
 import { BOOK_SORT_OPTIONS } from '../model/constants';
 import styles from './BookFilters.module.css';
 
@@ -58,10 +58,10 @@ export function BookFilters({
   const active = !!(filters.search || filters.topic || filters.purchase_place || filters.condition);
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Retain native form submission handling for the search toolbar.
     <form
       className={clsx(styles.toolbar, className)}
       aria-label="도서 검색 및 필터"
-      // biome-ignore lint/a11y/useSemanticElements: Search forms support native WebViews without the newer search element.
       role="search"
       onSubmit={(event) => event.preventDefault()}
     >

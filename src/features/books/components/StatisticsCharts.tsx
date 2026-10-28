@@ -1,15 +1,4 @@
 import {
-  type BookStatsByPlace,
-  type BookStatsByTopic,
-  type BookStatsByYear,
-  useBookStats,
-} from '@/features/books/hooks/useBookStats';
-import { useReducedMotion } from '@/shared/hooks/useReducedMotion';
-import { Button } from '@/shared/ui/Button';
-import { Spinner } from '@/shared/ui/Spinner';
-import { Surface } from '@/shared/ui/Surface';
-import { Table } from '@/shared/ui/Table';
-import {
   Bar,
   BarChart,
   CartesianGrid,
@@ -22,6 +11,17 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  type BookStatsByPlace,
+  type BookStatsByTopic,
+  type BookStatsByYear,
+  useBookStats,
+} from '@/features/books/hooks/useBookStats';
+import { useReducedMotion } from '@/shared/hooks/useReducedMotion';
+import { Button } from '@/shared/ui/Button';
+import { Spinner } from '@/shared/ui/Spinner';
+import { Surface } from '@/shared/ui/Surface';
+import { Table } from '@/shared/ui/Table';
 import { CHART_COLORS } from '../model/constants';
 import styles from './StatisticsCharts.module.css';
 
@@ -200,11 +200,7 @@ export function StatisticsCharts() {
                       outerRadius={100}
                       label={
                         shouldShowPlaceLabels
-                          ? ({
-                              purchase_place,
-                              count,
-                            }: { purchase_place: string; count: number }) =>
-                              `${truncateLabel(purchase_place)}: ${count}`
+                          ? ({ name, value }) => `${truncateLabel(String(name ?? ''))}: ${value}`
                           : false
                       }
                       labelLine={shouldShowPlaceLabels}

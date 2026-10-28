@@ -6,7 +6,10 @@ import type { DataManagementController } from '../hooks/useDataManagement';
 export function DataConfirmationDialog({
   controller,
   lockEnabled,
-}: { controller: DataManagementController; lockEnabled: boolean }) {
+}: {
+  controller: DataManagementController;
+  lockEnabled: boolean;
+}) {
   const {
     preview,
     resetOpen,

@@ -1,3 +1,5 @@
+@reference "../../app/styles/globals.css";
+
 /* Keep control appearance above the forms plugin, independent of chunk order. */
 .field.field {
   @apply block w-full border-line bg-surface text-copy placeholder:text-copy-muted;
@@ -6,7 +8,9 @@
   border-radius: var(--radius-control);
   padding: var(--control-padding-y) var(--field-padding-x);
   box-shadow: 0 1px 2px rgb(var(--palette-primary-950) / 0.04);
-  transition: border-color var(--motion-duration-fast), box-shadow var(--motion-duration-fast);
+  transition:
+    border-color var(--motion-duration-fast),
+    box-shadow var(--motion-duration-fast);
 }
 .field:hover:not(:disabled):not(:focus) {
   border-color: rgb(var(--color-border-hover));

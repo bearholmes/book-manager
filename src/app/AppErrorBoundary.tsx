@@ -1,5 +1,5 @@
-import { Button } from '@/shared/ui/Button';
 import { Component, type ReactNode } from 'react';
+import { Button } from '@/shared/ui/Button';
 
 /** Keep a renderer failure recoverable without exposing book data in the error message. */
 export class AppErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {

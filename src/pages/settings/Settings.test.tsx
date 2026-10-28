@@ -1,7 +1,7 @@
-import { desktop } from '@/shared/api/desktop';
-import { renderWithProviders } from '@/test/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
+import { desktop } from '@/shared/api/desktop';
+import { renderWithProviders } from '@/test/test-utils';
 import { Settings } from './Settings';
 
 vi.mock('@/features/lock', () => ({

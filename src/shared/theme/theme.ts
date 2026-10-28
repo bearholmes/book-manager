@@ -1,5 +1,5 @@
-import { STORAGE_KEYS } from '@/shared/lib/storage';
 import { useSyncExternalStore } from 'react';
+import { STORAGE_KEYS } from '@/shared/lib/storage';
 
 export type Theme = 'system' | 'dark' | 'light';
 const changeEvent = 'book-manager-theme-change';

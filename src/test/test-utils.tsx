@@ -32,7 +32,7 @@ interface AllProvidersProps {
  */
 function AllProviders({ children, queryClient = createTestQueryClient() }: AllProvidersProps) {
   return (
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <MemoryRouter>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </JotaiProvider>

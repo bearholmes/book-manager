@@ -1,7 +1,7 @@
-import { desktop } from '@/shared/api/desktop';
-import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { screen, within } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
+import { desktop } from '@/shared/api/desktop';
+import { renderWithProviders, userEvent } from '@/test/test-utils';
 import { PinSettings } from './PinSettings';
 
 const lock = vi.hoisted(() => ({

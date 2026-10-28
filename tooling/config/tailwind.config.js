@@ -1,5 +1,4 @@
 import { fileURLToPath } from 'node:url';
-import aspectRatio from '@tailwindcss/aspect-ratio';
 import forms from '@tailwindcss/forms';
 
 const color = (name) => `rgb(var(--${name}) / <alpha-value>)`;
@@ -67,5 +66,5 @@ export default {
       transitionTimingFunction: { DEFAULT: 'var(--motion-ease)', 'in-out': 'var(--motion-ease)' },
     },
   },
-  plugins: [aspectRatio, forms],
+  plugins: [forms],
 };

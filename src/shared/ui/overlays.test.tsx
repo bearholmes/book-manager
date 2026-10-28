@@ -1,10 +1,10 @@
-import { ToastContainer } from '@/shared/notifications/components/ToastContainer';
-import { toastsAtom } from '@/shared/notifications/store/toastStore';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Provider, createStore } from 'jotai';
+import { createStore, Provider } from 'jotai';
 import { StrictMode, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ToastContainer } from '@/shared/notifications/components/ToastContainer';
+import { toastsAtom } from '@/shared/notifications/store/toastStore';
 import { Modal } from './Modal';
 import { SidePanel } from './SidePanel';
 
