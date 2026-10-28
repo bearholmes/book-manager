@@ -1,0 +1,58 @@
+.helper {
+  display: grid;
+  gap: 12px;
+  padding-block: 12px;
+  border-block: 1px solid rgb(var(--color-border-subtle));
+  font-size: 14px;
+  line-height: 1.6;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.result {
+  display: grid;
+  gap: 12px;
+}
+.field {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+.field input {
+  margin-top: 6px;
+}
+.label {
+  display: block;
+  font-weight: 600;
+}
+.previous {
+  display: block;
+  color: rgb(var(--color-text-secondary));
+  font-size: 12px;
+}
+.cover {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover img {
+  width: 90px;
+  height: 120px;
+  object-fit: contain;
+}
+.error {
+  color: rgb(var(--color-danger));
+}
+.settings {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 420px);
+}
+.notes {
+  padding-left: 20px;
+  list-style: disc;
+}

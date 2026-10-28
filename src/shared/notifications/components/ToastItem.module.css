@@ -3,3 +3,20 @@
   background-color: rgb(var(--color-toast));
   animation: var(--animation-enter);
 }
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+.actions button {
+  padding: 6px 10px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.actions button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

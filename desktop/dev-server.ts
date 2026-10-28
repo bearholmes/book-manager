@@ -3,6 +3,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DesktopService } from './application/command-service';
 import { openLibrary } from './application/open-library';
+import { BookLookupService } from './book-lookup/service';
+import { CodexSettingsFile } from './platform/codex-settings';
 
 const token = process.env.LOCAL_API_TOKEN;
 if (!token) throw new Error('LOCAL_API_TOKEN is required');
@@ -12,13 +14,23 @@ const library = await openLibrary(
   directory,
   testKey ? async () => Buffer.from(testKey, 'hex') : undefined,
 );
-const service = new DesktopService(library, async (content, extension) => {
-  const exportsDir = join(directory, 'exports');
-  mkdirSync(exportsDir, { recursive: true });
-  const path = join(exportsDir, `books-${crypto.randomUUID()}.${extension}`);
-  writeFileSync(path, content, { flag: 'wx', mode: 0o600 });
-  return path;
+const lookup = new BookLookupService({
+  settings: new CodexSettingsFile(join(directory, 'codex-settings.json')),
+  openUrl: () => {
+    throw new Error('외부 출처 열기는 네이티브 앱에서 사용해주세요.');
+  },
 });
+const service = new DesktopService(
+  library,
+  async (content, extension) => {
+    const exportsDir = join(directory, 'exports');
+    mkdirSync(exportsDir, { recursive: true });
+    const path = join(exportsDir, `books-${crypto.randomUUID()}.${extension}`);
+    writeFileSync(path, content, { flag: 'wx', mode: 0o600 });
+    return path;
+  },
+  lookup,
+);
 
 const origin = `http://127.0.0.1:${process.env.BOOK_MANAGER_DEV_PORT ?? '3000'}`;
 const headers = {
@@ -49,7 +61,8 @@ const server = Bun.serve({
 });
 console.log(`Local SQLite development bridge: ${server.url}`);
 process.on('SIGTERM', () => {
+  lookup.dispose();
   server.stop();
   library.close();
-  process.exit(0);
+  setTimeout(() => process.exit(0), 1200);
 });

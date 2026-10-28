@@ -34,6 +34,22 @@ export function ToastItem({ toast }: ToastItemProps) {
           <X className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </div>
+      {toast.actions && (
+        <div className={styles.actions}>
+          {toast.actions.map((action) => (
+            <button
+              key={action.label}
+              type="button"
+              onClick={() => {
+                action.onClick();
+                removeToast(toast.id);
+              }}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,8 @@ export interface Toast {
   message: string;
   type?: 'success' | 'error' | 'info' | 'warning';
   duration?: number;
+  actions?: { label: string; onClick: () => void }[];
+  onDismiss?: () => void;
 }
 
 /** 전역 토스트 목록 상태입니다. */
@@ -31,10 +33,14 @@ export const addToastAtom = atom(null, (get, set, toast: Omit<Toast, 'id'>) => {
       set(toastsAtom, (prev) => prev.filter((t) => t.id !== id));
     }, duration);
   }
+  return id;
 });
 
 /** id로 토스트를 제거합니다. */
 export const removeToastAtom = atom(null, (get, set, id: string) => {
+  get(toastsAtom)
+    .find((t) => t.id === id)
+    ?.onDismiss?.();
   set(
     toastsAtom,
     get(toastsAtom).filter((t) => t.id !== id),

@@ -56,6 +56,7 @@ test('license layer keeps its header fixed and scrolls at the inner edge', async
     expect(layout.scrollAreas).toBe(1);
     expect(layout.rightGap).toBeLessThanOrEqual(1);
     const before = await heading.boundingBox();
+    const backgroundScroll = await page.evaluate(() => document.documentElement.scrollTop);
     await page.mouse.move(layout.bodyX, layout.bodyY);
     await page.mouse.wheel(0, 900);
     await expect
@@ -69,7 +70,7 @@ test('license layer keeps its header fixed and scrolls at the inner edge', async
       .toBe(true);
     expect(await heading.boundingBox()).toEqual(before);
     await expect(close).toBeInViewport();
-    expect(await page.evaluate(() => document.documentElement.scrollTop)).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollTop)).toBe(backgroundScroll);
   }
 
   await page.keyboard.press('Escape');

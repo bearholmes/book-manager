@@ -88,7 +88,8 @@ function checkEdge(source, target) {
     return 'production modules cannot import tests/stories';
   if (!isTest && source.startsWith('desktop/') && target.startsWith('desktop/')) {
     const allowed = {
-      application: ['application', 'backup', 'library', 'security', 'storage'],
+      application: ['application', 'backup', 'library', 'security', 'storage', 'book-lookup'],
+      'book-lookup': ['book-lookup'],
       backup: ['backup', 'library', 'security'],
       library: ['library', 'storage'],
       storage: ['storage', 'security'],

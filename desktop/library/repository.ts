@@ -4,6 +4,7 @@ import { z } from 'zod';
 import type { Book, BookFilters, BookSort } from '../../contracts/book';
 import type { BackupCover } from '../../contracts/cover';
 import type { BookPage, LibraryStats } from '../../contracts/desktop';
+import { normalizeIsbn } from '../../contracts/isbn';
 import { EncryptedStore } from '../storage/encrypted-store';
 import { storedBookSchema } from './book-schema';
 import { CoverStore, coverUploadSchema, decodeCover } from './cover-store';
@@ -146,6 +147,18 @@ export class LibraryDatabase {
       .map(toBook);
     const nextOffset = offset + books.length;
     return { books, totalCount, nextOffset, hasMore: nextOffset < totalCount };
+  }
+
+  findDuplicates(isbn: string, excludeId?: string) {
+    const canonical = normalizeIsbn(isbn);
+    if (!canonical) return [];
+    return this.db
+      .query<{ id: string; book_name: string; isbn13: string }, []>(
+        'SELECT id, book_name, isbn13 FROM books WHERE isbn13 IS NOT NULL',
+      )
+      .all()
+      .filter((book) => book.id !== excludeId && normalizeIsbn(book.isbn13) === canonical)
+      .map(({ id, book_name }) => ({ id, book_name }));
   }
 
   all(): Book[] {

@@ -1,17 +1,25 @@
 import { join } from 'node:path';
-import { BrowserView, BrowserWindow, Utils } from 'electrobun/main';
+import Electrobun, { BrowserView, BrowserWindow, Utils } from 'electrobun/main';
 import type { DesktopRPC } from '../contracts/desktop';
 import { DesktopService } from './application/command-service';
 import { openLibrary } from './application/open-library';
+import { BookLookupService } from './book-lookup/service';
 import type { LibraryDatabase } from './library/repository';
 import { installApplicationMenu } from './platform/application-menu';
+import { CodexSettingsFile } from './platform/codex-settings';
 import { writeNativeExport } from './platform/export-writer';
 
 const dataDirectory = process.env.BOOK_MANAGER_DATA_DIR ?? join(Utils.paths.appData, 'ReadingDesk');
+const lookup = new BookLookupService({
+  settings: new CodexSettingsFile(join(dataDirectory, 'codex-settings.json')),
+  openUrl: (url) => {
+    Utils.openExternal(url);
+  },
+});
 let library: LibraryDatabase | undefined;
 async function initializeService() {
   library = await openLibrary(dataDirectory);
-  return new DesktopService(library, writeNativeExport);
+  return new DesktopService(library, writeNativeExport, lookup);
 }
 let serviceReady: Promise<DesktopService> | undefined;
 function getService() {
@@ -56,4 +64,12 @@ const mainWindow = new BrowserWindow({
 });
 mainWindow.setTitle('');
 
-process.on('exit', () => library?.close());
+Electrobun.events.on('before-quit', () => lookup.dispose());
+process.on('exit', () => {
+  lookup.dispose();
+  library?.close();
+});
+process.on('SIGTERM', () => {
+  lookup.dispose();
+  setTimeout(() => process.exit(0), 1200);
+});

@@ -1,4 +1,5 @@
 import type { Book, BookFilters, BookInsert, BookSort, BookUpdate } from './book';
+import type { CodexSettings, CoverTransfer, LookupJob } from './book-lookup';
 import type { CoverUpload } from './cover';
 
 export interface LockState {
@@ -29,6 +30,23 @@ export interface BackupPreview {
 }
 
 export interface Commands {
+  findDuplicates: {
+    params: { isbn: string; excludeId?: string };
+    result: { id: string; book_name: string }[];
+  };
+  codexSettingsGet: { params: Record<string, never>; result: CodexSettings };
+  codexSettingsSet: { params: CodexSettings; result: CodexSettings };
+  codexProbe: { params: Record<string, never>; result: { version: string } };
+  lookupStart: { params: { isbn: string; requestId: string }; result: { jobId: string } };
+  lookupStatus: { params: { jobId: string }; result: LookupJob };
+  lookupCancel: { params: { jobId: string }; result: null };
+  lookupCoverStart: {
+    params: { jobId: string; candidateIndex: number; coverIndex: number };
+    result: { transferId: string };
+  };
+  lookupCoverStatus: { params: { transferId: string }; result: CoverTransfer };
+  lookupCoverCancel: { params: { transferId: string }; result: null };
+  openLookupSource: { params: { jobId: string; url: string }; result: null };
   status: { params: Record<string, never>; result: LockState };
   unlock: { params: { pin: string }; result: LockState };
   lock: { params: Record<string, never>; result: LockState };

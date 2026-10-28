@@ -1,3 +1,4 @@
+import { CodexSettings } from '@/features/book-lookup';
 import { clearBookQueries } from '@/features/books';
 import { DataSettings } from '@/features/data-management';
 import { OpenSourceLicensesModal } from '@/features/licenses';
@@ -24,6 +25,7 @@ export function Settings() {
     <PageContent>
       <PageHeader title="설정" />
       <PinSettings />
+      <CodexSettings />
       <DataSettings lockEnabled={state.enabled} onDataChange={onDataChange} />
       <footer className={styles.footer}>
         <Button

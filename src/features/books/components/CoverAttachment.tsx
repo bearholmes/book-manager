@@ -10,6 +10,7 @@ import styles from './CoverAttachment.module.css';
 
 interface CoverAttachmentProps {
   coverId?: string | null;
+  suggestedCover?: CoverUpload;
   hasLegacyUrl: boolean;
   disabled?: boolean;
   onChange: (cover: CoverUpload | null) => void;
@@ -18,6 +19,7 @@ interface CoverAttachmentProps {
 
 export function CoverAttachment({
   coverId,
+  suggestedCover,
   hasLegacyUrl,
   disabled,
   onChange,
@@ -30,6 +32,21 @@ export function CoverAttachment({
   const [preview, setPreview] = useState<{ blob: Blob; url: string }>();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  useEffect(() => {
+    if (!suggestedCover) return;
+    request.current += 1;
+    const bytes = Uint8Array.from(atob(suggestedCover.data), (c) => c.charCodeAt(0));
+    setSelection({
+      upload: suggestedCover,
+      blob: new Blob([bytes], { type: suggestedCover.mimeType }),
+      width: 0,
+      height: 0,
+    });
+    setPending(false);
+    onProcessingChange(false);
+    setError('');
+  }, [suggestedCover, onProcessingChange]);
+
   const stored = useCoverImage(selection === undefined ? coverId : null);
   useEffect(
     () => () => {
@@ -142,7 +159,8 @@ export function CoverAttachment({
           {pending && <output>표지 최적화 중…</output>}
           {selection && (
             <output>
-              {selection.width}×{selection.height}px · {Math.ceil(selection.blob.size / 1024)}KB
+              {selection.width > 0 ? `${selection.width}×${selection.height}px · ` : ''}
+              {Math.ceil(selection.blob.size / 1024)}KB
             </output>
           )}
           {selection === undefined && hasLegacyUrl && !coverId && (

@@ -1,4 +1,4 @@
-import { BookDetailModal, BookFilters, BookForm, VirtualizedBookGrid } from '@/features/books';
+import { BookDetailModal, BookFilters, VirtualizedBookGrid } from '@/features/books';
 import { Button } from '@/shared/ui/Button';
 import { Modal } from '@/shared/ui/Modal';
 import { PageContent } from '@/shared/ui/PageContent';
@@ -7,6 +7,7 @@ import { SidePanel } from '@/shared/ui/SidePanel';
 import { Spinner } from '@/shared/ui/Spinner';
 import { LayoutGrid, List, Plus } from 'lucide-react';
 import styles from './Library.module.css';
+import { BookEditor } from './components/BookEditor';
 import { BookTable } from './components/BookTable';
 import { useLibraryWorkspace } from './hooks/useLibraryWorkspace';
 
@@ -158,7 +159,7 @@ export function Library() {
 
       {/* Add Book Panel */}
       <SidePanel isOpen={showAddPanel} onClose={() => setShowAddPanel(false)} title="도서 추가">
-        <BookForm
+        <BookEditor
           onSubmit={handleAddBook}
           onCancel={() => setShowAddPanel(false)}
           isSubmitting={isCreating}
@@ -168,7 +169,7 @@ export function Library() {
       {/* Edit Book Panel */}
       <SidePanel isOpen={!!editingBook} onClose={() => setEditingBook(null)} title="도서 수정">
         {editingBook && (
-          <BookForm
+          <BookEditor
             book={editingBook}
             onSubmit={handleEditBook}
             onCancel={() => setEditingBook(null)}

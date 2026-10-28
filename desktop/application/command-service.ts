@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CommandRequest, CommandResult } from '../../contracts/desktop';
 import { BackupService, type ExportWriter } from '../backup/backup-service';
+import type { BookLookupService } from '../book-lookup/service';
 import { coverIdSchema } from '../library/cover-store';
 import type { LibraryDatabase } from '../library/repository';
 import { PinLock, pinSchema } from '../security/pin-lock';
@@ -15,6 +16,7 @@ export class DesktopService {
   constructor(
     readonly library: LibraryDatabase,
     saveExport: ExportWriter,
+    private readonly lookup?: BookLookupService,
   ) {
     this.pin = new PinLock(library);
     this.backups = new BackupService(library, saveExport);
@@ -58,8 +60,53 @@ export class DesktopService {
     if (command === 'status') return this.status();
     if (command === 'unlock') return this.pin.unlock(payload);
     this.pin.assertUnlocked();
+    if (command === 'findDuplicates') {
+      const { isbn, excludeId } = z
+        .object({ isbn: z.string().max(100), excludeId: z.string().optional() })
+        .parse(payload);
+      return this.library.findDuplicates(isbn, excludeId);
+    }
+    if (
+      [
+        'codexSettingsGet',
+        'codexSettingsSet',
+        'codexProbe',
+        'lookupStart',
+        'lookupStatus',
+        'lookupCancel',
+        'lookupCoverStart',
+        'lookupCoverStatus',
+        'lookupCoverCancel',
+        'openLookupSource',
+      ].includes(command)
+    ) {
+      if (!this.lookup) throw new Error('도서 조사 도우미를 사용할 수 없습니다.');
+      switch (command) {
+        case 'codexSettingsGet':
+          return this.lookup.settings();
+        case 'codexSettingsSet':
+          return this.lookup.saveSettings(payload);
+        case 'codexProbe':
+          return this.lookup.probe();
+        case 'lookupStart':
+          return this.lookup.start(payload);
+        case 'lookupStatus':
+          return this.lookup.status(payload);
+        case 'lookupCancel':
+          return this.lookup.cancel(payload);
+        case 'lookupCoverStart':
+          return this.lookup.coverStart(payload);
+        case 'lookupCoverStatus':
+          return this.lookup.coverStatus(payload);
+        case 'lookupCoverCancel':
+          return this.lookup.cancelCover(payload);
+        case 'openLookupSource':
+          return this.lookup.openSource(payload);
+      }
+    }
     switch (command) {
       case 'lock':
+        this.lookup?.dispose();
         return this.pin.lock();
       case 'setPin':
         return this.pin.setPin(payload);
@@ -88,12 +135,14 @@ export class DesktopService {
       case 'backupInspect':
         return this.backups.inspect(payload);
       case 'backupRestore':
+        this.lookup?.dispose();
         return this.backups.restore(payload, (pin) => this.pin.requireCurrentPin(pin));
       case 'reset': {
         const { currentPin } = z
           .object({ currentPin: pinSchema.optional(), confirmation: z.literal('초기화') })
           .parse(payload);
         this.pin.requireCurrentPin(currentPin);
+        this.lookup?.dispose();
         this.library.reset();
         this.backups.invalidate();
         this.pin.reset();

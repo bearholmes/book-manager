@@ -13,10 +13,17 @@ vi.mock('@/features/data-management', () => ({
 }));
 vi.mock('@/shared/api/desktop', () => ({ desktop: vi.fn() }));
 
-it('shows user settings without fetching or exposing internal storage information', () => {
+it('loads helper settings without fetching or exposing internal storage information', async () => {
+  vi.mocked(desktop).mockResolvedValue({
+    executable: '/usr/local/bin/codex',
+    model: 'gpt-6.1-terra',
+    reasoningEffort: 'medium',
+  });
   renderWithProviders(<Settings />);
   expect(screen.getByRole('heading', { name: 'PIN 잠금' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: '백업 복원' })).toBeInTheDocument();
   expect(screen.queryByText('저장소')).not.toBeInTheDocument();
-  expect(desktop).not.toHaveBeenCalled();
+  expect(await screen.findByLabelText('AI 모델')).toHaveValue('gpt-6.1-terra');
+  expect(desktop).toHaveBeenCalledWith('codexSettingsGet', {});
+  expect(desktop).not.toHaveBeenCalledWith('info', expect.anything());
 });
