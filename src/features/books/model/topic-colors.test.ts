@@ -11,7 +11,7 @@ describe('topic colors', () => {
   it('handles property names and equivalent Unicode without inherited colors', () => {
     const colors = assignTopicColors(['constructor', '__proto__', 'é', 'e\u0301']);
     expect(colors.constructor).toEqual(expect.any(String));
-    expect(colors.__proto__).toEqual(expect.any(String));
+    expect(Object.getOwnPropertyDescriptor(colors, '__proto__')?.value).toEqual(expect.any(String));
     expect(colors.é).toBe(colors['e\u0301']);
   });
 });

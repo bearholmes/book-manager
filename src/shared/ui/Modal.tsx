@@ -70,7 +70,6 @@ export function Modal({
       className={clsx(overlay.root, 'overflow-y-auto')}
       aria-labelledby={title ? titleId : undefined}
       aria-label={title ? undefined : '대화상자'}
-      // biome-ignore lint/a11y/useSemanticElements: Portalled overlay shares focus, inert background and scroll lifecycle with SidePanel.
       role="dialog"
       aria-modal="true"
     >

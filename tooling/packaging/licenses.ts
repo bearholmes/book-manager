@@ -131,7 +131,7 @@ export function openSourceNotices(root: string): Plugin {
           const asset = result.output.find(
             (item) => item.type === 'asset' && item.fileName === assetName,
           );
-          if (!asset || asset.type !== 'asset') throw new Error('License asset was not generated.');
+          if (asset?.type !== 'asset') throw new Error('License asset was not generated.');
           return typeof asset.source === 'string'
             ? asset.source
             : Buffer.from(asset.source).toString('utf8');

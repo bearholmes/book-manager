@@ -39,7 +39,6 @@ export function SidePanel({
       className={clsx(overlay.root, 'overflow-hidden')}
       aria-labelledby={title ? titleId : undefined}
       aria-label={title ? undefined : '사이드 패널'}
-      // biome-ignore lint/a11y/useSemanticElements: Portalled overlay shares focus, inert background and scroll lifecycle with Modal.
       role="dialog"
       aria-modal="true"
     >

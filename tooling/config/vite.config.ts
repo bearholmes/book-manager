@@ -22,6 +22,8 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   plugins: [react(), tailwindcss(), openSourceNotices(projectRoot)],
+  // Tailwind uses this option to generate CSS maps for both serve and build transforms.
+  css: { devSourcemap: true },
   resolve: {
     alias: {
       '@': path.join(projectRoot, 'src'),

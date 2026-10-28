@@ -17,6 +17,9 @@
   color: rgb(var(--color-text));
   vertical-align: top;
 }
+.table[data-dense="true"] td {
+  padding-block: 8px;
+}
 .table th:first-child,
 .table td:first-child {
   padding-left: 0;
@@ -27,7 +30,4 @@
 }
 .table tbody tr:last-child td {
   border-bottom: 0;
-}
-.table[data-dense="true"] td {
-  padding-block: 8px;
 }
