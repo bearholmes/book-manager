@@ -1,95 +1,116 @@
-@reference "../styles/globals.css";
-
 .shell {
   min-height: 100vh;
-  padding: 8px 8px 8px 0;
 }
 .sidebar {
-  @apply fixed inset-y-0 left-0 flex flex-col bg-surface-muted px-4 py-4;
-  width: var(--layout-sidebar-width);
+  position: fixed;
+  inset: 0 auto 0 0;
+  display: flex;
+  width: 208px;
+  flex-direction: column;
+  padding: 16px 12px;
+  background: rgb(var(--color-surface-muted));
 }
 .brand {
-  @apply mb-6 flex items-center gap-2 px-2 py-2 text-copy-emphasis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 8px;
+  color: rgb(var(--color-text-emphasis));
 }
 .brand img {
   flex-shrink: 0;
 }
 .brand strong {
-  @apply block text-sm;
+  font-size: 13px;
+  white-space: nowrap;
 }
 .sidebar nav {
-  @apply flex flex-col gap-0.5;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .sidebar nav a {
-  @apply relative flex items-center gap-3 rounded-lg p-2 text-sm font-medium text-copy transition-colors hover:bg-surface-selected;
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: var(--radius-control);
+  color: rgb(var(--color-text-secondary));
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 100ms;
+}
+.sidebar nav a:hover {
+  background: rgb(var(--color-nav-hover));
 }
 .sidebar nav a[aria-current="page"] {
-  @apply text-copy-emphasis;
+  background: rgb(var(--color-nav-selected));
+  color: rgb(var(--color-nav-on-selected));
+  font-weight: 600;
 }
-.sidebar nav a[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  left: -16px;
-  width: 2px;
-  height: 20px;
-  border-radius: 2px;
-  background: rgb(var(--palette-accent-500));
+.sidebar nav a[aria-current="page"]:hover {
+  background: rgb(var(--color-nav-selected-hover));
 }
 .sidebar nav a:focus-visible {
-  outline: var(--focus-width) solid rgb(var(--color-focus));
-  outline-offset: var(--focus-offset);
+  outline: 2px solid rgb(var(--color-focus));
+  outline-offset: 2px;
 }
 .bottom {
-  @apply mt-auto pt-8;
+  margin-top: auto;
+  padding-top: 32px;
 }
 .main {
-  @apply min-w-0;
-  margin-left: var(--layout-sidebar-width);
-  min-height: calc(100vh - 16px);
-  border-radius: 8px;
-  box-shadow:
-    0 0 0 1px rgb(var(--color-border-subtle)),
-    var(--shadow-soft);
-  background: rgb(var(--color-surface));
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: 208px;
+  background: rgb(var(--color-canvas-start));
 }
-@media (max-width: 900px) {
+@media (min-width: 761px) and (max-width: 1099px) {
   .sidebar {
-    @apply px-3;
+    width: 176px;
+  }
+  .main {
+    margin-left: 176px;
   }
 }
-@media (max-width: 640px) {
-  .shell {
-    padding: 0;
-  }
+@media (max-width: 760px) {
   .sidebar {
-    @apply static w-full flex-row flex-wrap items-center gap-3 border-b px-4 py-3;
-  }
-  .sidebar nav {
-    @apply flex-row;
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgb(var(--color-border-subtle));
+    padding: 8px 16px;
   }
   .brand {
-    @apply mb-0;
+    margin: 0;
   }
-  .sidebar nav a {
-    @apply px-2 py-2;
-  }
-  .sidebar nav a svg {
-    display: none;
-  }
-  .sidebar nav a[aria-current="page"]::before {
-    left: 8px;
-    right: 8px;
-    bottom: -6px;
-    width: auto;
-    height: 2px;
+  .sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   .bottom {
-    @apply ml-auto mt-0 pt-0;
+    margin: 0 0 0 auto;
+    padding: 0;
   }
   .main {
     margin-left: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+  }
+}
+@media (max-width: 480px), (pointer: coarse) {
+  .sidebar nav a {
+    min-height: 44px;
+  }
+  .bottom button {
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar nav a {
+    transition: none;
   }
 }

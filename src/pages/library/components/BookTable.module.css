@@ -29,3 +29,56 @@
   vertical-align: middle;
   color: rgb(var(--color-text-secondary));
 }
+.table {
+  min-width: 0;
+  table-layout: fixed;
+}
+.table tbody td {
+  padding-block: 14px;
+}
+.title {
+  font-family: var(--font-book, var(--font-heading));
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.topic {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--topic-color, rgb(var(--color-category-1)));
+  color: rgb(var(--color-text-heading));
+  font-size: 12px;
+  font-weight: 500;
+}
+@media (max-width: 480px) {
+  .table col {
+    width: auto;
+  }
+  .table col:nth-child(n + 3) {
+    display: none;
+  }
+  .table th:nth-child(n + 3),
+  .table td:nth-child(n + 3) {
+    display: none;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    width: 60%;
+  }
+  .empty td {
+    display: table-cell;
+  }
+}
+
+@media (min-width: 481px) {
+  .table col:first-child {
+    width: 36%;
+  }
+  .table col:nth-child(2) {
+    width: 22%;
+  }
+  .table col:nth-child(n + 3) {
+    width: 14%;
+  }
+}

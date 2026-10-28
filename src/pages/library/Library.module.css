@@ -1,3 +1,42 @@
+.page {
+  max-width: none;
+  padding: 28px 32px;
+}
+.header {
+  margin-bottom: 20px;
+}
+.headingRow,
+.heading,
+.toolbar {
+  display: flex;
+  align-items: center;
+}
+.headingRow {
+  justify-content: space-between;
+  gap: 16px;
+}
+.heading {
+  gap: 12px;
+  min-width: 0;
+}
+.heading h1 {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.heading span {
+  color: rgb(var(--color-text-secondary));
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.toolbar {
+  gap: 16px;
+  margin-top: 24px;
+}
+.toolbar > form {
+  flex: 1;
+}
 .views {
   display: flex;
   flex-shrink: 0;
@@ -24,11 +63,32 @@
   justify-content: center;
   gap: 12px;
   border: 1px solid rgb(var(--color-border-subtle));
-  border-radius: var(--radius-panel);
   background: rgb(var(--color-surface));
   color: rgb(var(--color-text-muted));
   font-size: 13px;
 }
 .empty h2 {
   font-size: 16px;
+}
+@media (max-width: 1099px) {
+  .page {
+    padding-inline: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    padding: 24px 16px;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+  }
+  .toolbar > form {
+    flex-basis: 100%;
+  }
+}
+@media (max-width: 480px), (pointer: coarse) {
+  .view {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

@@ -32,11 +32,15 @@
   line-height: var(--type-ui-leading);
 }
 .actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   border-top: 1px solid rgb(var(--color-border-subtle));
-  padding-top: 24px;
+  padding: 16px 0;
+  background: rgb(var(--color-surface));
 }
 @media (max-width: 480px) {
   .pair {

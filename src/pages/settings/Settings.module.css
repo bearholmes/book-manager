@@ -1,3 +1,7 @@
+.content {
+  max-width: 880px;
+}
+
 .footer {
   margin-top: 16px;
 }

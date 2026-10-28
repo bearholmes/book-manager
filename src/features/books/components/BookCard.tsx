@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { memo, useState } from 'react';
 import { formatCurrency, formatDate } from '@/shared/lib/format';
 import { useCoverImage } from '../hooks/useCoverImage';
+import styles from './BookCard.module.css';
 
 interface BookCardProps {
   /** 도서 정보 */
@@ -83,7 +84,7 @@ export const BookCard = memo(function BookCard({
           <img
             src={coverUrl}
             alt={book.book_name}
-            className="h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-90"
+            className="h-full w-full object-contain"
             onError={() => setFailedImageUrl(coverUrl)}
           />
         ) : (
@@ -109,9 +110,7 @@ export const BookCard = memo(function BookCard({
       {/* 정보 */}
       <div className="flex min-h-[8rem] flex-col gap-1 pt-4">
         {/* 도서명 */}
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-copy-heading">
-          {book.book_name}
-        </h3>
+        <h3 className={clsx(styles.title, 'line-clamp-2 text-copy-heading')}>{book.book_name}</h3>
 
         {/* 저자 */}
         {book.author && <p className="line-clamp-1 text-sm text-copy-secondary">{book.author}</p>}
@@ -134,7 +133,7 @@ export const BookCard = memo(function BookCard({
             )}
 
             {book.duplicated && (
-              <span className="inline-block rounded-full border border-line bg-surface-subtle px-2.5 py-0.5 text-xs font-semibold text-danger-text">
+              <span className="inline-block rounded border border-line bg-surface-subtle px-2 py-0.5 text-xs font-semibold text-danger-text">
                 중복구매
               </span>
             )}

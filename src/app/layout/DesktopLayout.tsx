@@ -21,15 +21,15 @@ export function DesktopLayout() {
         </div>
         <nav aria-label="주 메뉴">
           <NavLink to={ROUTES.HOME} end>
-            <BookOpen size={20} />
+            <BookOpen size={18} />
             나의 서재
           </NavLink>
           <NavLink to={ROUTES.STATS}>
-            <ChartNoAxesCombined size={20} />
+            <ChartNoAxesCombined size={18} />
             통계
           </NavLink>
           <NavLink to={ROUTES.SETTINGS}>
-            <Settings2 size={20} />
+            <Settings2 size={18} />
             설정
           </NavLink>
         </nav>

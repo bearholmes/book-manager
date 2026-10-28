@@ -57,6 +57,30 @@ test('keyboard work stays in one overlay and search opens in a compact window', 
   await expect(page.getByLabel('검색', { exact: true })).toBeFocused();
 });
 
+test('short book panel keeps header and actions in view while scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 360 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '도서 추가', exact: true }).first().click();
+  const panel = page.getByRole('dialog', { name: '도서 추가' });
+  const close = panel.getByRole('button', { name: '패널 닫기' });
+  const submit = panel.getByRole('button', { name: '추가', exact: true });
+  const check = async () => {
+    for (const control of [close, submit]) {
+      const box = await control.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box?.y).toBeGreaterThanOrEqual(0);
+      expect((box?.y ?? 360) + (box?.height ?? 0)).toBeLessThanOrEqual(360);
+    }
+  };
+  await check();
+  await panel.locator('input[name="book_name"]').evaluate((input) => {
+    let element: HTMLElement | null = input.parentElement;
+    while (element && element.scrollHeight <= element.clientHeight) element = element.parentElement;
+    if (element) element.scrollTop = 300;
+  });
+  await check();
+});
+
 test('statistics retry after a read failure without claiming the library is empty', async ({
   page,
 }) => {

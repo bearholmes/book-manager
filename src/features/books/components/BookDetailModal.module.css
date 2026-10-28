@@ -91,3 +91,8 @@
     gap: 0;
   }
 }
+.memo {
+  font-family: var(--font-book, var(--font-heading));
+  font-size: 15px;
+  line-height: 1.8;
+}

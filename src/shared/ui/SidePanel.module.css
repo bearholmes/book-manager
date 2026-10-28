@@ -4,3 +4,10 @@
   @apply relative w-screen max-w-lg transform transition ease-in-out duration-300;
   animation: var(--animation-slide);
 }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex-shrink: 0;
+  background: rgb(var(--color-surface));
+}

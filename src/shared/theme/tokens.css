@@ -1,5 +1,23 @@
 :root {
   color-scheme: light;
+  --color-danger-solid-hover: 140 48 42;
+  --color-info-subtle: 230 237 241;
+  --color-info: 61 94 117;
+  --color-warning-subtle: 245 236 215;
+  --color-warning: 121 85 28;
+  --color-success-subtle: 229 238 228;
+  --color-success: 53 97 71;
+  --color-category-ink: 41 44 40;
+  --color-on-disabled: 92 97 87;
+  --color-disabled: 228 225 218;
+  --color-nav-hover: 227 223 213;
+  --color-nav-on-selected: 251 249 245;
+  --color-nav-selected-hover: 82 98 74;
+  --color-nav-selected: 91 107 83;
+  --color-danger-subtle: 247 232 228;
+  --color-danger-solid: 165 62 54;
+  --color-action-pressed: 32 61 46;
+  --color-surface-raised: 255 254 250;
   --palette-primary-50: 247 247 248;
   --palette-primary-100: 237 238 240;
   --palette-primary-200: 220 222 226;
@@ -39,12 +57,12 @@
   --color-category-12: 236 227 216;
   --color-category-13: 246 227 213;
   --color-category-14: 224 232 241;
-  --color-chart-1: var(--palette-primary-600);
-  --color-chart-2: var(--palette-primary-500);
-  --color-chart-3: 47 107 109;
-  --color-chart-4: 79 123 87;
-  --color-chart-5: 140 108 63;
-  --color-chart-6: 193 103 63;
+  --color-chart-1: 54 92 72;
+  --color-chart-2: 70 104 128;
+  --color-chart-3: 140 90 66;
+  --color-chart-4: 118 97 61;
+  --color-chart-5: 115 87 117;
+  --color-chart-6: 76 112 112;
   --color-chart-7: 155 74 53;
   --color-chart-8: 90 110 138;
   --color-chart-9: 122 143 95;
@@ -56,67 +74,73 @@
   --palette-danger-800: 153 27 27;
 
   /* Semantic colors are RGB channels so Tailwind opacity modifiers remain usable. */
-  --color-surface: var(--palette-white);
-  --color-surface-muted: var(--palette-paper-50);
-  --color-surface-subtle: var(--palette-primary-50);
-  --color-surface-selected: var(--palette-accent-50);
-  --color-text: var(--palette-primary-700);
-  --color-text-heading: var(--palette-primary-700);
-  --color-text-emphasis: var(--palette-primary-800);
-  --color-text-secondary: var(--palette-primary-600);
-  --color-text-muted: var(--palette-primary-500);
-  --color-text-subtle: var(--palette-primary-500);
-  --color-text-faint: var(--palette-primary-400);
-  --color-text-on-solid: var(--palette-white);
-  --color-border: var(--palette-primary-200);
-  --color-border-subtle: var(--palette-primary-100);
-  --color-border-hover: var(--palette-primary-300);
-  --color-action: var(--palette-primary-800);
-  --color-action-hover: var(--palette-primary-900);
-  --color-focus: var(--palette-primary-500);
-  --color-danger: var(--palette-danger-700);
-  --color-danger-hover: var(--palette-danger-800);
-  --color-danger-text: var(--palette-danger-600);
-  --color-danger-indicator: var(--palette-danger-500);
-  --color-overlay: var(--palette-primary-950);
-  --color-toast: var(--palette-primary-900);
-  --color-chart-grid: var(--palette-paper-300);
-  --color-canvas-start: var(--palette-paper-50);
+  --color-surface: 251 249 245;
+  --color-surface-muted: 236 232 223;
+  --color-surface-subtle: 238 234 226;
+  --color-surface-selected: 227 235 227;
+  --color-text: 41 44 40;
+  --color-text-heading: 41 44 40;
+  --color-text-emphasis: 41 44 40;
+  --color-text-secondary: 86 91 83;
+  --color-text-muted: 100 105 95;
+  --color-text-subtle: 100 105 95;
+  --color-text-faint: 100 105 95;
+  --color-text-on-solid: 255 255 255;
+  --color-on-action: 255 255 255;
+  --color-on-danger: 255 255 255;
+  --color-border: 130 134 122;
+  --color-border-subtle: 215 213 203;
+  --color-border-hover: 130 134 122;
+  --color-action: 54 92 72;
+  --color-action-hover: 41 75 57;
+  --color-focus: 54 92 72;
+  --color-danger: 165 62 54;
+  --color-danger-hover: 140 48 42;
+  --color-danger-text: 165 62 54;
+  --color-danger-indicator: 165 62 54;
+  --color-overlay: 23 28 24;
+  --overlay-opacity: 0.42;
+  --color-toast: 41 44 40;
+  --color-chart-grid: 215 213 203;
+  --color-canvas-start: 246 243 237;
 
-  --font-body: "MaruBuri", "Noto Serif KR", serif;
-  --font-heading: var(--font-body);
-  --type-page-size: 1.25rem;
-  --type-page-leading: 2rem;
-  --type-ui-size: 0.875rem;
-  --type-ui-leading: 1.5rem;
+  --font-body:
+    "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI",
+    sans-serif;
+  --font-book: "MaruBuri", "Noto Serif KR", serif;
+  --font-heading: var(--font-book);
+  --type-page-size: 1.5rem;
+  --type-page-leading: 2.25rem;
+  --type-ui-size: 0.8125rem;
+  --type-ui-leading: 1.25rem;
   --space-section: 2rem;
   --space-fields: 1.5rem;
-  --radius-control: 0.5rem;
+  --radius-control: 0.375rem;
   --radius-panel: 0.625rem;
   --radius-tooltip: 0.875rem;
-  --radius-small: 0.5rem;
-  --control-padding-x: 0.6875rem;
-  --control-padding-y: 0.3125rem;
+  --radius-small: 0.25rem;
+  --control-padding-x: 0.75rem;
+  --control-padding-y: 0.4375rem;
   --control-padding-icon: 0.5rem;
   --control-padding-compact-x: 0.6875rem;
   --control-padding-compact-y: 0.3125rem;
   --control-height-compact: 2rem;
-  --field-padding-x: 0.6875rem;
+  --field-padding-x: 0.75rem;
   --field-padding-with-icon: 2rem;
   --focus-width: 2px;
   --focus-offset: 2px;
-  --layout-sidebar-width: 16rem;
-  --layout-page-inline: 2.5rem;
-  --layout-page-block: 2.5rem;
+  --layout-sidebar-width: 13rem;
+  --layout-page-inline: 2rem;
+  --layout-page-block: 1.75rem;
   --layer-footer: 30;
   --layer-overlay: 50;
   --layer-toast: 60;
   --shadow-panel: 0 18px 36px -24px rgb(var(--palette-primary-900) / 0.48);
   --shadow-soft: 0 1px 2px rgb(var(--palette-primary-900) / 0.04);
-  --motion-duration-fast: 150ms;
-  --motion-duration-hover: 200ms;
-  --motion-duration-enter: 220ms;
-  --motion-duration-slide: 260ms;
+  --motion-duration-fast: 100ms;
+  --motion-duration-hover: 100ms;
+  --motion-duration-enter: 140ms;
+  --motion-duration-slide: 160ms;
   --motion-duration-transform: 300ms;
   --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-enter: reading-desk-fade-up var(--motion-duration-enter) ease-out;
@@ -124,18 +148,18 @@
 }
 
 /* Window breakpoints control the shell; book grid thresholds use container width. */
-@media (min-width: 1280px) {
+@media (min-width: 1100px) {
   :root {
-    --layout-page-inline: 2.5rem;
+    --layout-page-inline: 2rem;
   }
 }
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
   :root {
     --layout-sidebar-width: 11rem;
-    --layout-page-inline: 1.25rem;
+    --layout-page-inline: 1.5rem;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   :root {
     --layout-page-inline: 1rem;
     --layout-page-block: 1.25rem;
@@ -145,30 +169,53 @@
 /* Resolved by the saved preference and the system color-scheme listener. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-surface: 34 36 40;
-  --color-surface-muted: 24 26 30;
-  --color-surface-subtle: 43 46 52;
-  --color-surface-selected: 65 46 39;
-  --color-text: 220 222 226;
-  --color-text-heading: 237 238 240;
-  --color-text-emphasis: 245 240 233;
-  --color-text-secondary: 192 195 201;
-  --color-text-muted: 166 172 182;
-  --color-text-subtle: 166 172 182;
-  --color-text-faint: 150 155 164;
-  --color-border: 87 93 103;
-  --color-border-subtle: 63 67 74;
-  --color-border-hover: 111 117 126;
-  --color-action: 78 89 110;
-  --color-action-hover: 91 105 129;
-  --color-focus: 255 168 131;
-  --color-danger: 185 28 28;
-  --color-danger-hover: 153 27 27;
-  --color-danger-text: 252 165 165;
-  --color-danger-indicator: 248 113 113;
-  --color-toast: 63 67 74;
-  --color-chart-grid: 63 67 74;
-  --color-canvas-start: 24 26 30;
+  --color-danger-solid-hover: 128 53 47;
+  --color-info-subtle: 44 61 73;
+  --color-info: 174 201 223;
+  --color-warning-subtle: 67 59 41;
+  --color-warning: 228 197 137;
+  --color-success-subtle: 44 64 48;
+  --color-success: 177 204 175;
+  --color-category-ink: 238 237 229;
+  --color-on-disabled: 171 179 163;
+  --color-disabled: 55 61 51;
+  --color-nav-hover: 52 59 50;
+  --color-nav-on-selected: 238 237 229;
+  --color-nav-selected-hover: 54 76 62;
+  --color-nav-selected: 54 76 62;
+  --color-overlay: 16 21 16;
+  --overlay-opacity: 0.6;
+  --color-on-danger: 255 255 255;
+  --color-danger-subtle: 73 47 44;
+  --color-danger-solid: 150 63 55;
+  --color-action-pressed: 159 189 164;
+  --color-text-on-solid: 255 255 255;
+  --color-surface-raised: 48 54 47;
+  --color-on-action: 28 48 35;
+  --color-surface: 39 43 38;
+  --color-surface-muted: 27 30 27;
+  --color-surface-subtle: 52 59 50;
+  --color-surface-selected: 54 76 62;
+  --color-text: 238 237 229;
+  --color-text-heading: 238 237 229;
+  --color-text-emphasis: 238 237 229;
+  --color-text-secondary: 197 201 190;
+  --color-text-muted: 177 186 170;
+  --color-text-subtle: 177 186 170;
+  --color-text-faint: 177 186 170;
+  --color-border: 124 137 116;
+  --color-border-subtle: 71 78 67;
+  --color-border-hover: 124 137 116;
+  --color-action: 177 203 180;
+  --color-action-hover: 196 218 197;
+  --color-focus: 192 217 185;
+  --color-danger: 150 63 55;
+  --color-danger-hover: 248 192 185;
+  --color-danger-text: 240 170 162;
+  --color-danger-indicator: 240 170 162;
+  --color-toast: 48 54 47;
+  --color-chart-grid: 71 78 67;
+  --color-canvas-start: 32 35 31;
   --color-category-1: 45 57 73;
   --color-category-2: 40 58 79;
   --color-category-3: 48 60 42;
@@ -183,12 +230,12 @@
   --color-category-12: 62 53 43;
   --color-category-13: 74 49 36;
   --color-category-14: 42 55 73;
-  --color-chart-1: 192 195 201;
-  --color-chart-2: 150 155 164;
-  --color-chart-3: 100 170 172;
-  --color-chart-4: 121 175 130;
-  --color-chart-5: 193 158 109;
-  --color-chart-6: 232 155 111;
+  --color-chart-1: 177 203 180;
+  --color-chart-2: 162 190 213;
+  --color-chart-3: 212 170 142;
+  --color-chart-4: 203 185 132;
+  --color-chart-5: 194 169 198;
+  --color-chart-6: 152 196 192;
   --color-chart-7: 211 127 107;
   --color-chart-8: 143 165 196;
   --color-chart-9: 169 189 140;

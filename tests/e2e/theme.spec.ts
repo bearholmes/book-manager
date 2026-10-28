@@ -31,9 +31,16 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
   }
   await expect(page.getByText('등록된 도서가 없습니다')).toBeVisible();
 
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.load('400 14px MaruBuri', '나의 서재');
+    await document.fonts.ready;
+  });
   expect(await page.evaluate(() => document.fonts.check('400 14px MaruBuri'))).toBe(true);
-  await expect(page.locator('body')).toHaveCSS('font-family', /MaruBuri/);
+  await expect(page.locator('body')).toHaveCSS('font-family', /^"?Pretendard(?: Variable)?"?,/i);
+  await expect(page.getByRole('heading', { name: '나의 서재', exact: true })).toHaveCSS(
+    'font-family',
+    /MaruBuri/,
+  );
   const fontUrls = await page.evaluate(() =>
     performance
       .getEntriesByType('resource')
@@ -45,42 +52,43 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
 
   const add = page.getByRole('button', { name: '도서 추가', exact: true }).first();
   await expect(add).toHaveCSS('height', '36px');
-  await expect(add).toHaveCSS('padding', '5px 11px');
-  await expect(add).toHaveCSS('border-radius', '8px');
-  await expect(add).toHaveCSS('background-color', 'rgb(45, 47, 52)');
+  await expect(add).toHaveCSS('padding', '7px 12px');
+  await expect(add).toHaveCSS('border-radius', '6px');
+  await expect(add).toHaveCSS('background-color', 'rgb(54, 92, 72)');
   await page.evaluate(() =>
     document.documentElement.style.setProperty('--color-action', '10 20 30'),
   );
   await expect(add).toHaveCSS('background-color', 'rgb(10, 20, 30)');
   await page.evaluate(() => document.documentElement.style.removeProperty('--color-action'));
-  await expect(add).toHaveCSS('background-color', 'rgb(45, 47, 52)');
+  await expect(add).toHaveCSS('background-color', 'rgb(54, 92, 72)');
 
   const search = page.getByLabel('검색', { exact: true });
-  await expect(search).toHaveCSS('border-radius', '8px');
+  await expect(search).toHaveCSS('border-radius', '6px');
   await expect(search).toHaveCSS('padding-left', '32px');
   await page.keyboard.press('ControlOrMeta+f');
   await expect(search).toBeFocused();
-  await expect(search).toHaveCSS('border-color', 'rgb(111, 117, 126)');
-  await expect(search).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(search).toHaveCSS('border-color', 'rgb(54, 92, 72)');
+  await expect(search).toHaveCSS('outline-color', 'rgb(54, 92, 72)');
+  await expect(search).toHaveCSS('outline-width', '2px');
 
   const libraryHeading = page.getByRole('heading', { name: '나의 서재', exact: true });
-  await expect(libraryHeading).toHaveCSS('font-size', '20px');
-  await expect(libraryHeading).toHaveCSS('line-height', '32px');
+  await expect(libraryHeading).toHaveCSS('font-size', '24px');
+  await expect(libraryHeading).toHaveCSS('line-height', '36px');
   await expect(page.getByRole('columnheader', { name: '도서', exact: true })).toHaveCSS(
     'font-size',
-    '14px',
+    '13px',
   );
-  await expect(search).toHaveCSS('height', '36px');
+  await expect(search).toHaveCSS('height', '38px');
   await expect(page.getByRole('button', { name: '목록 보기', exact: true })).toHaveCSS(
     'height',
     '36px',
   );
-  await expect(page.getByLabel('주제', { exact: true })).toHaveCSS('height', '36px');
+  await expect(page.getByLabel('주제', { exact: true })).toHaveCSS('height', '38px');
 
   const sidebar = page.locator('aside');
   const main = page.locator('main');
-  await expect(sidebar).toHaveCSS('width', '256px');
-  await expect(main).toHaveCSS('margin-left', '256px');
+  await expect(sidebar).toHaveCSS('width', '208px');
+  await expect(main).toHaveCSS('margin-left', '208px');
   await page.setViewportSize({ width: 800, height: 800 });
   await expect(sidebar).toHaveCSS('width', '176px');
   await expect(main).toHaveCSS('margin-left', '176px');
@@ -93,7 +101,7 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
   await add.click();
   const panel = page.getByRole('dialog', { name: '도서 추가' });
   await expect(panel).toHaveCSS('z-index', '50');
-  await expect(page.getByLabel('도서명')).toHaveCSS('border-radius', '8px');
+  await expect(page.getByLabel('도서명')).toHaveCSS('border-radius', '6px');
   const animation = await panel
     .locator('div')
     .evaluateAll(
@@ -132,17 +140,17 @@ test('tokens, native-sized controls, compact layout and reduced motion retain us
   await expect(page.getByRole('heading', { name: '통계', exact: true })).toBeVisible();
   await expect(page.locator('svg [fill="rgb(var(--color-chart-1))"]').first()).toHaveCSS(
     'fill',
-    'rgb(87, 93, 103)',
+    'rgb(54, 92, 72)',
   );
 
   await expect(page.getByRole('heading', { name: '통계', exact: true })).toHaveCSS(
     'line-height',
-    '32px',
+    '36px',
   );
   await page.getByRole('link', { name: '설정', exact: true }).click();
   await expect(page.getByRole('heading', { name: '설정', exact: true })).toHaveCSS(
     'font-size',
-    '20px',
+    '24px',
   );
   const pinSection = page.getByRole('region', { name: 'PIN 잠금', exact: true });
   const settingsHeader = await page.locator('main header').boundingBox();
@@ -203,13 +211,13 @@ test('theme selection persists and follows the system only when selected', async
   const theme = page.getByRole('combobox', { name: '테마', exact: true });
   await expect(theme).toHaveValue('system');
   await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
-  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(34, 36, 40)');
-  await expect(theme).toHaveCSS('color', 'rgb(220, 222, 226)');
+  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(32, 35, 31)');
+  await expect(theme).toHaveCSS('color', 'rgb(238, 237, 229)');
   await page.screenshot({ path: testInfo.outputPath('settings-dark.png'), fullPage: true });
 
   await theme.selectOption('light');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(253, 253, 253)');
+  await expect(page.locator('main')).toHaveCSS('background-color', 'rgb(246, 243, 237)');
   await page.reload();
   await expect(theme).toHaveValue('light');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -227,12 +235,68 @@ test('theme selection persists and follows the system only when selected', async
 
   await page.getByRole('link', { name: '나의 서재', exact: true }).click();
   await page.getByRole('button', { name: '도서 추가', exact: true }).first().click();
-  await expect(page.getByLabel('도서명')).toHaveCSS('background-color', 'rgb(34, 36, 40)');
+  await expect(page.getByLabel('도서명')).toHaveCSS('background-color', 'rgb(48, 54, 47)');
   await page.screenshot({ path: testInfo.outputPath('book-form-dark.png'), fullPage: true });
   await page.getByRole('button', { name: '패널 닫기', exact: true }).click();
   await page.getByRole('link', { name: '통계', exact: true }).click();
   await expect(page.getByRole('heading', { name: '통계', exact: true })).toHaveCSS(
     'color',
-    'rgb(237, 238, 240)',
+    'rgb(238, 237, 229)',
   );
+});
+
+test('navigation preserves selected, hover and keyboard focus states in both modes', async ({
+  page,
+}) => {
+  for (const mode of [
+    {
+      scheme: 'light' as const,
+      selected: 'rgb(91, 107, 83)',
+      selectedHover: 'rgb(82, 98, 74)',
+      foreground: 'rgb(251, 249, 245)',
+      hover: 'rgb(227, 223, 213)',
+      secondary: 'rgb(86, 91, 83)',
+      focus: 'rgb(54, 92, 72)',
+    },
+    {
+      scheme: 'dark' as const,
+      selected: 'rgb(54, 76, 62)',
+      selectedHover: 'rgb(54, 76, 62)',
+      foreground: 'rgb(238, 237, 229)',
+      hover: 'rgb(52, 59, 50)',
+      secondary: 'rgb(197, 201, 190)',
+      focus: 'rgb(192, 217, 185)',
+    },
+  ]) {
+    await page.emulateMedia({ colorScheme: mode.scheme, reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', mode.scheme);
+    const nav = page.locator('aside nav');
+    const selected = nav.getByRole('link', { name: '나의 서재', exact: true });
+    const other = nav.getByRole('link', { name: '통계', exact: true });
+    await expect(nav.locator('[aria-current="page"]')).toHaveCount(1);
+    await expect(selected).toHaveAttribute('aria-current', 'page');
+    await expect(selected).toHaveCSS('background-color', mode.selected);
+    await expect(selected).toHaveCSS('color', mode.foreground);
+    await expect(selected).toHaveCSS('font-weight', '600');
+    await expect(other).toHaveCSS('color', mode.secondary);
+    await selected.hover();
+    await expect(selected).toHaveCSS('background-color', mode.selectedHover);
+    await expect(selected).toHaveCSS('color', mode.foreground);
+    await other.hover();
+    await expect(other).toHaveCSS('background-color', mode.hover);
+    await expect(selected).toHaveCSS('background-color', mode.selected);
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await selected.focus();
+    await expect(selected).toBeFocused();
+    await expect(selected).toHaveCSS('outline-color', mode.focus);
+    await expect(selected).toHaveCSS('outline-width', '2px');
+    await expect(selected).toHaveCSS('outline-offset', '2px');
+    await expect(selected).toHaveCSS('background-color', mode.selected);
+    await other.focus();
+    await expect(other).toHaveCSS('outline-color', mode.focus);
+    await expect(other).toHaveCSS('outline-width', '2px');
+    await expect(other).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  }
 });

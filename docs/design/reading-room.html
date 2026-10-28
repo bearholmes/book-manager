@@ -1,0 +1,1848 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>방구석 도서관리 · 디자인 방향 제안</title>
+    <link rel="stylesheet" href="reading-room.tokens.css">
+    <style>
+    @font-face {
+      font-family: MaruBuri;
+      src: url("../../src/shared/assets/fonts/maru-buri/MaruBuri-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: MaruBuri;
+      src: url("../../src/shared/assets/fonts/maru-buri/MaruBuri-SemiBold.woff2") format("woff2");
+      font-weight: 600;
+      font-display: swap;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--rr-canvas);
+      color: var(--rr-ink);
+      font: 14px / 1.6 var(--rr-font-ui);
+    }
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+    button,
+    select {
+      cursor: pointer;
+    }
+    button {
+      color: inherit;
+    }
+    button:disabled {
+      cursor: default;
+    }
+    a {
+      color: var(--rr-action);
+      text-underline-offset: 4px;
+    }
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+    button:focus-visible,
+    a:focus-visible,
+    summary:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--rr-focus);
+      outline-offset: 2px;
+    }
+    .sr-only {
+      position: absolute;
+      clip-path: inset(50%);
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .icon {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .board {
+      max-width: 1504px;
+      padding: 32px 40px 40px;
+      margin: auto;
+    }
+    .masthead {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rr-rule);
+    }
+    .eyebrow {
+      font-size: 12px;
+      color: var(--rr-muted);
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .masthead h1 {
+      font: 600 30px / 1.5 var(--rr-font-book);
+      letter-spacing: -0.02em;
+    }
+    .masthead p {
+      color: var(--rr-secondary);
+      margin-top: 6px;
+    }
+    .proposal-tag {
+      font-size: 12px;
+      white-space: nowrap;
+      color: var(--rr-action);
+      background: var(--rr-selected);
+      border: 1px solid var(--rr-control);
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-top: 8px;
+    }
+    .review-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 20px 0;
+    }
+    .direction-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .direction-title small {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--rr-muted);
+      margin-left: 12px;
+    }
+    .switches {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .switches label {
+      font-size: 12px;
+      color: var(--rr-secondary);
+    }
+    .switches select {
+      margin-left: 6px;
+      max-width: 130px;
+    }
+    .control {
+      height: 36px;
+      border: 1px solid var(--rr-control);
+      border-radius: var(--rr-radius-control);
+      background: var(--rr-raised);
+      color: var(--rr-ink);
+      padding: 0 10px;
+      font-size: var(--rr-type-ui-size);
+      min-width: 0;
+    }
+    input.control,
+    textarea.control {
+      font-size: var(--rr-type-input-size);
+    }
+    .control::placeholder {
+      color: var(--rr-muted);
+      opacity: 1;
+    }
+    .control[aria-invalid="true"]:not(:disabled) {
+      border-color: var(--rr-danger);
+    }
+    .control:hover {
+      border-color: var(--rr-focus);
+    }
+    .control:disabled {
+      background: var(--rr-disabled);
+      color: var(--rr-on-disabled);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 36px;
+      border: 1px solid var(--rr-control);
+      border-radius: 6px;
+      padding: 7px 12px;
+      background: var(--rr-raised);
+      color: var(--rr-ink);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 20px;
+      white-space: nowrap;
+      transition:
+        background var(--rr-duration-hover),
+        color var(--rr-duration-hover);
+    }
+    .btn:hover:not(:disabled) {
+      background: var(--rr-hover);
+    }
+    .btn:active:not(:disabled) {
+      background: var(--rr-selected);
+    }
+    .btn.primary {
+      background: var(--rr-action);
+      border-color: var(--rr-action);
+      color: var(--rr-on-action);
+    }
+    .btn.primary:hover:not(:disabled) {
+      background: var(--rr-action-hover);
+      border-color: var(--rr-action-hover);
+    }
+    .btn.primary:active:not(:disabled) {
+      background: var(--rr-action-pressed);
+      border-color: var(--rr-action-pressed);
+    }
+    .btn:disabled {
+      background: var(--rr-disabled);
+      color: var(--rr-on-disabled);
+      border-color: var(--rr-control);
+    }
+    .btn.ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+    .btn.danger {
+      color: var(--rr-danger);
+    }
+    .btn.danger:hover {
+      background: var(--rr-danger-subtle);
+      color: var(--rr-danger-hover);
+    }
+    .frame {
+      display: grid;
+      grid-template-columns: 208px minmax(0, 1fr);
+      border: 1px solid var(--rr-rule);
+      min-height: 568px;
+      overflow: hidden;
+      background: var(--rr-canvas);
+    }
+    .sidebar {
+      background: var(--rr-chrome);
+      border-right: 1px solid var(--rr-rule);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 12px 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 6px 30px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .brand img {
+      width: 24px;
+      height: 24px;
+    }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav button {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 12px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--rr-secondary);
+    }
+    .nav .icon {
+      width: 18px;
+      height: 18px;
+    }
+    .nav button:hover:not([aria-current="page"]) {
+      background: var(--rr-nav-hover);
+    }
+    .nav button[aria-current="page"] {
+      background: var(--rr-nav-selected);
+      color: var(--rr-nav-on-selected);
+      font-weight: 600;
+    }
+    .nav button[aria-current="page"]:hover {
+      background: var(--rr-nav-selected-hover);
+    }
+    .sidebar-note {
+      margin-top: auto;
+      padding: 32px 12px 0;
+      color: var(--rr-muted);
+      font-size: 12px;
+    }
+    .workspace {
+      min-width: 0;
+      padding: 28px 32px 24px;
+    }
+    .page-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .page-top h2 {
+      font: 600 24px / 36px var(--rr-font-book);
+      letter-spacing: -0.02em;
+    }
+    .heading-line {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .count {
+      color: var(--rr-muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .search {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+    }
+    .search .icon {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      color: var(--rr-secondary);
+    }
+    .search input {
+      width: 100%;
+      padding-left: 34px;
+      padding-right: 46px;
+    }
+    .search kbd {
+      position: absolute;
+      right: 10px;
+      top: 9px;
+      font: 11px / 18px var(--rr-font-ui);
+      color: var(--rr-muted);
+    }
+    .toolbar select {
+      max-width: 140px;
+    }
+    .toolbar .reset {
+      width: 36px;
+      padding: 0;
+    }
+    .result-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .result-label {
+      font-size: 12px;
+      color: var(--rr-muted);
+    }
+    .segmented {
+      display: flex;
+      margin: 0;
+      min-width: 0;
+      gap: 2px;
+      border: 1px solid var(--rr-control);
+      border-radius: 6px;
+      padding: 2px;
+      background: var(--rr-surface);
+    }
+    .segmented button {
+      height: 28px;
+      min-width: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: var(--rr-secondary);
+    }
+    .segmented button[aria-pressed="true"] {
+      background: var(--rr-selected);
+      color: var(--rr-ink);
+    }
+    .segmented button:hover {
+      background: var(--rr-hover);
+    }
+    .table-wrap {
+      background: var(--rr-surface);
+      border-top: 1px solid var(--rr-rule);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      table-layout: fixed;
+    }
+    .table-name {
+      width: 30%;
+    }
+    .table-author {
+      width: 24%;
+    }
+    .table-topic {
+      width: 16%;
+    }
+    col.purchase-col {
+      width: 14%;
+    }
+    col.date-col {
+      width: 16%;
+    }
+    th {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--rr-muted);
+      height: 36px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--rr-rule);
+    }
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--rr-rule);
+      font-size: 13px;
+      vertical-align: middle;
+      overflow-wrap: anywhere;
+    }
+    tbody tr:hover {
+      background: var(--rr-hover);
+    }
+    .title-button {
+      display: block;
+      text-align: left;
+      padding: 0;
+      border: 0;
+      background: none;
+      font: 600 16px / 24px var(--rr-font-book);
+      color: var(--rr-ink);
+      max-width: 100%;
+    }
+    .meta {
+      display: block;
+      color: var(--rr-muted);
+      font: 12px / 18px var(--rr-font-ui);
+      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+    .author {
+      font-size: 13px;
+      color: var(--rr-secondary);
+      display: block;
+    }
+    .date {
+      font-size: 12px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .topic {
+      display: inline-flex;
+      background: var(--topic-bg, var(--rr-hover));
+      color: var(--rr-category-ink);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .endnote {
+      font-size: 12px;
+      color: var(--rr-muted);
+      padding: 16px 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 176px));
+      gap: 24px;
+      padding: 20px 0;
+    }
+    .book-card {
+      background: none;
+      border: 0;
+      padding: 0;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .cover {
+      aspect-ratio: 4 / 5;
+      width: 100%;
+      background: var(--rr-surface);
+      border: 1px solid var(--rr-rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--rr-muted);
+      font-size: 12px;
+    }
+    .book-card .book-name {
+      font: 600 16px / 24px var(--rr-font-book);
+      margin-top: 6px;
+    }
+    .book-card:hover .cover {
+      border-color: var(--rr-control);
+    }
+    .empty {
+      padding: 64px 16px;
+      text-align: center;
+      border-block: 1px solid var(--rr-rule);
+      background: var(--rr-surface);
+    }
+    .empty h3 {
+      font: 600 18px / 28px var(--rr-font-book);
+      margin-bottom: 8px;
+    }
+    .empty p {
+      color: var(--rr-secondary);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: -2px;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .settings {
+      max-width: 880px;
+    }
+    .settings-row {
+      padding: 24px 0;
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(160px, 1.2fr);
+      gap: 24px;
+      border-top: 1px solid var(--rr-rule);
+    }
+    .settings-row h3 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .settings-row p {
+      font-size: 13px;
+      color: var(--rr-secondary);
+      margin-top: 4px;
+    }
+    .settings-row select {
+      width: 100%;
+      max-width: 280px;
+    }
+    .mock-note {
+      font-size: 12px;
+      color: var(--rr-muted);
+      margin-top: 12px;
+    }
+    .stats-list {
+      max-width: 720px;
+    }
+    .stats-list dl {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      margin: 0;
+      gap: 0 24px;
+    }
+    .stats-list dt,
+    .stats-list dd {
+      margin: 0;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rr-rule);
+    }
+    .stats-list dd {
+      font-variant-numeric: tabular-nums;
+    }
+    .stats-list h3 {
+      font-size: 14px;
+      margin: 24px 0 8px;
+    }
+    .legend-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--rr-chart-1);
+      border: 1px solid var(--rr-control);
+    }
+    .under-frame {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0 20px;
+      color: var(--rr-muted);
+      font-size: 12px;
+    }
+    .under-frame code {
+      font-family: var(--rr-font-ui);
+    }
+    .disclosure {
+      border-top: 1px solid var(--rr-rule);
+    }
+    .disclosure summary {
+      padding: 20px 0;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .disclosure summary span {
+      color: var(--rr-muted);
+      font-weight: 400;
+      margin-left: 12px;
+      font-size: 12px;
+    }
+    .concepts {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      padding: 4px 0 28px;
+    }
+    .concept h3 {
+      font: 600 20px / 30px var(--rr-font-book);
+      margin: 16px 0 6px;
+    }
+    .concept p {
+      color: var(--rr-secondary);
+      font-size: 13px;
+    }
+    .concept .position {
+      font-size: 12px;
+      color: var(--rr-muted);
+      margin-top: 8px;
+    }
+    .mini {
+      height: 152px;
+      border: 1px solid var(--rr-rule);
+      overflow: hidden;
+      display: grid;
+      background: var(--rr-surface);
+      font-size: 10px;
+      line-height: 1.6;
+    }
+    .mini.a {
+      grid-template-columns: 52px 1fr;
+    }
+    .mini.b {
+      grid-template-columns: 70px 1fr;
+    }
+    .mini-sidebar {
+      background: var(--rr-chrome);
+      padding: 12px 6px;
+      border-right: 1px solid var(--rr-rule);
+    }
+    .mini-content {
+      padding: 12px;
+    }
+    .mini .mini-title {
+      font: 600 15px / 24px var(--rr-font-book);
+      margin-bottom: 8px;
+    }
+    .mini.a .mini-title {
+      font: 600 12px / 24px var(--rr-font-ui);
+    }
+    .mini-row {
+      border-bottom: 1px solid var(--rr-rule);
+      padding: 4px 0;
+    }
+    .mini.b .mini-content {
+      padding: 16px;
+    }
+    .mini.c {
+      display: flex;
+      flex-direction: column;
+    }
+    .mini.c .mini-top {
+      border-bottom: 1px solid var(--rr-rule);
+      padding: 6px 12px;
+    }
+    .mini.c .mini-title {
+      font-size: 22px;
+      margin: 4px 0 8px;
+    }
+    .mini-books {
+      display: flex;
+      gap: 12px;
+    }
+    .mini-book {
+      border: 1px solid var(--rr-control);
+      width: 48px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      color: var(--rr-muted);
+    }
+    .recommendation {
+      font-size: 12px;
+      color: var(--rr-action);
+      font-weight: 600;
+    }
+    .rules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 24px;
+    }
+    .rules h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .rules p {
+      color: var(--rr-secondary);
+      font-size: 13px;
+    }
+    .sample-type {
+      font: 600 24px / 36px var(--rr-font-book);
+      margin-bottom: 4px;
+    }
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin: 8px 0 24px;
+    }
+    .swatch {
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .swatch-color {
+      height: 48px;
+      border: 1px solid var(--rr-control);
+      margin-bottom: 6px;
+      background: var(--value);
+    }
+    .swatch code {
+      display: block;
+      color: var(--rr-muted);
+      font: 11px / 18px var(--rr-font-ui);
+    }
+    .states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 20px;
+    }
+    .focus-demo {
+      outline: 2px solid var(--rr-focus);
+      outline-offset: 2px;
+    }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 24px;
+    }
+    .status {
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--fg);
+      background: var(--bg);
+    }
+    .state-field {
+      display: grid;
+      gap: 6px;
+      max-width: 340px;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+    .state-field input {
+      width: 100%;
+      border-color: var(--rr-danger);
+    }
+    .state-field p {
+      color: var(--rr-danger);
+      font-size: 12px;
+    }
+    .footer {
+      border-top: 1px solid var(--rr-rule);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      color: var(--rr-muted);
+      font-size: 12px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    dialog {
+      padding: 0;
+      border: 1px solid var(--rr-rule);
+      border-radius: 10px;
+      width: min(560px, calc(100vw - 32px));
+      max-height: calc(100dvh - 40px);
+      background: var(--rr-raised);
+      color: var(--rr-ink);
+      box-shadow: 0 16px 48px rgb(12 20 14 / 0.2);
+      animation: enter var(--rr-duration-enter) var(--rr-ease);
+    }
+    dialog::backdrop {
+      background: rgb(var(--rr-overlay-rgb) / 0.42);
+    }
+    dialog[data-kind="editor"] {
+      margin: 0 0 0 auto;
+      width: min(560px, 100vw);
+      height: 100dvh;
+      max-height: 100dvh;
+      border-radius: 0;
+      animation: panel-enter 160ms var(--rr-ease);
+    }
+    @keyframes panel-enter {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .changing-theme .btn {
+      transition: none;
+    }
+    [data-theme="dark"] dialog::backdrop {
+      background: rgb(var(--rr-overlay-rgb) / 0.6);
+    }
+    [data-theme="dark"] dialog {
+      box-shadow: 0 16px 48px rgb(12 20 14 / 0.4);
+    }
+    .dialog-inner {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: calc(100dvh - 42px);
+    }
+    dialog[data-kind="editor"] .dialog-inner {
+      height: 100%;
+      max-height: calc(100dvh - 2px);
+    }
+    .dialog-body {
+      min-height: 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .dialog-top {
+      display: flex;
+      flex-shrink: 0;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .dialog-top h2 {
+      font: 600 22px / 33px var(--rr-font-book);
+    }
+    .dialog-top button {
+      width: 36px;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .dialog-body h3 {
+      font-size: 14px;
+      margin: 24px 0 8px;
+    }
+    .dialog-body dl {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      margin: 0;
+    }
+    .dialog-body dt,
+    .dialog-body dd {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--rr-rule);
+      margin: 0;
+      font-size: 13px;
+    }
+    .dialog-body dt {
+      color: var(--rr-secondary);
+    }
+    .dialog-body .memo {
+      font: 400 15px / 27px var(--rr-font-book);
+    }
+    .dialog-actions {
+      display: flex;
+      flex-shrink: 0;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rr-rule);
+    }
+    .form-field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .form-field input {
+      width: 100%;
+    }
+    .form-error {
+      color: var(--rr-danger);
+      font-size: 12px;
+    }
+    .form-status {
+      font-size: 13px;
+      color: var(--rr-success);
+    }
+    @keyframes enter {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    [hidden] {
+      display: none;
+    }
+    @media (min-width: 761px) and (max-width: 1099px) {
+      .frame {
+        grid-template-columns: 176px minmax(0, 1fr);
+      }
+      .workspace {
+        padding: 24px;
+      }
+      .search {
+        flex-basis: 100%;
+      }
+      .brand {
+        font-size: 12px;
+        gap: 6px;
+        padding-inline: 0;
+      }
+      .brand img {
+        width: 20px;
+        height: 20px;
+      }
+      .sidebar {
+        padding-inline: 10px;
+      }
+      .toolbar select {
+        flex: 1;
+        max-width: none;
+      }
+      .board {
+        padding: 24px;
+      }
+      .date-col {
+        display: none;
+      }
+    }
+    @media (max-width: 760px) {
+      .board {
+        padding: 20px 16px;
+      }
+      .masthead {
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .masthead h1 {
+        font-size: 26px;
+      }
+      .masthead p {
+        font-size: 13px;
+      }
+      .proposal-tag {
+        margin-top: 0;
+      }
+      .direction-title small {
+        display: block;
+        margin: 4px 0 0;
+      }
+      .switches {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .frame {
+        display: block;
+        min-height: 560px;
+      }
+      .sidebar {
+        padding: 14px 16px;
+        display: flex;
+        border-right: 0;
+        border-bottom: 1px solid var(--rr-rule);
+        gap: 12px;
+      }
+      .brand {
+        padding: 0;
+      }
+      .nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .nav button {
+        padding: 0 10px;
+      }
+      .sidebar-note {
+        display: none;
+      }
+      .workspace {
+        padding: 20px 16px;
+      }
+      .page-top {
+        margin-bottom: 20px;
+      }
+      .toolbar {
+        gap: 8px;
+      }
+      .search {
+        flex-basis: 100%;
+        min-width: 0;
+      }
+      .toolbar select {
+        flex: 1;
+        max-width: none;
+      }
+      .page-top h2 {
+        font-size: 22px;
+      }
+      .concepts {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .concept {
+        display: grid;
+        grid-template-columns: minmax(140px, 1fr) minmax(0, 1fr);
+        gap: 16px;
+      }
+      .concept h3 {
+        margin-top: 0;
+      }
+      .rules {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .swatches {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .settings-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .purchase-col,
+      .date-col {
+        display: none;
+      }
+      .table-name {
+        width: 50%;
+      }
+      .table-author {
+        width: 32%;
+      }
+      .table-topic {
+        width: 18%;
+      }
+      .dialog-inner {
+        padding: 24px;
+      }
+      .disclosure summary span {
+        display: block;
+        margin-left: 0;
+      }
+      .footer {
+        display: block;
+      }
+      .footer-links {
+        margin-top: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      .toolbar select {
+        flex: 1 1 calc(50% - 8px);
+      }
+      .toolbar #sort {
+        flex-basis: calc(100% - 52px);
+      }
+      .btn,
+      .control {
+        min-height: 44px;
+        height: auto;
+      }
+      .control {
+        height: 44px;
+      }
+      .toolbar .reset {
+        height: 44px;
+        width: 44px;
+      }
+      .search .icon {
+        top: 14px;
+      }
+      .search kbd {
+        top: 13px;
+      }
+      .segmented button {
+        height: 44px;
+        min-width: 44px;
+      }
+      .nav button {
+        height: 44px;
+      }
+      .topic-col {
+        display: none;
+      }
+      .table-name {
+        width: 57%;
+      }
+      .table-author {
+        width: 43%;
+      }
+      .heading-line {
+        gap: 8px;
+      }
+      .page-top {
+        gap: 8px;
+      }
+      .page-top h2 {
+        font-size: 20px;
+      }
+      .concept {
+        grid-template-columns: 1fr;
+      }
+      .concepts {
+        gap: 32px;
+      }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .switches select {
+        max-width: 120px;
+      }
+      .dialog-top button {
+        height: 44px;
+        width: 44px;
+      }
+      .search {
+        min-width: 0;
+      }
+    }
+    @media (max-width: 480px), (pointer: coarse) {
+      .title-button {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    }
+    @media (pointer: coarse) {
+      .segmented button {
+        height: 44px;
+        min-width: 44px;
+      }
+      .dialog-top button {
+        min-width: 44px;
+      }
+      .toolbar .reset {
+        width: 44px;
+      }
+      .btn,
+      .control {
+        min-height: 44px;
+      }
+      .nav button {
+        min-height: 44px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .btn,
+      .spinner,
+      dialog,
+      dialog[data-kind="editor"] {
+        animation: none;
+        transition: none;
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+      <defs>
+        <symbol id="i-book" viewBox="0 0 24 24">
+          <path d="M12 5v15M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z" />
+        </symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24">
+          <path d="M4 4v16h17M9 15v-4m5 4V7m5 8V4" />
+        </symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24">
+          <path d="M3 6h6m4 0h8M3 12h11m4 0h3M3 18h3m4 0h11" />
+          <circle cx="11" cy="6" r="2" />
+          <circle cx="16" cy="12" r="2" />
+          <circle cx="8" cy="18" r="2" />
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 4 4" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24">
+          <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" />
+        </symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </symbol>
+        <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6" /></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></symbol>
+      </defs>
+    </svg>
+    <main class="board">
+      <header class="masthead">
+        <div>
+          <div class="eyebrow">디자인 방향 제안 · 방구석 도서관리</div>
+          <h1>책의 온기, 도구의 명료함.</h1>
+          <p>마루부리의 표정은 남기고, 색과 여백에는 하나의 질서를 만듭니다.</p>
+        </div>
+        <span class="proposal-tag">승인 전 시안 · 앱 미적용</span>
+      </header>
+      <section aria-label="시안 조절" class="review-tools">
+        <div class="direction-title">
+          B. 조용한 개인 서재 <small>추천안 · 제품명은 변경하지 않습니다</small>
+        </div>
+        <div class="switches">
+          <label
+            >테마<select id="theme" class="control">
+              <option value="light">라이트</option>
+              <option value="dark">다크</option>
+              <option value="system">시스템</option>
+            </select></label
+          ><label
+            >서재 상태<select id="scenario" class="control">
+              <option value="default">기본</option>
+              <option value="empty">빈 서재</option>
+              <option value="loading">불러오는 중</option>
+              <option value="error">불러오기 오류</option>
+            </select></label
+          >
+        </div>
+      </section>
+      <section class="frame" aria-label="방구석 도서관리 화면 시안">
+        <aside class="sidebar">
+          <div class="brand">
+            <img
+              src="../../src/shared/assets/branding/library-logo-32.png"
+              srcset="../../src/shared/assets/branding/library-logo-64.png 2x"
+              alt=""
+            >방구석 도서관리
+          </div>
+          <nav class="nav" aria-label="주 메뉴">
+            <button type="button" data-page="library" aria-current="page">
+              <svg class="icon" aria-hidden="true"><use href="#i-book" /></svg>나의 서재
+            </button><button type="button" data-page="stats">
+              <svg class="icon" aria-hidden="true"><use href="#i-chart" /></svg>통계
+            </button><button type="button" data-page="settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>설정
+            </button>
+          </nav>
+          <div class="sidebar-note">나만의 책을 정리하는 공간</div>
+        </aside>
+        <div class="workspace">
+          <section id="library-page" aria-label="나의 서재">
+            <div class="page-top">
+              <div class="heading-line">
+                <h2>나의 서재</h2>
+                <span class="count" id="count">2권</span>
+              </div>
+              <button class="btn primary" type="button" id="add">
+                <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg>도서 추가
+              </button>
+            </div>
+            <search aria-label="도서 검색 및 필터">
+              <form class="toolbar" id="search-form">
+                <div class="search">
+                  <label class="sr-only" for="search">도서 검색</label
+                  ><svg class="icon" aria-hidden="true"><use href="#i-search" /></svg>
+                  <input
+                    class="control"
+                    id="search"
+                    placeholder="도서명, 저자, 출판사, ISBN 검색"
+                    type="search"
+                  ><kbd aria-hidden="true">⌘ F</kbd>
+                </div>
+                <select id="topic" class="control" aria-label="주제">
+                  <option value="">전체 주제</option>
+                  <option value="프로그래밍">프로그래밍</option>
+                </select><select id="place" class="control" aria-label="구매처">
+                  <option value="">전체 구매처</option>
+                  <option value="교보문고">교보문고</option>
+                  <option value="예스24">예스24</option>
+                </select><select id="sort" class="control" aria-label="정렬">
+                  <option value="recent">최신 등록순</option>
+                  <option value="title">도서명순</option>
+                </select><button
+                  class="btn ghost reset"
+                  id="reset"
+                  type="button"
+                  aria-label="검색과 필터 초기화"
+                  title="검색과 필터 초기화"
+                  disabled
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#i-reset" /></svg>
+                </button>
+              </form>
+            </search>
+            <div class="result-tools">
+              <span class="result-label" id="result-label" role="status">전체 도서</span>
+              <fieldset class="segmented" aria-label="보기 방식">
+                <button type="button" id="list-view" aria-label="목록 보기" aria-pressed="true">
+                  <svg class="icon" aria-hidden="true"><use href="#i-list" /></svg>
+                </button><button
+                  type="button"
+                  id="grid-view"
+                  aria-label="표지 보기"
+                  aria-pressed="false"
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#i-grid" /></svg>
+                </button>
+              </fieldset>
+            </div>
+            <div id="results"></div>
+          </section>
+          <section id="settings-page" class="settings" hidden aria-label="설정">
+            <div class="page-top"><h2>설정</h2></div>
+            <section class="settings-row">
+              <div>
+                <h3>테마</h3>
+                <p>시스템을 선택하면 기기 설정을 따릅니다.</p>
+              </div>
+              <div>
+                <label class="sr-only" for="settings-theme">테마</label
+                ><select class="control" id="settings-theme">
+                  <option value="system">시스템</option>
+                  <option value="light" selected>라이트</option>
+                  <option value="dark">다크</option>
+                </select>
+              </div>
+            </section>
+            <section class="settings-row">
+              <div>
+                <h3>서재 잠금</h3>
+                <p>PIN으로 서재 접근을 보호합니다.</p>
+              </div>
+              <p>기존 기능 유지 · 이 시안에서는 설정하지 않습니다.</p>
+            </section>
+            <section class="settings-row">
+              <div>
+                <h3>데이터 관리</h3>
+                <p>백업, 복원 및 초기화</p>
+              </div>
+              <p>기존 기능 유지 · 실제 파일을 변경하지 않습니다.</p>
+            </section>
+            <p class="mock-note">
+              설정의 위계·간격 시안입니다. 보안 및 데이터 기능의 실행 프로토타입은 아닙니다.
+            </p>
+          </section>
+          <section id="stats-page" class="stats-list" hidden aria-label="통계">
+            <div class="page-top"><h2>통계</h2></div>
+            <p class="mock-note">아래는 화면에 사용한 테스트용 도서 2권에서 계산한 분포입니다.</p>
+            <h3>소장 도서</h3>
+            <dl id="stats-total"></dl>
+            <h3>주제</h3>
+            <dl id="stats-topics"></dl>
+            <h3>구매처</h3>
+            <dl id="stats-places"></dl>
+            <p class="mock-note">
+              실제 통계 차트의 재설계는 이 단계에 포함하지 않습니다. 색상보다 라벨과 실제 수치를
+              우선합니다.
+            </p>
+          </section>
+        </div>
+      </section>
+      <div class="under-frame">
+        <span>인터랙티브 컨셉 시안 · <code>src/test/mockData.ts</code>의 테스트용 도서만 사용</span
+        ><span>검색 · 보기 전환 · 도서 상세 · 입력 확인 · 설정 테마 전환 가능</span>
+      </div>
+      <details class="disclosure" id="directions">
+        <summary>
+          01 / 컨셉 비교<span>정보 밀도와 책의 감각 사이에서 무엇을 선택할 것인가</span>
+        </summary>
+        <div class="concepts">
+          <article class="concept">
+            <div class="mini a">
+              <div class="mini-sidebar">서재<br>통계<br>설정</div>
+              <div class="mini-content">
+                <div class="mini-title">나의 서재</div>
+                <div class="mini-row">검색 · 주제 · 구매처</div>
+                <div class="mini-row">도서명　　저자　　구매일</div>
+                <div class="mini-row">클린 코드</div>
+                <div class="mini-row">리팩터링</div>
+              </div>
+            </div>
+            <div>
+              <h3>A. 정갈한 소장목록</h3>
+              <p>
+                조밀한 표와 중립적인 조작부. 책 제목에만 세리프를 남기는, 기능 우선의 방향입니다.
+              </p>
+              <p class="position">낮은 변경 위험 / 책의 정서는 약함</p>
+            </div>
+          </article>
+          <article class="concept">
+            <div class="mini b">
+              <div class="mini-sidebar">나의 서재<br><br>통계<br>설정</div>
+              <div class="mini-content">
+                <div class="mini-title">나의 서재</div>
+                <div class="mini-row">검색　　주제</div>
+                <div class="mini-row" style="font-family:var(--rr-font-book)">클린 코드</div>
+                <div class="mini-row" style="font-family:var(--rr-font-book)">리팩터링</div>
+              </div>
+            </div>
+            <div>
+              <span class="recommendation">추천 방향</span>
+              <h3>B. 조용한 개인 서재</h3>
+              <p>
+                책의 제목은 마루부리로, 조작은 산세리프로. 종이색과 제본 녹색을 낮은 채도로
+                연결합니다.
+              </p>
+              <p class="position">독자적 정체성 / 데스크톱 효율의 균형</p>
+            </div>
+          </article>
+          <article class="concept">
+            <div class="mini c">
+              <div class="mini-top">방구석 도서관리　　 서재 · 통계 · 설정</div>
+              <div class="mini-content">
+                <div class="mini-title">나의 서재</div>
+                <div class="mini-books">
+                  <div class="mini-book">표지 없음</div>
+                  <div class="mini-book">표지 없음</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3>C. 편집자의 서가</h3>
+              <p>
+                큰 세리프와 표지가 중심인 감상형 서가. 여백의 인상은 강하지만 한눈에 보는 정보량이
+                줄어듭니다.
+              </p>
+              <p class="position">소장품 감상에 유리 / 반복 기록에 불리</p>
+            </div>
+          </article>
+        </div>
+      </details>
+      <details class="disclosure" id="foundations">
+        <summary>02 / 색과 타이포그래피<span>같은 정체성, 서로 다른 밝기 체계</span></summary>
+        <div class="rules">
+          <section>
+            <h3>책의 언어</h3>
+            <div class="sample-type">나의 서재에 오래 남는 책</div>
+            <p>마루부리 600 · 제목과 도서명<br>메모는 400 / 15px / 행높이 27px</p>
+          </section>
+          <section>
+            <h3>도구의 언어</h3>
+            <p>도서명, 저자, 출판사, ISBN 검색</p>
+            <p>
+              시스템 산세리프 · 탐색 13px / 입력 14px<br>한글 조작부의 가독성과 반복 작업의 속도를
+              우선합니다.
+            </p>
+          </section>
+        </div>
+        <div class="swatches" id="swatches"></div>
+        <section aria-labelledby="topic-colors-heading">
+          <h3 id="topic-colors-heading" style="font-size:14px;margin-bottom:12px">
+            주제별 칩 색상
+          </h3>
+          <div class="states" id="topic-samples"></div>
+          <div class="states" id="topic-palette"></div>
+          <p class="mock-note" style="margin:0 0 24px">
+            기존 14색과 주제명 기반 배정을 유지합니다. 위 주제명은 기존 테스트의 예시이며 실제 서재
+            데이터가 아닙니다. 두 도서의 주제가 모두 프로그래밍이므로 목록의 칩은 같은 색이
+            맞습니다.
+          </p>
+        </section>
+        <p class="mock-note" style="padding-bottom:24px">
+          전체 토큰은 DESIGN.md에 정의합니다. 입력 경계(control)와 장식 구분선(rule)은 서로 다른
+          역할입니다.
+        </p>
+      </details>
+      <details class="disclosure" id="component-states">
+        <summary>
+          03 / 조작 상태와 아이콘<span>절제된 효과 · 키보드 포커스 · 모션 감소 대응</span>
+        </summary>
+        <div class="states">
+          <button type="button" class="btn primary" id="state-save">도서 저장</button
+          ><button type="button" class="btn">취소</button
+          ><button type="button" class="btn focus-demo">포커스 견본</button
+          ><button type="button" class="btn" disabled>저장 불가</button
+          ><button type="button" class="btn" disabled>
+            <span class="spinner" aria-hidden="true"></span>저장 중
+          </button><button type="button" class="btn danger" id="state-delete">도서 삭제</button>
+        </div>
+        <p id="state-feedback" class="mock-note" role="status" style="padding-bottom:20px">
+          상태 견본입니다. 버튼은 실제 데이터를 저장하거나 삭제하지 않습니다.
+        </p>
+        <div class="status-row">
+          <span class="status" style="--fg:var(--rr-success);--bg:var(--rr-success-subtle)"
+            >완료 · 상태 견본</span
+          ><span class="status" style="--fg:var(--rr-warning);--bg:var(--rr-warning-subtle)"
+            >주의 · 중복 구매</span
+          ><span class="status" style="--fg:var(--rr-danger);--bg:var(--rr-danger-subtle)"
+            >오류 · 다시 시도</span
+          ><span class="status" style="--fg:var(--rr-info);--bg:var(--rr-info-subtle)"
+            >안내 · 입력 확인</span
+          >
+        </div>
+        <div class="state-field">
+          <label for="isbn-error">ISBN-13 · 오류 상태 견본</label>
+          <input
+            class="control"
+            id="isbn-error"
+            value="978"
+            aria-invalid="true"
+            aria-describedby="isbn-error-text"
+          >
+          <p id="isbn-error-text">ISBN-13은 숫자 13자리로 입력해주세요.</p>
+        </div>
+        <div class="states">
+          <svg class="icon" aria-hidden="true"><use href="#i-book" /></svg
+          ><svg class="icon" aria-hidden="true"><use href="#i-chart" /></svg
+          ><svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg
+          ><svg class="icon" aria-hidden="true"><use href="#i-search" /></svg
+          ><span class="mock-note" style="margin:0"
+            >16px / stroke 1.75 · 탐색부는 18px · 라벨 병행</span
+          >
+        </div>
+        <p class="mock-note" style="padding-bottom:24px">
+          아이콘은 선·크기 비교용 단순 SVG 견본입니다. 제품 구현은 기존 Lucide의 동일 규격 재사용을
+          권장합니다. 이동·광택·반복 장식 효과는 넣지 않습니다.
+        </p>
+      </details>
+      <footer class="footer">
+        <span>검토용 제안 · 실제 앱 코드, 제품명 및 앱 아이콘 미변경</span>
+        <div class="footer-links">
+          <a href="../../DESIGN.md">디자인 명세</a><a href="contrast-report.md">대비 검사</a
+          ><a href="https://getdesign.md/oura/design-md" target="_blank" rel="noreferrer"
+            >getdesign.md 참고</a
+          ><a href="https://21st.dev/" target="_blank" rel="noreferrer">인터랙션 참고</a>
+        </div>
+      </footer>
+    </main>
+    <dialog id="book-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-inner">
+        <div class="dialog-top">
+          <h2 id="dialog-title">도서 상세</h2>
+          <button type="button" class="btn ghost" id="dialog-close" aria-label="대화상자 닫기">
+            <svg class="icon" aria-hidden="true"><use href="#i-close" /></svg>
+          </button>
+        </div>
+        <div id="dialog-body" class="dialog-body"></div>
+        <div class="dialog-actions">
+          <button type="button" class="btn" id="dialog-done">닫기</button>
+        </div>
+      </div>
+    </dialog>
+    <script>
+    // Synthetic records quoted from src/test/mockData.ts; not live book data.
+    const books = [
+      {
+        id: 'test-book-1',
+        name: '클린 코드',
+        isbn: '9788966260959',
+        author: '로버트 C. 마틴',
+        publisher: '인사이트',
+        topic: '프로그래밍',
+        place: '교보문고',
+        date: '2024.01.15',
+        created: '2024-01-15',
+        memo: '코드 품질을 높이는 필독서',
+      },
+      {
+        id: 'test-book-2',
+        name: '리팩터링',
+        isbn: '9788966261246',
+        author: '마틴 파울러',
+        publisher: '한빛미디어',
+        topic: '프로그래밍',
+        place: '예스24',
+        date: '2024.02.01',
+        created: '2024-02-01',
+        memo: '',
+      },
+    ];
+    const $ = (id) => document.getElementById(id);
+    let view = 'list';
+    let theme = 'light';
+    const system = matchMedia('(prefers-color-scheme: dark)');
+
+    const escapeHTML = (value) =>
+      value.replace(
+        /[&<>"']/g,
+        (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
+      );
+    // Same NFC/FNV-1a/mod-14 rule as src/features/books/model/topic-colors.ts.
+    function topicColorIndex(topic) {
+      let hash = 2166136261;
+      const normalized = topic.normalize('NFC');
+      for (let index = 0; index < normalized.length; index += 1) {
+        hash = Math.imul(hash ^ normalized.charCodeAt(index), 16777619);
+      }
+      return ((hash >>> 0) % 14) + 1;
+    }
+    function updateSwatches() {
+      const names = [
+        ['canvas', '작업 바탕'],
+        ['chrome', '탐색부'],
+        ['raised', '입력·대화상자'],
+        ['ink', '주요 글자'],
+        ['action', '주요 행동'],
+        ['selected', '선택 배경'],
+      ];
+      const styles = getComputedStyle(document.documentElement);
+      $('swatches').innerHTML = names
+        .map(
+          ([name, label]) =>
+            `<div class="swatch"><div class="swatch-color" style="--value:var(--rr-${name})"></div>${label}<code>${styles.getPropertyValue(`--rr-${name}`).trim()}</code></div>`,
+        )
+        .join('');
+    }
+    function setTheme(value) {
+      $('topic-samples').innerHTML = ['프로그래밍', '소설', '자기계발']
+        .map(
+          (topic) =>
+            `<span class="topic" data-category="${topicColorIndex(topic)}" style="--topic-bg:var(--rr-category-${topicColorIndex(topic)})">${escapeHTML(topic)}</span>`,
+        )
+        .join('');
+      $('topic-palette').innerHTML = Array.from(
+        { length: 14 },
+        (_, i) =>
+          `<span class="topic" data-palette-slot="${i + 1}" style="--topic-bg:var(--rr-category-${i + 1})">주제색 ${String(i + 1).padStart(2, '0')}</span>`,
+      ).join('');
+      theme = value;
+      document.documentElement.classList.add('changing-theme');
+      document.documentElement.dataset.theme =
+        value === 'system' ? (system.matches ? 'dark' : 'light') : value;
+      $('theme').value = value;
+      $('settings-theme').value = value;
+      updateSwatches();
+      // Resolve the new palette with transitions suppressed, then restore hover behavior.
+      $('add').getBoundingClientRect();
+      document.documentElement.classList.remove('changing-theme');
+    }
+    $('theme').addEventListener('change', (event) => setTheme(event.target.value));
+    $('settings-theme').addEventListener('change', (event) => setTheme(event.target.value));
+    system.addEventListener('change', () => {
+      if (theme === 'system') setTheme('system');
+    });
+    function filteredBooks() {
+      const q = $('search').value.trim().toLocaleLowerCase();
+      return books
+        .filter(
+          (book) =>
+            [book.name, book.author, book.publisher, book.isbn].some((value) =>
+              value.toLocaleLowerCase().includes(q),
+            ) &&
+            (!$('topic').value || book.topic === $('topic').value) &&
+            (!$('place').value || book.place === $('place').value),
+        )
+        .sort((a, b) =>
+          $('sort').value === 'title'
+            ? a.name.localeCompare(b.name, 'ko')
+            : b.created.localeCompare(a.created),
+        );
+    }
+    function render() {
+      const scenario = $('scenario').value;
+      const matches = filteredBooks();
+      const active = !!($('search').value || $('topic').value || $('place').value);
+      $('reset').disabled = !active;
+      $('list-view').setAttribute('aria-pressed', String(view === 'list'));
+      $('grid-view').setAttribute('aria-pressed', String(view === 'grid'));
+      $('count').textContent =
+        scenario === 'empty'
+          ? '0권'
+          : scenario === 'loading' || scenario === 'error'
+            ? '—'
+            : active
+              ? `${matches.length} / ${books.length}권`
+              : `${books.length}권`;
+      $('result-label').textContent = active ? `검색 결과 ${matches.length}권` : '전체 도서';
+      $('results').setAttribute('aria-busy', String(scenario === 'loading'));
+      if (scenario === 'error') {
+        $('results').innerHTML =
+          '<div class="empty" role="alert"><h3>서재를 불러오지 못했습니다</h3><p>연결 상태를 확인하고 다시 시도해주세요. · 오류 상태 시연</p><button class="btn" id="retry" type="button">다시 시도</button></div>';
+        $('retry').onclick = () => {
+          $('scenario').value = 'default';
+          render();
+        };
+        return;
+      }
+      if (scenario === 'loading') {
+        $('results').innerHTML =
+          '<div class="empty" role="status"><span class="spinner" aria-hidden="true"></span>서재를 불러오는 중입니다.</div>';
+        return;
+      }
+      if (scenario === 'empty') {
+        $('results').innerHTML =
+          '<div class="empty"><h3>아직 등록된 도서가 없습니다</h3><p>도서 추가로 첫 책을 기록하세요.</p></div>';
+        return;
+      }
+      if (!matches.length) {
+        $('results').innerHTML =
+          '<div class="empty"><h3>일치하는 도서가 없습니다</h3><p>다른 검색어를 입력하거나 필터를 초기화해보세요.</p><button class="btn" id="clear-empty" type="button">검색과 필터 초기화</button></div>';
+        $('clear-empty').onclick = reset;
+        return;
+      }
+      if (view === 'list') {
+        $('results').innerHTML =
+          `<div class="table-wrap"><table><colgroup><col class="table-name"/><col class="table-author"/><col class="table-topic topic-col"/><col class="purchase-col"/><col class="date-col"/></colgroup><thead><tr><th scope="col">도서</th><th scope="col">저자 · 출판사</th><th class="topic-col" scope="col">주제</th><th class="purchase-col" scope="col">구매처</th><th class="date-col" scope="col">구매일</th></tr></thead><tbody>${matches.map((book) => `<tr><td><button class="title-button" type="button" data-book="${book.id}">${book.name}</button><span class="meta">${book.isbn}</span></td><td><span class="author">${book.author}</span><span class="meta">${book.publisher}</span></td><td class="topic-col"><span class="topic">${book.topic}</span></td><td class="purchase-col">${book.place}</td><td class="date-col date">${book.date}</td></tr>`).join('')}</tbody></table><p class="endnote">${matches.length}권의 도서를 모두 표시했습니다.</p></div>`;
+      } else {
+        $('results').innerHTML =
+          `<div class="grid">${matches.map((book) => `<button type="button" class="book-card" data-book="${book.id}" aria-label="${book.name}, ${book.author}, 도서 상세"><span class="cover">표지 없음</span><span class="book-name">${book.name}</span><span class="author">${book.author}</span><span class="topic">${book.topic}</span></button>`).join('')}</div><p class="endnote">원본 테스트 도서에 표지가 없어 대체 상태를 표시합니다.</p>`;
+      }
+      document.querySelectorAll('[data-book]').forEach((button) => {
+        button.addEventListener('click', () => openBook(button.dataset.book));
+      });
+      document.querySelectorAll('#results .topic').forEach((chip) => {
+        const index = topicColorIndex(chip.textContent || '');
+        chip.dataset.category = String(index);
+        chip.style.setProperty('--topic-bg', `var(--rr-category-${index})`);
+      });
+    }
+    function reset() {
+      $('search').value = '';
+      $('topic').value = '';
+      $('place').value = '';
+      render();
+      $('search').focus();
+    }
+    function openBook(id) {
+      const book = books.find((book) => book.id === id);
+      $('book-dialog').dataset.kind = 'detail';
+      $('dialog-title').textContent = book.name;
+      $('dialog-body').innerHTML =
+        `<p class="mock-note" style="margin:0 0 16px">테스트용 도서 · 실제 서지 검증 자료가 아닙니다</p><dl><dt>저자</dt><dd>${book.author}</dd><dt>출판사</dt><dd>${book.publisher}</dd><dt>주제</dt><dd>${book.topic}</dd><dt>ISBN-13</dt><dd>${book.isbn}</dd></dl><h3>구매 정보</h3><dl><dt>구매처</dt><dd>${book.place}</dd><dt>구매일</dt><dd>${book.date}</dd></dl>${book.memo ? `<h3>메모</h3><p class="memo">${book.memo}</p>` : ''}`;
+      $('book-dialog').showModal();
+    }
+    $('add').onclick = () => {
+      $('book-dialog').dataset.kind = 'editor';
+      $('dialog-title').textContent = '도서 추가';
+      $('dialog-body').innerHTML =
+        '<p class="mock-note" style="margin:0 0 20px">입력 상태 확인용 시연입니다. 앱 데이터에 저장하지 않습니다.</p><form id="add-form" novalidate><label class="form-field" for="new-title">도서명 · 필수<input class="control" id="new-title" aria-describedby="title-error" required maxlength="200"/><span id="title-error" class="form-error"></span></label><label class="form-field" for="new-author">저자<input class="control" id="new-author" maxlength="200"/></label><button type="submit" class="btn primary">입력 확인</button><p class="form-status" id="form-status" role="status" style="margin-top:16px"></p></form>';
+      $('book-dialog').showModal();
+      $('new-title').focus();
+      $('add-form').onsubmit = (event) => {
+        event.preventDefault();
+        const valid = !!$('new-title').value.trim();
+        $('new-title').setAttribute('aria-invalid', String(!valid));
+        $('title-error').textContent = valid ? '' : '도서명을 입력해주세요.';
+        $('form-status').textContent = valid
+          ? '입력 형식을 확인했습니다. 실제 도서는 저장하지 않았습니다.'
+          : '';
+        if (!valid) $('new-title').focus();
+      };
+    };
+    $('dialog-close').onclick = () => $('book-dialog').close();
+    $('dialog-done').onclick = () => $('book-dialog').close();
+    $('search-form').onsubmit = (event) => event.preventDefault();
+    $('search').oninput = render;
+    for (const id of ['topic', 'place', 'sort', 'scenario']) $(id).onchange = render;
+    $('reset').onclick = reset;
+    $('list-view').onclick = () => {
+      view = 'list';
+      render();
+    };
+    $('grid-view').onclick = () => {
+      view = 'grid';
+      render();
+    };
+    document.querySelectorAll('[data-page]').forEach((button) => {
+      button.onclick = () => {
+        const page = button.dataset.page;
+        document.querySelectorAll('[data-page]').forEach((nav) => {
+          nav === button
+            ? nav.setAttribute('aria-current', 'page')
+            : nav.removeAttribute('aria-current');
+        });
+        for (const [name, id] of [
+          ['library', 'library-page'],
+          ['settings', 'settings-page'],
+          ['stats', 'stats-page'],
+        ])
+          $(id).hidden = name !== page;
+      };
+    });
+    document.addEventListener('keydown', (event) => {
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === 'f' &&
+        !$('book-dialog').open &&
+        !$('library-page').hidden
+      ) {
+        event.preventDefault();
+        $('search').focus();
+      }
+    });
+    $('state-save').onclick = () =>
+      ($('state-feedback').textContent =
+        '주요 버튼 클릭 상태를 확인했습니다. 실제 저장은 실행하지 않았습니다.');
+    $('state-delete').onclick = () =>
+      ($('state-feedback').textContent =
+        '위험 행동의 색과 문구 견본입니다. 실제 삭제는 실행하지 않았습니다.');
+    $('stats-total').innerHTML = `<dt>전체 도서</dt><dd>${books.length}권</dd>`;
+    const distribution = (field) =>
+      Object.entries(
+        books.reduce((counts, book) => {
+          counts[book[field]] = (counts[book[field]] || 0) + 1;
+          return counts;
+        }, {}),
+      )
+        .map(([name, count]) => `<dt>${escapeHTML(name)}</dt><dd>${count}권</dd>`)
+        .join('');
+    $('stats-topics').innerHTML = distribution('topic');
+    $('stats-places').innerHTML = distribution('place');
+    setTheme('light');
+    render();
+    </script>
+  </body>
+</html>

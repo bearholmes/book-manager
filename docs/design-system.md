@@ -1,5 +1,19 @@
 # 디자인 토큰과 CSS 구성
 
+## 현재 적용 기준
+
+B안 ‘조용한 개인 서재’를 실제 앱에 적용 중이다. 기존 제품명·로고·기능, 14개 주제색과 안정적 배정, 10개 차트 슬롯을 유지한다. 상세 입력 흐름과 네이티브 외관은 별도 디자인 검토 대상이며 전체 접근성 검증 완료를 뜻하지 않는다.
+
+런타임 색상의 유일한 원본은 RGB 채널 방식의 `src/shared/theme/tokens.css`다. `DESIGN.md`는 방향과 제안값을 설명하고 `docs/design/reading-room.tokens.*`는 시안 생성물로 앱에서 import하지 않는다. 조작부에는 번들 Pretendard, 제목·도서에는 번들 MaruBuri를 사용한다. LNB에는 일반 선택과 분리된 nav 토큰을 사용하며, 다크 주요 행동과 위험 행동의 전경도 구분한다. 다크 위험 버튼 hover/active 채움 `#80352F`는 디자인 검토에서 현재 구현의 잠정값으로 수용되었다. 이전 브라우저 검토에서 간헐적으로 관찰된 hover 상태 불일치의 원인은 미확정이며, 이후 Chromium 회귀 테스트에서는 재현되지 않았다.
+
+현재 셸은 넓은 창 208px, 중간 창 176px, 760px 이하 상단 탐색이다. 좁은 창 또는 coarse pointer에서 탐색·보기 조작은 44px 이상을 목표로 한다. 가상 그리드의 기존 컨테이너 및 행 측정과 오버레이 포커스 수명주기를 유지한다. 실제 구현 상태와 검증 결과는 인계 보고를 따르며, 프로토타입 검증은 네이티브 검증이 아니다.
+
+검증: `pnpm check`, `pnpm test --run`, `node --test src/shared/theme/design-tokens.test.mjs`, `pnpm test:e2e`, `pnpm build`. 빌드는 패키지 renderer 일치 여부도 검사한다.
+
+## 이전 디자인의 기록 (현재 기준 아님)
+
+아래 내용은 변경 전 Catalyst/Slite 기반 구현과 과거 검증을 기록한다. 색상·치수·서체에 대한 이전 지침은 현재 적용 기준이 아니다.
+
 Tailwind Plus·Catalyst의 작업 화면 구성과 간격, Slite의 색상 스타일을 참고한다.
 기존 React 컴포넌트, CSS 변수, Tailwind, CSS Modules를 사용하며 새 헤드리스 UI 의존성은 없다.
 공용 `PageHeader`, `SettingsSection`, `Table`, `Field`가 서재·통계·설정·입력 폼에 같은 규칙을 제공한다.
@@ -47,7 +61,7 @@ Tailwind Plus·Catalyst의 작업 화면 구성과 간격, Slite의 색상 스�
 | 위치 | 책임 |
 | --- | --- |
 | `src/shared/theme/tokens.css` | 팔레트, 의미 색상, 폰트 스택, 모서리, 컨트롤 치수, 그림자, 레이어, 모션, 셸 레이아웃 토큰 |
-| `src/shared/theme/fonts.css` | 번들 마루부리 400/600/700 등록 |
+| `src/shared/theme/fonts.css` | 번들 Pretendard Variable 및 마루부리 400/600/700 등록 |
 | `src/shared/theme/base.css` | 문서 기본 높이·배경·글자·제목 스타일 |
 | `src/shared/theme/motion.css` | 공용 진입 키프레임과 모션 감소 설정 |
 | `src/app/styles/globals.css` | 위 파일을 가져오고 Tailwind를 생성하는 진입점 |
@@ -107,9 +121,10 @@ Storybook의 `UI/Button`, `UI/Input`, 기존 Spinner/Modal/SidePanel 스토리�
 Recharts처럼 JS로 움직이는 차트는 `useReducedMotion`으로 OS 설정 변경을 구독해 애니메이션을 끈다.
 
 마루부리 Regular/SemiBold/Bold WOFF2를 공식 Naver 웹폰트 배포본 그대로 포함한다.
-`--font-body`와 `--font-heading`은 동일한 MaruBuri 계열을 사용한다. 외부 CDN 요청은 필요 없다.
+`--font-body`는 Pretendard Variable(45–930), `--font-heading`과 `--font-book`은 MaruBuri를 사용한다. Pretendard 뒤에는 시스템 산세리프 폴백을 둔다. 외부 CDN 요청은 필요 없다.
 출처·저작권 안내·SIL OFL 1.1 전문은 `src/shared/assets/fonts/maru-buri/LICENSE.txt`에 보관하며
 네이티브 앱에도 `views/main/licenses/MaruBuri.txt`로 포함한다.
+Pretendard 1.3.9는 [공식 저장소](https://github.com/orioncactus/pretendard/tree/v1.3.9)에서 가져온 원본이며 SIL OFL 1.1 저작권 및 라이선스 전문은 `src/shared/assets/fonts/pretendard/LICENSE.txt`와 앱의 `views/main/licenses/Pretendard.txt`, 오픈소스 고지에 포함한다.
 
 ## 검증
 

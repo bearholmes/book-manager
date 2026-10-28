@@ -12,6 +12,7 @@ export default {
     copy: {
       'build/renderer': 'views/main',
       'src/shared/assets/fonts/maru-buri/LICENSE.txt': 'views/main/licenses/MaruBuri.txt',
+      'src/shared/assets/fonts/pretendard/LICENSE.txt': 'views/main/licenses/Pretendard.txt',
     },
     buildFolder: 'build/desktop',
     artifactFolder: 'build/releases',

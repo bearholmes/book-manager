@@ -1,4 +1,11 @@
 @font-face {
+  font-family: "Pretendard Variable";
+  src: url("../assets/fonts/pretendard/PretendardVariable.woff2") format("woff2");
+  font-weight: 45 930;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: "MaruBuri";
   src: url("../assets/fonts/maru-buri/MaruBuri-Regular.woff2") format("woff2");
   font-weight: 400;

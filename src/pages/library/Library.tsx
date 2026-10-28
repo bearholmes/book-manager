@@ -3,7 +3,6 @@ import { BookDetailModal, BookFilters, VirtualizedBookGrid } from '@/features/bo
 import { Button } from '@/shared/ui/Button';
 import { Modal } from '@/shared/ui/Modal';
 import { PageContent } from '@/shared/ui/PageContent';
-import { PageHeader } from '@/shared/ui/PageHeader';
 import { SidePanel } from '@/shared/ui/SidePanel';
 import { Spinner } from '@/shared/ui/Spinner';
 import { BookEditor } from './components/BookEditor';
@@ -60,11 +59,23 @@ export function Library() {
   const emptyMessage = hasAnyBooks ? '검색 결과가 없습니다' : '등록된 도서가 없습니다';
 
   return (
-    <PageContent>
-      <PageHeader
-        title="나의 서재"
-        meta={filtered ? `${resultCount} / ${totalBooksCount ?? 0}권` : `${totalBooksCount ?? 0}권`}
-        tools={
+    <PageContent className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headingRow}>
+          <div className={styles.heading}>
+            <h1>나의 서재</h1>
+            <span>
+              {filtered
+                ? `${resultCount} / ${totalBooksCount ?? 0}권`
+                : `${totalBooksCount ?? 0}권`}
+            </span>
+          </div>
+          <Button type="button" onClick={() => setShowAddPanel(true)}>
+            <Plus size={16} aria-hidden="true" />
+            도서 추가
+          </Button>
+        </div>
+        <div className={styles.toolbar}>
           <BookFilters
             filters={filters}
             onChange={setFilters}
@@ -74,38 +85,30 @@ export function Library() {
             purchasePlaces={purchasePlaces}
             isSearching={isSearching}
           />
-        }
-        actions={
-          <>
-            <fieldset className={styles.views} aria-label="보기 방식">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={styles.view}
-                aria-label="목록 보기"
-                aria-pressed={view === 'list'}
-                onClick={() => setView('list')}
-              >
-                <List size={16} aria-hidden="true" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={styles.view}
-                aria-label="표지 보기"
-                aria-pressed={view === 'grid'}
-                onClick={() => setView('grid')}
-              >
-                <LayoutGrid size={16} aria-hidden="true" />
-              </Button>
-            </fieldset>
-            <Button type="button" onClick={() => setShowAddPanel(true)}>
-              <Plus size={16} aria-hidden="true" />
-              도서 추가
+          <fieldset className={styles.views} aria-label="보기 방식">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={styles.view}
+              aria-label="목록 보기"
+              aria-pressed={view === 'list'}
+              onClick={() => setView('list')}
+            >
+              <List size={16} aria-hidden="true" />
             </Button>
-          </>
-        }
-      />
+            <Button
+              variant="ghost"
+              size="icon"
+              className={styles.view}
+              aria-label="표지 보기"
+              aria-pressed={view === 'grid'}
+              onClick={() => setView('grid')}
+            >
+              <LayoutGrid size={16} aria-hidden="true" />
+            </Button>
+          </fieldset>
+        </div>
+      </header>
       {isLoading ? (
         <div className={styles.loading}>
           <Spinner />
@@ -121,7 +124,12 @@ export function Library() {
       ) : (
         <>
           {view === 'list' ? (
-            <BookTable books={books} onSelect={setSelectedBook} emptyMessage={emptyMessage} />
+            <BookTable
+              books={books}
+              onSelect={setSelectedBook}
+              emptyMessage={emptyMessage}
+              topicColors={topicColors}
+            />
           ) : books.length > 0 ? (
             <VirtualizedBookGrid
               books={books}

@@ -47,3 +47,13 @@
     justify-self: end;
   }
 }
+@media (max-width: 480px), (pointer: coarse) {
+  .toolbar input,
+  .toolbar select,
+  .reset {
+    min-height: 44px;
+  }
+  .reset {
+    min-width: 44px;
+  }
+}

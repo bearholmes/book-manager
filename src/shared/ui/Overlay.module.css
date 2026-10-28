@@ -6,6 +6,5 @@
 }
 .backdrop {
   @apply border-0 p-0;
-  background-color: rgb(var(--color-overlay) / 0.45);
-  backdrop-filter: blur(2px);
+  background-color: rgb(var(--color-overlay) / var(--overlay-opacity));
 }

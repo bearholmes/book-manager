@@ -15,7 +15,7 @@ test('focus rings follow keyboard navigation through panels, modals and book car
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
   await expect(panelClose).toBeFocused();
-  await expect(panelClose).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(panelClose).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
   await panel.getByRole('heading', { name: '도서 추가', exact: true }).click();
   await panelClose.click();
   await expect(add).toBeFocused();
@@ -23,7 +23,7 @@ test('focus rings follow keyboard navigation through panels, modals and book car
 
   await page.keyboard.press('Enter');
   await expect(panelClose).toBeFocused();
-  await expect(panelClose).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(panelClose).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
   await page.getByLabel('도서명').fill('포커스 확인 도서');
   await panel.getByRole('button', { name: '추가', exact: true }).click();
   const notification = page.getByRole('status').filter({ hasText: '추가' });
@@ -42,7 +42,7 @@ test('focus rings follow keyboard navigation through panels, modals and book car
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
   await expect(modalClose).toBeFocused();
-  await expect(modalClose).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(modalClose).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
   await modalClose.click();
   await page.getByRole('button', { name: '표지 보기', exact: true }).click();
   const card = page.getByRole('button', { name: /^포커스 확인 도서/ });
@@ -54,11 +54,11 @@ test('focus rings follow keyboard navigation through panels, modals and book car
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
   await expect(card).toBeFocused();
-  await expect(card).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(card).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
   await page.keyboard.press('Enter');
   await expect(modalClose).toBeFocused();
-  await expect(modalClose).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(modalClose).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
   await page.keyboard.press('Escape');
   await expect(card).toBeFocused();
-  await expect(card).toHaveCSS('box-shadow', /rgb\(111, 117, 126\)/);
+  await expect(card).toHaveCSS('box-shadow', /rgb\(54, 92, 72\)/);
 });

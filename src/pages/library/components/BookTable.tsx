@@ -1,4 +1,5 @@
 import type { Book } from '@contracts/book';
+import type { CSSProperties } from 'react';
 import { formatDate } from '@/shared/lib/format';
 import { Table } from '@/shared/ui/Table';
 import styles from './BookTable.module.css';
@@ -6,21 +7,23 @@ import styles from './BookTable.module.css';
 export function BookTable({
   books,
   onSelect,
+  topicColors = {},
   emptyMessage = '등록된 도서가 없습니다',
 }: {
   books: Book[];
   onSelect: (book: Book) => void;
   emptyMessage?: string;
+  topicColors?: Record<string, string>;
 }) {
   return (
     <div className={styles.wrapper}>
       <Table className={styles.table}>
         <colgroup>
-          <col style={{ width: '36%' }} />
-          <col style={{ width: '22%' }} />
-          <col style={{ width: '14%' }} />
-          <col style={{ width: '14%' }} />
-          <col style={{ width: '14%' }} />
+          <col />
+          <col />
+          <col />
+          <col />
+          <col />
         </colgroup>
         <thead>
           <tr>
@@ -56,7 +59,18 @@ export function BookTable({
                 <span className="block">{book.author || '—'}</span>
                 <span className="text-xs text-copy-subtle">{book.publisher || '—'}</span>
               </td>
-              <td>{book.topic || '미분류'}</td>
+              <td>
+                {book.topic ? (
+                  <span
+                    className={styles.topic}
+                    style={{ '--topic-color': topicColors[book.topic] } as CSSProperties}
+                  >
+                    {book.topic}
+                  </span>
+                ) : (
+                  '미분류'
+                )}
+              </td>
               <td>{book.purchase_place || '—'}</td>
               <td className="whitespace-nowrap">
                 {book.purchase_date ? formatDate(book.purchase_date) : '—'}

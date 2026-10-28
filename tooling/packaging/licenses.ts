@@ -53,6 +53,20 @@ function collectNotices(root: string, packages: Set<string>) {
       title: '글꼴',
       items: [
         {
+          name: 'Pretendard',
+          version: '1.3.9 · Variable',
+          license: 'SIL OFL 1.1',
+          notices: [
+            {
+              title: '저작권 안내 및 라이선스 전문',
+              text: readFileSync(
+                join(root, 'src/shared/assets/fonts/pretendard/LICENSE.txt'),
+                'utf8',
+              ).trim(),
+            },
+          ],
+        },
+        {
           name: '마루 부리 (MaruBuri)',
           version: 'Regular · SemiBold · Bold',
           license: 'SIL OFL 1.1',

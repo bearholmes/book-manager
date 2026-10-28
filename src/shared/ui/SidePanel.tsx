@@ -68,7 +68,9 @@ export function SidePanel({
             <div className="flex h-full flex-col overflow-y-scroll border-l border-line-subtle/70 bg-surface shadow-panel">
               {/* Header */}
               {title && (
-                <div className="border-b border-line-subtle px-6 py-6 sm:px-8">
+                <div
+                  className={clsx(styles.header, 'border-b border-line-subtle px-6 py-6 sm:px-8')}
+                >
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-8 text-copy-heading" id={titleId}>
                       {title}

@@ -26,7 +26,7 @@ export function Settings() {
     await refresh();
   }
   return (
-    <PageContent>
+    <PageContent className={styles.content}>
       <PageHeader title="설정" />
       <SettingsSection title="테마" description="시스템을 선택하면 기기 설정을 따릅니다.">
         <Select
