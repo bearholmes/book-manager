@@ -1,8 +1,11 @@
+import { constants, access } from 'node:fs/promises';
 import { z } from 'zod';
+import type { CodexAvailability } from '../../contracts/book-lookup';
 import type { CodexSettings, CoverTransfer, LookupJob } from '../../contracts/book-lookup';
 import { normalizeIsbn } from '../../contracts/isbn';
 import { type LookupRunner, runCodex, runProcess } from './codex';
 import { downloadCover } from './download-cover';
+import { readModels } from './models';
 import { settingsSchema } from './schema';
 
 type Entry<T> = { controller: AbortController; value: T; expires: ReturnType<typeof setTimeout> };
@@ -21,8 +24,23 @@ export class BookLookupService {
   settings() {
     return this.deps.settings.get();
   }
-  saveSettings(input: unknown) {
-    return this.deps.settings.set(settingsSchema.parse(input));
+  async saveSettings(input: unknown) {
+    const saved = await this.deps.settings.set(settingsSchema.parse(input));
+    if (!saved.enabled) this.dispose();
+    return saved;
+  }
+  async availability(): Promise<CodexAvailability> {
+    const settings = await this.settings();
+    try {
+      await access(settings.executable, constants.X_OK);
+    } catch {
+      return { state: 'missing', models: [] };
+    }
+    try {
+      return { state: 'ready', models: await readModels(settings.executable) };
+    } catch (error) {
+      return { state: 'unavailable', models: [], message: this.message(error) };
+    }
   }
   private entry<T>(value: T, expire: () => void): Entry<T> {
     const expires = setTimeout(expire, 600_000);
@@ -40,6 +58,7 @@ export class BookLookupService {
     if ([...this.jobs.values()].some((j) => j.value.state === 'running'))
       throw new Error('다른 조사가 진행 중입니다. 먼저 취소해주세요.');
     const settings = await this.settings();
+    if (!settings.enabled) throw new Error('설정에서 AI 도우미를 켜주세요.');
     const jobId = crypto.randomUUID();
     const entry = this.entry<LookupJob>({ state: 'running' }, () => this.cancel({ jobId }));
     this.jobs.set(jobId, entry);

@@ -10,6 +10,7 @@ import { parseResult } from './schema';
 import { BookLookupService } from './service';
 
 const settings: CodexSettings = {
+  enabled: true,
   executable: '/bin/codex',
   model: 'gpt-6.1-terra',
   reasoningEffort: 'medium',
@@ -104,4 +105,32 @@ test('image download boundaries reject private and mapped addresses and non-imag
     expect(isPublicAddress(ip)).toBe(false);
   expect(isPublicAddress('8.8.8.8')).toBe(true);
   expect(imageMime(Buffer.from('<html>not an image</html>'))).toBeNull();
+});
+
+test('disabled helper rejects lookup and switching off cancels existing jobs', async () => {
+  let saved = { ...settings };
+  let aborted = false;
+  const service = new BookLookupService({
+    settings: {
+      get: async () => saved,
+      set: async (value) => {
+        saved = value as CodexSettings;
+        return saved;
+      },
+    },
+    openUrl: () => {},
+    runner: async (_settings, _isbn, signal) => {
+      signal.addEventListener('abort', () => {
+        aborted = true;
+      });
+      return new Promise(() => {});
+    },
+  });
+  const job = await service.start({ isbn: '9788966260959', requestId: 'enabled-test' });
+  await service.saveSettings({ ...settings, enabled: false });
+  expect(aborted).toBe(true);
+  expect(service.status(job).state).toBe('cancelled');
+  expect(service.start({ isbn: '9788966260959', requestId: 'disabled-test' })).rejects.toThrow(
+    'AI 도우미를 켜주세요',
+  );
 });

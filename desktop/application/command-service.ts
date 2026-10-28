@@ -71,6 +71,7 @@ export class DesktopService {
         'codexSettingsGet',
         'codexSettingsSet',
         'codexProbe',
+        'codexAvailability',
         'lookupStart',
         'lookupStatus',
         'lookupCancel',
@@ -86,6 +87,8 @@ export class DesktopService {
           return this.lookup.settings();
         case 'codexSettingsSet':
           return this.lookup.saveSettings(payload);
+        case 'codexAvailability':
+          return this.lookup.availability();
         case 'codexProbe':
           return this.lookup.probe();
         case 'lookupStart':

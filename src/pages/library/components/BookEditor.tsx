@@ -5,7 +5,7 @@ import { useConfirmSnackbar } from '@/shared/notifications/hooks/useConfirmSnack
 import { useToast } from '@/shared/notifications/hooks/useToast';
 import type { Book } from '@contracts/book';
 import { normalizeIsbn } from '@contracts/isbn';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function BookEditor({
   book,
@@ -19,6 +19,18 @@ export function BookEditor({
   isSubmitting?: boolean;
 }) {
   const { confirm } = useConfirmSnackbar();
+  const [helperEnabled, setHelperEnabled] = useState(false);
+  useEffect(() => {
+    let stopped = false;
+    void desktop('codexSettingsGet', {})
+      .then((value) => {
+        if (!stopped) setHelperEnabled(value.enabled);
+      })
+      .catch(() => {});
+    return () => {
+      stopped = true;
+    };
+  }, []);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -61,7 +73,11 @@ export function BookEditor({
           return false;
         }
       }}
-      renderIsbnHelper={(context) => <BookLookup context={context} beforeLookup={check} />}
+      renderIsbnHelper={
+        helperEnabled
+          ? (context) => <BookLookup context={context} beforeLookup={check} />
+          : undefined
+      }
     />
   );
 }

@@ -1,7 +1,17 @@
 import type { CoverUpload } from './cover';
 
-export const REASONING_EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const;
+export const REASONING_EFFORTS = [
+  'none',
+  'minimal',
+  'low',
+  'medium',
+  'high',
+  'xhigh',
+  'max',
+  'ultra',
+] as const;
 export interface CodexSettings {
+  enabled: boolean;
   executable: string;
   model: string;
   reasoningEffort: (typeof REASONING_EFFORTS)[number];
@@ -40,4 +50,16 @@ export interface BookHelperContext {
   coverVersion: number;
   hasCover: boolean;
   apply: (patch: Partial<BibliographicFields>, cover?: CoverUpload) => void;
+}
+
+export interface CodexModel {
+  id: string;
+  name: string;
+  reasoningEfforts: CodexSettings['reasoningEffort'][];
+  defaultReasoningEffort: CodexSettings['reasoningEffort'];
+}
+export interface CodexAvailability {
+  state: 'ready' | 'missing' | 'unavailable';
+  models: CodexModel[];
+  message?: string;
 }

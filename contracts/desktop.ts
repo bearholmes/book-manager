@@ -1,5 +1,5 @@
 import type { Book, BookFilters, BookInsert, BookSort, BookUpdate } from './book';
-import type { CodexSettings, CoverTransfer, LookupJob } from './book-lookup';
+import type { CodexAvailability, CodexSettings, CoverTransfer, LookupJob } from './book-lookup';
 import type { CoverUpload } from './cover';
 
 export interface LockState {
@@ -36,6 +36,7 @@ export interface Commands {
   };
   codexSettingsGet: { params: Record<string, never>; result: CodexSettings };
   codexSettingsSet: { params: CodexSettings; result: CodexSettings };
+  codexAvailability: { params: Record<string, never>; result: CodexAvailability };
   codexProbe: { params: Record<string, never>; result: { version: string } };
   lookupStart: { params: { isbn: string; requestId: string }; result: { jobId: string } };
   lookupStatus: { params: { jobId: string }; result: LookupJob };

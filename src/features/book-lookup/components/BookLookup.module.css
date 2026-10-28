@@ -50,9 +50,53 @@
 .settings {
   display: grid;
   gap: 12px;
-  width: min(100%, 420px);
+  width: 100%;
+  font-size: var(--type-ui-size);
+  line-height: var(--type-ui-leading);
 }
 .notes {
   padding-left: 20px;
   list-style: disc;
+}
+
+.switch {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--color-border-subtle));
+  background: rgb(var(--color-text-secondary));
+  padding: 2px;
+  cursor: pointer;
+}
+.switch[aria-checked="true"] {
+  background: rgb(var(--color-action));
+}
+.switch span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+}
+.switch[aria-checked="true"] span {
+  transform: translateX(18px);
+}
+.switch:focus-visible {
+  outline: 2px solid rgb(var(--color-focus));
+  outline-offset: 3px;
+}
+.switch:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settingsFields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .settingsFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

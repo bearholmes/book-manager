@@ -3,12 +3,32 @@ import { expect, test } from './fixtures';
 test('Codex settings persist and duplicate snackbar gates lookup and save; suggestions stay editable', async ({
   page,
 }) => {
+  await page.route('**/rpc', async (route) => {
+    if (route.request().postDataJSON().command !== 'codexAvailability') return route.fallback();
+    await route.fulfill({
+      json: {
+        ok: true,
+        data: {
+          state: 'ready',
+          models: [
+            {
+              id: 'gpt-6.1-terra',
+              name: 'Terra',
+              reasoningEfforts: ['medium', 'high'],
+              defaultReasoningEffort: 'medium',
+            },
+          ],
+        },
+      },
+    });
+  });
   await page.goto('/');
   await page.getByRole('link', { name: /설정/ }).click();
-  await page.getByLabel('AI 모델', { exact: true }).fill('gpt-6.1-terra');
+  await page.getByRole('switch', { name: 'AI 도우미' }).click();
+  await page.getByLabel('AI 모델', { exact: true }).selectOption('gpt-6.1-terra');
   await page.getByLabel('추론 수준').selectOption('high');
   await page.getByRole('button', { name: '설정 저장' }).click();
-  await expect(page.getByText('모델·추론 설정을 저장했습니다.', { exact: false })).toBeVisible();
+  await expect(page.getByText('설정을 저장했습니다.', { exact: false })).toBeVisible();
   await page.reload();
   await expect(page.getByLabel('추론 수준')).toHaveValue('high');
   await page.getByRole('link', { name: /서재/ }).click();
@@ -109,4 +129,13 @@ test('Codex settings persist and duplicate snackbar gates lookup and save; sugge
   await expect(snack).toBeVisible();
   await snack.getByRole('button', { name: '닫기', exact: true }).click();
   await expect(page.getByRole('textbox', { name: /도서명/ })).toHaveValue('저장하면 안 되는 책');
+  await page.getByRole('button', { name: '패널 닫기' }).click();
+  await page.getByRole('link', { name: /설정/ }).click();
+  await page.getByRole('switch', { name: 'AI 도우미' }).click();
+  await expect(page.getByLabel('AI 모델')).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('switch', { name: 'AI 도우미' })).not.toBeChecked();
+  await page.getByRole('link', { name: /서재/ }).click();
+  await page.getByRole('button', { name: '도서 추가', exact: true }).click();
+  await expect(page.getByRole('button', { name: '정보 찾기' })).toHaveCount(0);
 });

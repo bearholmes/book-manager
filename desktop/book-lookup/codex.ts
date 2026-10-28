@@ -106,7 +106,7 @@ export function runProcess(
     };
     child.on('error', () => {
       clean();
-      reject(new Error('Codex를 실행하지 못했습니다. 설정의 실행 경로를 확인해주세요.'));
+      reject(new Error('Codex를 실행하지 못했습니다. 설치 상태를 확인해주세요.'));
     });
     child.on('close', async (code) => {
       await termination;

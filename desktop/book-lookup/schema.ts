@@ -4,6 +4,7 @@ import { isCalendarDate } from '../../contracts/calendar-date';
 
 export const settingsSchema = z
   .object({
+    enabled: z.boolean().default(true),
     executable: z
       .string()
       .trim()

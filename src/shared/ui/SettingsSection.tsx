@@ -8,6 +8,7 @@ interface SettingsSectionProps {
   meta?: ReactNode;
   danger?: boolean;
   children: ReactNode;
+  content?: ReactNode;
 }
 
 export function SettingsSection({
@@ -16,6 +17,7 @@ export function SettingsSection({
   meta,
   danger,
   children,
+  content,
 }: SettingsSectionProps) {
   const headingId = useId();
   return (
@@ -28,6 +30,7 @@ export function SettingsSection({
         {meta && <span className={styles.meta}>{meta}</span>}
       </div>
       <div className={styles.body}>{children}</div>
+      {content && <div className={styles.content}>{content}</div>}
     </section>
   );
 }
